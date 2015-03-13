@@ -1,0 +1,19 @@
+{
+  "name": "Filemanager-ui",
+  "version": "0.1",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.2",
+    "jquery-validation": "~1.13.1",
+    "dropzone": "enyo/dropzone#~4.0.1",
+    "fancybox": "fancyapps/fancybox#~2.1.5",
+    "moment": "~2.9.0"
+  }
+}

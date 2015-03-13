@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<title>Filemanager ui</title>
+	<link rel="stylesheet" type="text/css" href="dist/css/filemanager-ui.min.css">
+</head>
+<body>
+	<div class="container filemanager">
+		<input type="hidden" id="path" name="path" value="">
+		<div class="hidden">
+		<div id="preview_file"><span aria-hidden="true" class="glyphicon glyphicon-file txt"></span></div>
+		</div>
+
+		<div class="hidden">
+			<div id="data_item">
+				<div class="col-xs-6 col-sm-3 col-md-2">
+					<div class="item">
+						<a href="#" class="image"><img src=""></a>
+						<p data-toggle="tooltip" data-placement="top" title=""></p>
+						<button class="btn btn-default btn-xs rename" data-placement="top" title="RENAME" data-toggle="modal" data-target="#rename_popup" data-name="">
+							<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+						</button>
+						<button class="btn btn-default btn-xs delete" data-placement="top" title="DELETE" data-toggle="modal" data-target="#delete_popup" data-name="">
+							<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+						</button>
+					</div>
+				</div>
+			</div>			
+		</div>
+		<!-- Begin Modal Upload-->
+		<div class="modal fade" id="upload_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		  <div class="modal-dialog modal-lg">
+		  	<div class="panel panel-default">
+		  	  <div class="panel-heading">FE_UPLOAD</div>
+			  <div class="panel-body">
+			    
+		    	<div id="actions" class="row">
+					<input type="hidden" id="reloadfiles" name="reloadfiles" value="0">
+			      <div class="col-lg-7">
+			        <!-- The fileinput-button span is used to style the file input field as button -->
+			        <span class="btn btn-success fileinput-button dz-clickable">
+			            <i class="glyphicon glyphicon-plus"></i>
+			            <span>FE_ADD_FILES</span>
+			        </span>
+			        <button type="submit" class="btn btn-primary start">
+			            <i class="glyphicon glyphicon-upload"></i>
+			            <span>FE_START_UPLOAD</span>
+			        </button>
+			        <button type="reset" class="btn btn-warning cancel">
+			            <i class="glyphicon glyphicon-ban-circle"></i>
+			            <span>FE_CANCEL_UPLOAD</span>
+			        </button>
+			      </div>
+
+			      <div class="col-lg-5">        
+			        <span class="fileupload-process">
+			          <div id="total-progress" class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" style="opacity: 0;">
+			            <div class="progress-bar progress-bar-success" style="width: 100%;" data-dz-uploadprogress=""></div>
+			          </div>
+			        </span>
+			      </div>
+
+			    </div>
+			    <div class="row">
+			      <div class="col-lg-12">
+			      <div class="col-lg-12">        
+			        <div id="error-all"></div>
+			      </div>
+			      </div>
+
+			    </div>
+
+				<div class="table table-striped" class="files" id="previews">
+		 		
+				  <div id="template" class="file-row">
+				    <!-- This is used as the file preview template -->
+				    <div>
+				        <span class="preview"><img data-dz-thumbnail /></span>
+				    </div>
+				    <div>
+				        <p class="name" data-dz-name></p>
+				        <strong class="error text-danger" data-dz-errormessage></strong>
+				    </div>
+				    <div>
+				        <p class="size" data-dz-size></p>
+				        <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+				          <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div>
+				        </div>
+				    </div>
+				    <div>
+				      <button data-dz-remove class="btn btn-warning cancel">
+				          <i class="glyphicon glyphicon-ban-circle"></i>
+				          <span>FE_CANCEL</span>
+				      </button>
+				      <button data-dz-remove class="btn btn-danger delete">
+				        <i class="glyphicon glyphicon-trash"></i>
+				        <span>FE_DELETE</span>
+				      </button>
+				    </div>
+				  </div>
+				 <div class="row"><div class="col-lg-12"><div class="col-lg-12"><small id="upload_max" class="text-info">FE_MAX_FILES_UPLOAD</small></div></div></div>
+				</div>
+		    
+			  </div>
+			</div>		    
+		  </div>
+		</div>
+		<!-- End Modal Upload-->
+		<!-- Begin Modal NewFolder-->
+		<div class="modal fade" id="newfolder_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		  <div class="modal-dialog">
+		    <form id="form_popup" action="" method="post">
+		    	<div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			        <h4 class="modal-title" id="myModalLabel">FE_NEW_FOLDER</h4>
+			      </div>
+			      <div class="modal-body">
+			        <div class="form-group">
+					    <label for="exampleInputEmail1">FE_NAME</label>
+					    <input type="text" class="form-control" id="name" name="name" placeholder="FE_ENTER_NAME">
+					</div>
+					<div id="newfolder_popup_result"></div>
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-default" data-dismiss="modal">FE_CLOSE</button>
+			        <button type="submit" class="btn btn-primary">FE_SAVE</button>
+			      </div>
+			    </div>
+		    </form>
+		  </div>
+		</div>
+		<!-- End Modal NewFolder-->
+		<!-- Begin Modal delete-->
+		<div class="modal fade" id="delete_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		  <div class="modal-dialog">
+		    <form id="delete_popup_form" action="" method="post">
+		    	<div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			        <h4 class="modal-title" id="myModalLabel">FE_DELETE</h4>
+			      </div>
+			      <div class="modal-body">
+			        <div class="content"></div>
+					<div class="result"></div>
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-default" data-dismiss="modal">FE_CLOSE</button>
+			        <button type="submit" class="btn btn-primary">FE_DELETE</button>
+			      </div>
+			    </div>
+		    </form>
+		  </div>
+		</div>
+		<!-- End Modal delete-->
+		<!-- Begin Modal rename-->
+		<div class="modal fade" id="rename_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		  <div class="modal-dialog">
+		    <form id="rename_popup_form" action="" method="post">
+		    	<div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			        <h4 class="modal-title" id="myModalLabel">FE_RENAME</h4>
+			      </div>
+			      <div class="modal-body">
+			        <div class="content">
+			        	<div class="form-group">
+						    <label for="exampleInputEmail1">FE_NAME</label>
+						    <input type="hidden" name="nameold">
+						    <input type="text" class="form-control" id="name" name="name" placeholder="FE_ENTER_NAME">
+						</div>
+			        </div>
+					<div class="result"></div>
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-default" data-dismiss="modal">FE_CLOSE</button>
+			        <button type="submit" class="btn btn-primary">FE_RENAME</button>
+			      </div>
+			    </div>
+		    </form>
+		  </div>
+		</div>
+		<!-- End Modal rename-->
+		<div class="row">
+			<div class="col-sm-4 col-md-3">
+				<div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+			      <div class="btn-group" role="group" aria-label="First group">
+			        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#newfolder_popup">FE_CREATE_DIRECTORY</button>
+			        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#upload_popup">FE_UPLOAD</button>
+			      </div>		      
+			     
+			    </div>
+			</div>
+			<div class="col-sm-4 col-md-3">
+				<div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+		      
+			      <div class="btn-group" role="group" aria-label="First group">
+			        <div class="input-group search_content">
+				        
+				      <input id="search" name="search" type="text" class="form-control" placeholder="FE_SEARCH_NAME_FILES" autocomplete="off" >
+				      <span class="input-group-btn">
+				        <button class="btn btn-default" type="button" id="search_clear">FE_CLEAR</button>
+				      </span>
+			        
+				    </div>
+			        </div>
+			    </div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<ol id="ruta" class="breadcrumb">
+				  
+				</ol>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12 list">
+				<div id="list" class="scroll">
+					<div id="loading"></div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+	<script type="text/javascript" src="dist/js/filemanager-ui.min.js"></script>
+	<script type="text/javascript">
+		$("#list").filemanager({"url":"../conector.php"});
+	</script>
+</body>
+</html>
