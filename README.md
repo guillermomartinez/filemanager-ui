@@ -1,5 +1,5 @@
 # Filemanager UI
-
+Es solo una interfaz para el usuario (Frontend), [guillermomartinez/filemanager](https://github.com/guillermomartinez/filemanager) es el Backend.
 ## Requiere
 https://github.com/guillermomartinez/filemanager
 
