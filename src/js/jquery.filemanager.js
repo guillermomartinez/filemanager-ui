@@ -2,7 +2,7 @@
  
     $.fn.filemanager = function( options ) {
         var defaults = {
-            url: "conector.php",
+            url: "../conector.php",
             languaje: "ES",
             upload_max: 5
         }

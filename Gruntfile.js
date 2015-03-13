@@ -1,6 +1,5 @@
 
 module.exports = function(grunt) {
-	// grunt.registerTask('default', ['less:compileCore']);
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
@@ -21,7 +20,7 @@ module.exports = function(grunt) {
 			}
 		},
     concat: {
-      dist: {
+      css: {
         src: [
           'bower_components/fancybox/source/jquery.fancybox.css',
           'bower_components/dropzone/dist/dropzone.css',
@@ -29,22 +28,28 @@ module.exports = function(grunt) {
           'src/css/main.css'
         ],
         dest: 'dist/css/<%= pkg.name %>.css'
-      },
-      bootstrap: {
+      },      
+      js_build: {
         src: [
-          'bower_components/jquery/dist/jquery.js',
           'bower_components/bootstrap/js/transition.js',
           'bower_components/bootstrap/js/alert.js',
           'bower_components/bootstrap/js/button.js',
-          'bower_components/bootstrap/js/carousel.js',
-          'bower_components/bootstrap/js/collapse.js',
-          'bower_components/bootstrap/js/dropdown.js',
+          //'bower_components/bootstrap/js/carousel.js',
+          //'bower_components/bootstrap/js/collapse.js',
+          //'bower_components/bootstrap/js/dropdown.js',
           'bower_components/bootstrap/js/modal.js',
-          'bower_components/bootstrap/js/tooltip.js',
-          'bower_components/bootstrap/js/popover.js',
-          'bower_components/bootstrap/js/scrollspy.js',
-          'bower_components/bootstrap/js/tab.js',
-          'bower_components/bootstrap/js/affix.js',
+          'bower_components/bootstrap/js/tooltip.js'
+          //'bower_components/bootstrap/js/popover.js',
+          //'bower_components/bootstrap/js/scrollspy.js',
+          //'bower_components/bootstrap/js/tab.js',
+          //'bower_components/bootstrap/js/affix.js',
+        ],
+        dest: 'src/js/bootstrap.js'
+      },      
+      js: {
+        src: [
+          'bower_components/jquery/dist/jquery.js',
+          'src/js/bootstrap.js',
           'bower_components/jquery-validation/dist/jquery.validate.js',
           'bower_components/dropzone/dist/dropzone.js',
           'bower_components/fancybox/source/jquery.fancybox.js',
@@ -55,15 +60,6 @@ module.exports = function(grunt) {
         ],
         dest: 'dist/js/<%= pkg.name %>.js'
       }
-    },
-    uglify: {
-      options: {
-        preserveComments: 'some'
-      },
-      core: {
-        src: 'dist/js/<%= pkg.name %>.js',
-        dest: 'dist/js/<%= pkg.name %>.min.js'
-      }      
     },
 		cssmin: {
       options: {
@@ -76,9 +72,32 @@ module.exports = function(grunt) {
         dest: 'dist/css/<%= pkg.name %>.min.css'
       }      
     },
+    uglify: {
+      options: {
+        preserveComments: 'some'
+      },
+      core: {
+        src: 'dist/js/<%= pkg.name %>.js',
+        dest: 'dist/js/<%= pkg.name %>.min.js'
+      }      
+    },
     copy: {
-      fonts: {
+      fonts_build: {
       	expand: true,
+        src: 'bower_components/bootstrap/dist/fonts/**',
+        dest: 'src/fonts/',
+        flatten: true,
+        filter: 'isFile'
+      },
+      fancybox_build: {
+        expand: true,
+        src: ['bower_components/fancybox/source/*.png','bower_components/fancybox/source/*.gif'],
+        dest: 'src/css/',
+        flatten: true,
+        filter: 'isFile'
+      },
+      fonts: {
+        expand: true,
         src: 'bower_components/bootstrap/dist/fonts/**',
         dest: 'dist/fonts/',
         flatten: true,
@@ -100,13 +119,12 @@ module.exports = function(grunt) {
       }
     },
 	});
-
-	// grunt.loadNpmTasks('grunt-contrib-less');
+	
 	require('load-grunt-tasks')(grunt, { scope: 'devDependencies' });
   require('time-grunt')(grunt);
-
-  grunt.registerTask('less-compile', ['less:compileCore']);
-  grunt.registerTask('dist-css', ['clean','less-compile', 'concat', 'cssmin:minifyCore','uglify:core','copy']);
+  
+  grunt.registerTask('build', ['less', 'concat:js_build','copy:fonts_build','copy:fancybox_build']);
+  grunt.registerTask('dist', ['clean','less', 'concat:css', 'concat:js', 'cssmin:minifyCore','uglify:core','copy:fonts','copy:fancybox','copy:images']);
 
 
 };
