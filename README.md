@@ -12,3 +12,7 @@ cp bower_components/filemanager-ui/dist filemanager/
 cp bower_components/filemanager-ui/index.html filemanager/
 cp bower_components/filemanager-ui/userfiles filemanager/
 ```
+## Prueba
+```
+http://dominio/filemanager/
+```
