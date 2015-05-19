@@ -1,0 +1,31 @@
+@media (min-width: 1600px) {}
+@media (min-width: 1200px) {}
+@media (min-width: 1300px) {}
+@media (min-width: 992px) and (max-width: 1200px) {}
+@media (min-width: 768px) and (max-width: 991px) {}
+@media (max-width: 767px) {
+	body {
+ 
+  padding-top: 0;
+}
+	.navbar.navbar-fixed-top {
+  border: 0 none;
+  margin: 10px 0;
+  padding: 0;
+  position: relative;
+}
+.col_top_right{
+	padding-top: 10px;
+}
+.col_top_right > div{
+    float: none;
+}
+}
+@media (max-width: 600px) {
+	.filemanager #content_list.view_detalles .item .col.type, .filemanager #content_list.view_detalles .item .col.size, .filemanager #content_list.view_detalles .item .col.date, .filemanager #content_list.view_detalles .item .col.actions{
+		display: none;
+	}
+	.view_detalles #row_header_content .type, .view_detalles #row_header_content .size, .view_detalles #row_header_content .date, .view_detalles #row_header_content .actions{
+		display: none;
+	}
+}

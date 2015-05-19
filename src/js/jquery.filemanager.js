@@ -4,8 +4,9 @@
         var defaults = {
             url: "../conector.php",
             languaje: "ES",
-            upload_max: 5
-        }
+            upload_max: 5,
+            view: 'thumbs'
+        };
         var settings = $.extend({}, defaults, options );
         var LANG = {};        
         $.each(LANGS, function(index, val) {
@@ -30,7 +31,7 @@
                 var i = 0;
                 do{      
                     r = false;              
-                    var n = text.indexOf('%s');
+                    n = text.indexOf('%s');
                     if(n !== -1){
                         if(params.length > i){
                             var res = params[i].toString();
@@ -130,7 +131,7 @@
 
             if(typeof(search) === 'object' && typeof(replace) === 'string' ) {
             temp = replace; 
-            replace = new Array();
+            replace = [];
             for (i=0; i < search.length; i+=1) { 
               replace[i] = temp; 
             }
@@ -160,75 +161,211 @@
             }
             return sa ? s : s[0];
         }
+        _this.loadFiles = function(data){
+            var items = _this;
+            items.html('');
+            // var context_menu = '<ul class="dropdown-menu" role="menu"><li><a href="#">Ver</a></li><li><a href="#">Renombrar</a></li><li><a href="#">Descargar</a></li><li><a href="#">Eliminar</a></li></ul>';
+            var context_menu = $("#context-menu").clone().html();
+            var item = '<li><div class="item context" ><a class="image" href="#"><img src="#"></a><div class="col name"></div><div class="col type"></div><div class="col size"></div><div class="col date"></div><div class="col actions"><div class="btn-group menu_options" data-tooltip="tooltip" data-placement="left" title="Acciones"><button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ><span aria-hidden="true" class="glyphicon glyphicon-tasks" ></button>'+context_menu+'</div></div></div></li>';
+            $.each(data,function(index,element){
+                el = $(item);                  
+                var filename = element.filename;
+                var filenameshort = (filename.length>13) ? filename.substr(0,13)+'...' : filename;
+                var filetype = element.filetype;
+                var filesize = formatBytes(element.size);
+                var filedate = moment.unix(element.filemtime).format("DD/MM/YYYY");
+                if(element.filename==="" && element.filetype===""){
+                    el.find('.image').html('<div class="content_icon"><span aria-hidden="true" class="glyphicon glyphicon-level-up"></span></div>');
+                    el.find('.image').addClass('dir').attr('rel',element.url);
+                    el.find('.name').text('Subir');
+                    el.find('.type').text('');
+                    el.find('.size').text('');
+                    el.find('.actions').html('');
+                    el.addClass('parentup back');
+                    el.find('.item').removeClass('context');
+                    // el.click(function(event){
+                    //     event.preventDefault();
+                    //     console.log(this);
+                    //     getFolder($(this).find('.image.dir').attr('rel'));
+                    // });
+                }else if(element.filetype===""){
+                    el.find('.image').html('<div class="content_icon"><span aria-hidden="true" class="glyphicon glyphicon-folder-close"></span></div>');
+                    el.find('.image').addClass('dir').attr('rel',element.url);
+                    el.find('.name').attr('data-name-original',filename).attr('data-name',filename).text(filenameshort);
+                    el.find('.type').text('dir');
+                    el.find('.size').text('');
+                    el.find('.date').text(filedate);
+
+                }else if(element.filetype==="jpg" || element.filetype==="png" || element.filetype=="jpeg" || element.filetype=="gif"){
+                    el.find('.image img').attr('src',element.preview);
+                    el.find('.image').addClass('fancybox').attr('href',element.path+element.filename).attr('title',traductor('FE_FILENAME') + element.filename+' | '+ traductor('FE_SIZE') +' '+formatBytes(element.size)+' | '+ traductor('FE_LAST_MODIFIED') +moment.unix(element.filemtime).format("DD/MM/YYYY"));
+                    el.find('.name').attr('data-name-original',filename).attr('data-name',filename).text(filenameshort);
+                    el.find('.type').text(filetype);
+                    el.find('.size').text(filesize);
+                    el.find('.date').text(filedate);
+                }else{
+                    el.find('.image').html('<div class="content_icon"><span aria-hidden="true" class="glyphicon glyphicon-file '+ element.filetype +'" ></span></div>');
+                    el.find('.image').addClass('fancybox').attr('href','#preview_file').attr('title',traductor('FE_FILENAME')+element.filename+' | '+ traductor('FE_SIZE')+formatBytes(element.size)+' | '+traductor('FE_LAST_MODIFIED')+moment.unix(element.filemtime).format("DD/MM/YYYY"));
+                    name = element.filename;if(name.length>13) name = name.substr(0,13)+'...';
+                    el.find('.name').attr('data-name-original',filename).attr('data-name',filename).text(filenameshort);
+                    el.find('.type').text(filetype);
+                    el.find('.size').text(filesize);
+                    el.find('.date').text(filedate);
+                }
+                items.append(el);
+            });
+        };
+        _this.preview = function(item){
+            // console.log(item);
+            // if(item.find('.image.fancybox').length>0){
+                $.fancybox( {
+                    href : item.find('a').attr('href'), 
+                    title : item.find('a').attr('title')
+                },
+                {
+                    openEffect  : 'elastic',
+                    closeEffect : 'elastic',
+                    minWidth : 300,
+                    minHeight : 200,
+                    beforeShow:function(){
+                        var a = this.title.split('|');
+                        var t ='';
+                        if(a.length>0){
+                            for (var i = 0; i < a.length; i++) {
+                            var t2 ='';
+                            var t3 =[];
+                                t2 = a[i];
+                                t3 = t2.split(':');
+                                if(t3.length==1){
+                                    t = t + '<p><strong>'+t3[0]+'</strong>:</p>';
+                                }else if(t3.length==2){
+                                    t = t + '<p><strong>'+t3[0]+'</strong>:'+t3[1]+'</p>';
+                                }
+                            }
+                        }
+                        this.title = '<h3>Información</h3><div>'+t+'</div';
+                    },
+                    helpers : {
+                        title : {
+                            type : 'inside'
+                        }
+                    }
+                }
+                );
+                // this.getMenu().find("li.view").css('display','none');
+            // }
+        };
+         _this.viewRename = function(item){
+            $('#rename_popup').modal('show');
+            $('#rename_popup').find('#nameold').val(item.find('.name').data('name-original'));
+            $('#rename_popup').find('#name').val(item.find('.name').data('name-original'));            
+        };
+         _this.viewDelete = function(item){
+            var name = item.find('.name').data('name-original');
+            var modal = $('#delete_popup');
+            modal.find('.modal-body .content').html('<h3>'+ name +'</h3><input type="hidden" name="name" value="'+ name +'" />');
+            modal.find('.modal-body .result').html('');
+            $('#delete_popup').modal('show');            
+        };
         function getFolder(path){
             if(!path) path = '/';
-            var datos = {accion:"getfolder",path:path};
+            var datos2 = {accion:"getfolder",path:path};
             $.ajax({
                 type: "POST",
                 url: settings.url,
-                data :  datos,                          
+                data :  datos2,                          
                 beforeSend: function(objeto){
                     _this.html('<div id="loading"></div>');
                 },
                 success: function(datos){
-                    var datos = $.parseJSON(datos);
-                    var item = $("#data_item > div");
+                    datos = $.parseJSON(datos);
                     if(datos.status){
-                        var items = _this;
-                        items.html('');
-                        $.each(datos.data,function(index,element){
-                            el = item.clone();                  
-                            if(element.filename=="" && element.filetype==""){
-                                el.find('.image').html('<span class="glyphicon glyphicon-level-up" aria-hidden="true"></span>');
-                                el.find('p, button').remove();
-                                el.find('.image').addClass('dir').attr('rel',element.url);
-                                el.addClass('parentup');
-                            }else if(element.filetype==""){
-                                el.find('.image').html('<span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span>');
-                                el.find('.image').addClass('dir').attr('rel',element.url);
-                                var name = element.filename;if(name.length>18) name = name.substr(0,18)+'...';
-                                el.find('p').attr('title',element.filename).text(name);
-                                el.find('.delete').attr('data-name',element.filename);
-                                el.find('.rename').attr('data-name',element.filename);                      
+                        _this.loadFiles(datos.data);
 
-                            }else if(element.filetype=="jpg" || element.filetype=="png" || element.filetype=="jpeg" || element.filetype=="gif"){
-                                el.find('.image img').attr('src',element.preview);
-                                el.find('.image').addClass('fancybox').attr('href',element.path+element.filename).attr('title',traductor('FE_FILENAME') + element.filename+' | '+ traductor('FE_SIZE') +' '+formatBytes(element.size)+' | '+ traductor('FE_LAST_MODIFIED') +moment.unix(element.filemtime).format("DD/MM/YYYY"));
-                                var name = element.filename;if(name.length>18) name = name.substr(0,18)+'...';
-                                el.find('p').attr('title',element.filename).text(name);
-                                el.find('.delete').attr('data-name',element.filename);
-                                el.find('.rename').attr('data-name',element.filename);
-                            }else{
-                                el.find('.image').html('<span class="glyphicon glyphicon-file '+ element.filetype +'" aria-hidden="true"></span>');
-                                el.find('.image').addClass('fancybox').attr('href','#preview_file').attr('title',traductor('FE_FILENAME')+element.filename+' | '+ traductor('FE_SIZE')+formatBytes(element.size)+' | '+traductor('FE_LAST_MODIFIED')+moment.unix(element.filemtime).format("DD/MM/YYYY"));
-                                var name = element.filename;if(name.length>18) name = name.substr(0,18)+'...';
-                                el.find('p').attr('title',element.filename).text(name);
-                                el.find('.delete').attr('data-name',element.filename);
-                                el.find('.rename').attr('data-name',element.filename);
+                        $('.context').contextmenu({
+                          target:'#context-menu', 
+                          before: function(e,context) {
+                            this.getMenu().find("li").css('display','block');
+                            if(context.find('.image.dir').length>0){
+                                this.getMenu().find("li.view").css('display','none');
                             }
-                            items.append(el);
+                            
+                            // this.getMenu().find("li").eq(2).find('a').html("This was dynamically changed");
+                            return true;
+                          },
+                          onItem: function(context,e) {
+                            // execute on menu item selection
+                            // console.log(context);
+                            if($(e.target).parent().is('.view')){
+                            _this.preview(context);                                
+                            }
+                            if($(e.target).parent().is('.rename')){
+                            _this.viewRename(context);                                
+                            }
+                            if($(e.target).parent().is('.delete')){
+                            _this.viewDelete(context);                                
+                            }
+                            // console.log($(e.target).parent());
+                            
+                          }
                         });
-                        
+                        $('.menu_options').on('show.bs.dropdown', function (e) {
+                          var context = $(this).parents('.item');
+                          $(this).find('li').css('display','block');
+                          if(context.find('.image.dir').length>0){
+                                $(this).find('li.view').css('display','none');
+                            }
+                        }).bind('contextmenu', function(event) {
+                            return false;
+                        });
+                        $('.menu_options').on('click', 'li > a', function(event) {
+                            event.preventDefault();
+                            if($(this).parent().is('.view')){
+                            _this.preview($(this).parents('.item'));                                
+                            }
+                            if($(this).parent().is('.rename')){
+                            _this.viewRename($(this).parents('.item'));                                
+                            }
+                            if($(this).parent().is('.delete')){
+                            _this.viewDelete($(this).parents('.item'));                                
+                            }
+                        });
+                        // BEGIN VIEWS
+                        if($("#view_thumbs").is('.active')){                           
+                            $(".item .col.name").each(function(index, el) {
+                                var ori = $(el).attr('data-name');
+                                var des = $(el).text();
+                                $(el).attr('data-name',ori).text(des);
+                            });
+                        }else if($("#view_details").is('.active')){                           
+                            $(".item .col.name").each(function(index, el) {
+                                var ori = $(el).attr('data-name');
+                                var des = $(el).text();
+                                $(el).attr('data-name',des).text(ori);
+                            });
+                        }
+                        // END VIEWS
                         $("#path").val(path);
                         var ruta = path.split('/');
-                        var temp = new Array();
+                        var temp = [];
                         var n = ruta.length;
                         for (var i = 0; i < n; i++) {
                             if(ruta[i]!==""){
                                 temp.push(ruta[i]);
                             }
-                        };
+                        }
                         
                         var rutacontent = $("#ruta");
                         rutacontent.html('<li><a href="#" rel="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span></a></li>');
                         var url ='/';
                         $.each(temp,function(index,element){
+                            var el = null;
                             if( index < temp.length-1 ){
                                 url = url + element + '/';
-                                var el = $('<li><a href="#" rel="'+ url +'">'+element+'</a></li>');
+                                el = $('<li><a href="#" rel="'+ url +'">'+element+'</a></li>');
                                 rutacontent.append(el);
                             }else{
-                                var el = $('<li>'+element+'</li>');
+                                el = $('<li>'+element+'</li>');
                                 rutacontent.append(el);
                             }
                             
@@ -242,13 +379,13 @@
         function searchFiles(){
             var text = $("#search").val();
             if(text===""){
-                $("> div",_this).not('.parentup').removeClass('hidden');
+                $("li",_this).not('.parentup').removeClass('hidden');
             }else{
-                $("> div",_this).not('.parentup').each(function(index,element){
-                    if($(element).find('p').text().indexOf(text) === -1 ){
-                        $(element).addClass('hidden');
+                $("li",_this).not('.parentup').find('div.item').each(function(index,element){
+                    if($(element).find('.name').data('name').toLowerCase().indexOf(text.toLowerCase()) === -1 ){
+                        $(element).parent().addClass('hidden');
                     }else{
-                        $(element).removeClass('hidden');
+                        $(element).parent().removeClass('hidden');
                     }
                 });
             }
@@ -303,7 +440,7 @@
         url: settings.url, // Set the url
         thumbnailWidth: 80,
         thumbnailHeight: 80,
-        parallelUploads: 20,
+        // parallelUploads: 20,
         previewTemplate: previewTemplate,
         autoQueue: false, // Make sure the files aren't queued until manually added
         previewsContainer: "#previews", // Define the container to display the previews
@@ -351,7 +488,7 @@
     myDropzone.on("successmultiple", function(file, responseText, e) {
         var datos = $.parseJSON(responseText);
         var msg = parseMsg(datos.msg);
-        if(datos.status==false)     
+        if(datos.status===false)     
         $("#error-all").html('<div class="alert alert-danger">'+msg+'</div>');
         else
         $("#error-all").html('<div class="alert alert-success">'+msg+'</div>');
@@ -368,13 +505,47 @@
         $("#error-all").html('');
     };  
     // END DROPZONE
-
+    // BEGIN VIEWS
+    if(settings.views=='thumbs'){
+        $("#view_thumbs").addClass('active');
+        $("#view_details").removeClass('active');
+        $("#content_list").removeClass('view_detalles');
+    }else if(settings.views=='details'){
+        $("#view_thumbs").removeClass('active');
+        $("#view_details").addClass('active');
+        $("#content_list").addClass('view_detalles');       
+    }
+    $("#view_thumbs").on('click',  function(event) {        
+        $("#view_thumbs").addClass('active');
+        $("#view_details").removeClass('active');
+        $("#content_list").removeClass('view_detalles');
+        $(".item .col.name").each(function(index, el) {
+            var ori = $(el).attr('data-name');
+            var des = $(el).text();
+            $(el).attr('data-name',des).text(ori);
+        });
+    });
+    $("#view_details").on('click',  function(event) {        
+        $("#view_thumbs").removeClass('active');
+        $("#view_details").addClass('active');
+        $("#content_list").addClass('view_detalles');
+        $(".item .col.name").each(function(index, el) {
+            var ori = $(el).attr('data-name');
+            var des = $(el).text();
+            $(el).attr('data-name',des).text(ori);
+        });
+    });    
+    // END VIEWS
     // LIST FOR DEFAULT
     getFolder();
-
-    $(_this).on('click',".item .dir", function(event) {
+    
+    $(_this).on('click',".item .image, .item .col:not(.actions)", function(event) {
         event.preventDefault();
-        getFolder($(this).attr('rel'));
+        if($(this).parents('.item').find('a.image').is('.dir')){
+            getFolder($(this).parents('.item').find('a.image').attr('rel'));
+        }else{
+            _this.preview($(this).parents('.item'));
+        }
     });
 
     $("#ruta").on('click', 'a', function(event) {
@@ -383,17 +554,35 @@
     });
 
     $('[data-toggle="tooltip"]').tooltip();
-     $('.fancybox').fancybox({
-        openEffect  : 'elastic',
-        closeEffect : 'elastic',
-        minWidth : 300,
-        minHeight : 200,
-        helpers : {
-            title : {
-                type : 'inside'
-            }
-        }
-        });
+     // $('.fancybox').fancybox({
+     //    openEffect  : 'elastic',
+     //    closeEffect : 'elastic',
+     //    minWidth : 300,
+     //    minHeight : 200,
+     //    beforeShow:function(){
+     //        var a = this.title.split('|');
+     //        var t ='';
+     //        if(a.length>0){
+     //            for (var i = 0; i < a.length; i++) {
+     //            var t2 ='';
+     //            var t3 =[];
+     //                t2 = a[i];
+     //                t3 = t2.split(':');
+     //                if(t3.length==1){
+     //                    t = t + '<p><strong>'+t3[0]+'</strong>:</p>';
+     //                }else if(t3.length==2){
+     //                    t = t + '<p><strong>'+t3[0]+'</strong>:'+t3[1]+'</p>';
+     //                }
+     //            }
+     //        }
+     //        this.title = '<h3>Información</h3><div>'+t+'</div';
+     //    },
+     //    helpers : {
+     //        title : {
+     //            type : 'inside'
+     //        }
+     //    }
+     //    });
      
 
     $('#rename_popup').on('show.bs.modal', function (e) {
@@ -426,7 +615,7 @@
                     $("#rename_popup_form .result").html('<div class="progress"><div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div></div>');
                 },
                 success: function(datos){
-                    var datos = $.parseJSON(datos);
+                    datos = $.parseJSON(datos);
                     var msg = parseMsg(datos.msg);
                     if(datos.status){
                         getFolder(path);                                    
@@ -440,13 +629,14 @@
         }
     });
 
-    $('#delete_popup').on('show.bs.modal', function (e) {
-        var button = $(e.relatedTarget);
-        var name = button.data('name');
-        var modal = $(this);
-        modal.find('.modal-body .content').html('<h3>'+ name +'</h3><input type="hidden" name="name" value="'+ name +'" />');
-        modal.find('.modal-body .result').html('');
-    });
+    // $('#delete_popup').on('show.bs.modal', function (e) {
+    //     console.log(this);
+    //     // var button = $(e.relatedTarget);
+    //     // var name = button.data('name');
+    //     // var modal = $(this);
+    //     // modal.find('.modal-body .content').html('<h3>'+ name +'</h3><input type="hidden" name="name" value="'+ name +'" />');
+    //     // modal.find('.modal-body .result').html('');
+    // });
     
     $("#delete_popup_form").validate({
         submitHandler: function(form) {
@@ -461,7 +651,7 @@
                     $("#delete_popup_form .result").html('<div class="progress"><div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div></div>');
                 },
                 success: function(datos){
-                    var datos = $.parseJSON(datos);
+                    datos = $.parseJSON(datos);
                     var msg = parseMsg(datos.msg);
                     if(datos.status){
                         getFolder(path);                                    
@@ -485,7 +675,7 @@
         $("#reloadfiles").val(0);
         getFolder($("#path").val());
       }
-    })
+    });
     $("#form_popup").validate({
         rules:{
             name:{
@@ -505,7 +695,7 @@
                     $("#newfolder_popup_result").html('<div class="progress"><div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div></div>');
                 },
                 success: function(datos){
-                    var datos = $.parseJSON(datos);
+                    datos = $.parseJSON(datos);
                     var msg = parseMsg(datos.msg);
                     if(datos.status){
                         getFolder(datos.data.path);                                 

@@ -2,20 +2,67 @@
 <html lang="es">
 <head>
 	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Filemanager ui</title>
 	<link rel="stylesheet" type="text/css" href="bower_components/fancybox/source/jquery.fancybox.css">
 	<link rel="stylesheet" type="text/css" href="bower_components/dropzone/dist/dropzone.css">
 	<link rel="stylesheet" type="text/css" href="src/css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="src/css/main.css">
+	<link rel="stylesheet" type="text/css" href="src/css/responsive.css">
 </head>
 <body>
-	<div class="container filemanager">
+	<div class="navbar navbar-fixed-top">
+	    <div class="navbar-inner">
+	        <div class="container-fluid">
+	        	<div class="row">	        		
+	        	<div class="col-xs-6 col-sm-5 col-md-2">	        		
+		        	<button data-name="demo" data-target="#upload_popup" data-tooltip="tooltip" data-toggle="modal" title="Subir Archivos" data-placement="bottom" class="btn btn-default btn-sm rename">
+						<span aria-hidden="true" class="glyphicon glyphicon-upload"></span>
+						<span aria-hidden="true" class="glyphicon glyphicon-file"></span>
+					</button>
+					<button data-name="demo" data-target="#newfolder_popup" data-tooltip="tooltip" data-toggle="modal" title="Nueva Carpeta " data-placement="bottom" class="btn btn-default btn-sm rename">
+						<span aria-hidden="true" class="glyphicon glyphicon-plus"></span>
+						<span aria-hidden="true" class="glyphicon glyphicon-folder-open"></span>
+					</button>
+	        	</div>
+	        	<div class="col-xs-6 col-sm-3 col-md-2">
+	        		<span>Vistas:</span>
+					<button id="view_thumbs" data-tooltip="tooltip" title="Vista Miniatura" data-placement="bottom" class="btn btn-default btn-sm active">
+						<span aria-hidden="true" class="glyphicon glyphicon-th"></span>
+					</button>
+					<button id="view_details" data-tooltip="tooltip" title="Vista Detalle" data-placement="bottom" class="btn btn-default btn-sm">
+						<span aria-hidden="true" class="glyphicon glyphicon-align-justify"></span>
+					</button>
+				</div>
+				<div class="col-xs-12 col-sm-4 col-md-3 col_top_right">
+					<div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+				      <div class="btn-group" role="group" aria-label="First group">
+				        <div class="input-group search_content">
+					      <input id="search" name="search" type="text" class="form-control input-sm" placeholder="Buscar" autocomplete="off" >
+					      <span class="input-group-btn">
+					        <button class="btn btn-default input-sm" type="button" id="search_" data-tooltip="tooltip" data-placement="bottom" title="Buscar">
+					        	<span aria-hidden="true" class="glyphicon glyphicon-search"></span>
+					        </button>
+					      </span>
+					    </div>
+				      </div>
+				      <button class="btn btn-default input-sm" type="button" id="search_clear" data-tooltip="tooltip" data-placement="bottom" title="Limpiar">
+				      	<span aria-hidden="true" class="glyphicon glyphicon-remove-sign"></span>
+				      </button>
+			    	</div>
+				</div>
+	        	</div>
+	        </div>
+	    </div>
+	</div>
+	<div class="container-fluid filemanager">
 		<input type="hidden" id="path" name="path" value="">
 		<div class="hidden">
 		<div id="preview_file"><span aria-hidden="true" class="glyphicon glyphicon-file txt"></span></div>
 		</div>
 
-		<div class="hidden">
+		<!-- <div class="hidden">
 			<div id="data_item">
 				<div class="col-xs-6 col-sm-3 col-md-2">
 					<div class="item">
@@ -30,7 +77,7 @@
 					</div>
 				</div>
 			</div>			
-		</div>
+		</div> -->
 		<!-- Begin Modal Upload-->
 		<div class="modal fade" id="upload_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		  <div class="modal-dialog modal-lg">
@@ -170,7 +217,7 @@
 			        <div class="content">
 			        	<div class="form-group">
 						    <label for="exampleInputEmail1">FE_NAME</label>
-						    <input type="hidden" name="nameold">
+						    <input type="hidden" name="nameold" id="nameold">
 						    <input type="text" class="form-control" id="name" name="name" placeholder="FE_ENTER_NAME">
 						</div>
 			        </div>
@@ -185,7 +232,7 @@
 		  </div>
 		</div>
 		<!-- End Modal rename-->
-		<div class="row">
+		<!-- <div class="row">
 			<div class="col-sm-4 col-md-3">
 				<div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
 			      <div class="btn-group" role="group" aria-label="First group">
@@ -210,21 +257,85 @@
 			        </div>
 			    </div>
 			</div>
-		</div>
+		</div> -->
 		<div class="row">
 			<div class="col-md-12">
 				<ol id="ruta" class="breadcrumb">
-				  
+				  <li><a rel="/" href="#"><span aria-hidden="true" class="glyphicon glyphicon-home"></span></a></li><li>demo</li>
 				</ol>
 			</div>
 		</div>
-		<div class="row">
-			<div class="col-md-12 list">
-				<div id="list" class="scroll">
-					<div id="loading"></div>
+		<div id="content_list" class="row">
+			<div class="col-md-12" id="row_header_content">
+				<div class="row_header">
+					<div class="col name">Nombre</div>							
+					<div class="col type">Tipo</div>		
+					<div class="col size">Tamaño</div>		
+					<div class="col date">Fecha</div>
+					<div class="col actions">Acciones</div>
 				</div>
 			</div>
+			<div class="col-md-12 list">
+				<ul id="list" class="scroll">
+					<!-- <li>
+						<div class="item" data-toggle="context" data-target="#context-menu">
+							<a class="image dir" href="#" rel="/demo/">
+								<div class="content_icon"><span aria-hidden="true" class="glyphicon glyphicon-folder-close"></span></div>
+							</a>
+							<div class="col name">desert.jpg</div>
+							<div class="col type">dir</div>		
+							<div class="col size">5 MB</div>		
+							<div class="col date">10/05/2015</div>
+							<div class="col actions">
+								<div class="btn-group" data-tooltip="tooltip" data-placement="left" title="Acciones">
+								  <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+								    <span aria-hidden="true" class="glyphicon glyphicon-tasks" >
+								  </button>
+								  <ul class="dropdown-menu" role="menu">
+								    <li><a href="#">Ver</a></li>
+								    <li><a href="#">Renombrar</a></li>
+								    <li><a href="#">Descargar</a></li>
+								    <li><a href="#">Eliminar</a></li>
+								  </ul>
+								</div>
+							</div>
+						</div>
+					</li>
+					<li>
+						<div class="item" data-toggle="context" data-target="#context-menu">
+							<a class="image fancybox" href="/filemanager/userfiles/desert.jpg">
+								<img src="/filemanager/userfiles/_thumbs/desert-80x80.jpg">
+							</a>
+							<div class="col name">desert.jpg</div>
+							<div class="col type">dir</div>		
+							<div class="col size">5 MB</div>		
+							<div class="col date">10/05/2015</div>
+							<div class="col actions">
+								<div class="btn-group" data-tooltip="tooltip" data-placement="left" title="Acciones">
+								  <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+								    <span aria-hidden="true" class="glyphicon glyphicon-tasks" >
+								  </button>
+								  <ul class="dropdown-menu" role="menu">
+								    <li><a href="#">Ver</a></li>
+								    <li><a href="#">Renombrar</a></li>
+								    <li><a href="#">Descargar</a></li>
+								    <li><a href="#">Eliminar</a></li>
+								  </ul>
+								</div>
+							</div>
+						</div>						
+					</li> -->
+				</ul>
+			</div>
 		</div>
+		<div id="context-menu">
+	      	<ul class="dropdown-menu menu_contextual" role="menu">
+		       	<li class="view"><a href="#">Ver</a></li>
+	            <li class="rename"><a href="#">Renombrar</a></li>
+	            <li class="download"><a href="#">Descargar</a></li>
+	            <li class="delete"><a href="#">Eliminar</a></li>
+	      	</ul>
+	     </div>
 
 	</div>
 	<script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
@@ -233,15 +344,34 @@
 	<script type="text/javascript" src="bower_components/dropzone/dist/dropzone.js"></script>
 	<script type="text/javascript" src="bower_components/fancybox/source/jquery.fancybox.js"></script>
 	<script type="text/javascript" src="bower_components/moment/moment.js"></script>
+	 <script type="text/javascript" src="bower_components/bootstrap-contextmenu/bootstrap-contextmenu.js"></script>
+	<!--<script type="text/javascript" src="http://sydcanem.com/bootstrap-contextmenu/bootstrap-contextmenu.js"></script>-->
+
 	<script type="text/javascript" src="src/js/languaje/us.js"></script>
 	<script type="text/javascript" src="src/js/languaje/es.js"></script>
 	<script type="text/javascript" src="src/js/jquery.filemanager.js"></script>	
+
 	<script type="text/javascript">
+	$(function() {
+		$('[data-tooltip="tooltip"]').tooltip();
 		$("#list").filemanager({
-			url: "../conector.php",
+			url:'../filemanager/conector.php',
 			languaje: "ES",
 			upload_max: 5,
+			views:'details'
 		});
+		// $('.dropdown-toggle').dropdown();
+		// $('.item').bind('contextmenu', function(e) {
+		//      e.preventDefault();
+		//      console.log('click derecho');
+		// });
+		// $("#list").filemanager({
+		// 	url:'../filemanager/conector.php',
+		// 	languaje: "ES",
+		// 	upload_max: 5,
+		// });
+	});
+		
 	</script>
 </body>
 </html>

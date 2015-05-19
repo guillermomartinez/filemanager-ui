@@ -1,47 +1,152 @@
 
-.container {
+body {
+    color: #000;
+    font-family: arial;
+    font-size: 14px;
+    padding-top: 50px;
+}
+.navbar.navbar-fixed-top {
+    border: 0 none;
+    margin: 0;
+    padding: 10px 0 0;
+}
+.navbar.navbar-fixed-top .row > div{
+    width: auto;
 }
 .filemanager .list .item {
-background-color: #efefef;
-box-shadow: 0 0 1px #666;
-height: 160px;
-margin-bottom: 15px;
-margin-top: 1px;
-padding: 0;
-text-align: center;
+    background-color: #fff;
+    box-shadow: 0 0 1px #666;
+    padding: 0;
+    text-align: center;
+    width: 120px;
+        cursor: pointer;
+}
+.filemanager .list .item:hover {
+    box-shadow: 0 0 2px #000;
 }
 .filemanager .list .item img {
+    height: 90px;
     margin: 0 auto;
     max-height: 120px;
     max-width: 120px;
+    width: 120px;
 }
 .filemanager .list .item .image {
+    background-color: #fff;
     display: block;
-    margin: 0 auto 10px;
+    height: 90px;
+    margin: 0;
     max-height: 120px;
     max-width: 120px;
-    padding-top: 10px;
+    padding-top: 0;
+    width: 120px;
+}
+.filemanager .list .item .image .content_icon {
+    display: inline-block;
+    height: 90px;
+    vertical-align: middle;
+    width: 120px;
 }
 .filemanager .list .item .image span {
     font-size: 80px;
+    line-height: 80px;
+    margin-top: 4px;
 }
-#preview_file{
-  text-align: center;
+#preview_file {
+    text-align: center;
 }
-#preview_file span{
- font-size: 150px; 
- color: #337ab7;
+#preview_file span {
+    color: #337ab7;
+    font-size: 150px;
 }
-.filemanager .list .item p {
+.filemanager .list .item .col {
+    background-color: #efefef;
     font-size: 13px;
-    line-height: 14px;
-    margin-bottom: 10px;
-    padding: 0;
+    line-height: 13px;
+    padding: 10px;
 }
 .filemanager .list .scroll {
-    max-height: 500px;
-    overflow-y: auto;
-    margin-right: 10px;
+    /*max-height: 600px;*/
+    min-height: 1px;
+    /*overflow-y: auto;*/
+}
+.filemanager #list {
+    list-style: outside none none;
+    margin: 0;
+    padding: 0;
+}
+.filemanager #list li {
+    float: left;
+    padding: 5px;
+}
+.filemanager #content_list.view_detalles li {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+.filemanager #content_list.view_detalles .item .image {
+    background-color: #efefef;
+    display: table-cell;
+    height: auto;
+    width: 40px;
+}
+.filemanager #content_list.view_detalles .item img {
+    height: 35px;
+    width: 40px;
+}
+.filemanager #content_list.view_detalles .item {
+    border-bottom: 1px solid #999;
+    box-shadow: none;
+    display: table;
+    position: relative;
+    width: 100%;
+
+}
+.filemanager #content_list.view_detalles li:nth-child(2n) .col{
+    background-color: #F4F4F4;
+}
+.filemanager #content_list.view_detalles .back .item .col,.filemanager #content_list.view_detalles .back .item .image{
+    background-color: #d6d6d6;
+}
+.filemanager #content_list.view_detalles li:hover .col,.filemanager #content_list.view_detalles li:hover .image, .filemanager #content_list.view_detalles li.back:hover .item .col, .filemanager #content_list.view_detalles li.back:hover .item .image{
+    background-color: #fff;
+}
+.filemanager #content_list.view_detalles .item .image .content_icon {
+    display: inline-block;
+    height: 35px;
+    vertical-align: middle;
+    width: 40px;
+}
+.filemanager #content_list.view_detalles .item .image span {
+    font-size: 22px;
+    line-height: 32px;
+}
+.filemanager #content_list.view_detalles .item .col {
+    display: table-cell;
+    padding: 0 10px;
+    text-align: left;    
+}
+.filemanager #content_list.view_detalles .item .actions .open > .dropdown-menu {
+    left: auto;
+    right: 0;
+}
+.filemanager #list .item .type, .filemanager #list .item .size, .filemanager #list .item .date, .filemanager #list .item .actions {
+    display: none;
+}
+.filemanager #content_list.view_detalles .item .type, .filemanager #content_list.view_detalles .item .size, .filemanager #content_list.view_detalles .item .date, .filemanager #content_list.view_detalles .item .actions {
+    display: table-cell;
+}
+.filemanager #content_list.view_detalles .item .type {
+    width: 70px;
+}
+.filemanager #content_list.view_detalles .item .size {
+    width: 90px;
+}
+.filemanager #content_list.view_detalles .item .date {
+    width: 90px;
+}
+.filemanager #content_list.view_detalles .item .actions {
+    width: 70px;
 }
 .filemanager #loading {
     background-image: url("../images/loading.gif");
@@ -50,60 +155,113 @@ text-align: center;
     min-height: 200px;
     width: 100%;
 }
-.filemanager .btn-toolbar{
+.filemanager .btn-toolbar {
     margin-top: 10px;
 }
-.filemanager .btn-toolbar, .filemanager .breadcrumb{
+.filemanager .btn-toolbar, .filemanager .breadcrumb {
     margin-bottom: 10px;
 }
-
- #actions {
-      margin: 10px 0 0 0;
-    }
-
-
-    /* Mimic table appearance */
-    div.table {
-      display: table;
-    }
-    div.table .file-row {
-      display: table-row;
-    }
-    div.table .file-row > div {
-      display: table-cell;
-      vertical-align: top;
-      border-top: 1px solid #ddd;
-      padding: 8px;
-    }
-    div.table .file-row:nth-child(odd) {
-      background: #f9f9f9;
-    }
-
-
-
-    /* The total progress gets shown by event listeners */
-    #total-progress {
-      opacity: 0;
-      transition: opacity 0.3s linear;
-    }
-
-    /* Hide the progress bar when finished */
-    #previews .file-row.dz-success .progress {
-      opacity: 0;
-      transition: opacity 0.3s linear;
-    }
-
-    /* Hide the delete button initially */
-    #previews .file-row .delete {
-      display: none;
-    }
-
-    /* Hide the start and cancel buttons and show the delete button */
-
-    #previews .file-row.dz-success .start,
-    #previews .file-row.dz-success .cancel {
-      display: none;
-    }
-    #previews .file-row.dz-success .delete {
-      display: block;
-    }
+#actions {
+    margin: 10px 0 0;
+}
+div.table {
+    display: table;
+}
+div.table .file-row {
+    display: table-row;
+}
+div.table .file-row > div {
+    border-top: 1px solid #ddd;
+    display: table-cell;
+    padding: 8px;
+    vertical-align: top;
+}
+div.table .file-row:nth-child(2n+1) {
+    background: #f9f9f9 none repeat scroll 0 0;
+}
+#total-progress {
+    opacity: 0;
+    transition: opacity 0.3s linear 0s;
+}
+#previews .file-row.dz-success .progress {
+    opacity: 0;
+    transition: opacity 0.3s linear 0s;
+}
+#previews .file-row .delete {
+    display: none;
+}
+#previews .file-row.dz-success .start, #previews .file-row.dz-success .cancel {
+    display: none;
+}
+#previews .file-row.dz-success .delete {
+    display: block;
+}
+.col_top_right > div {
+    float: right;
+}
+.dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus {
+    background-color: #428bca;
+    color: #fff;
+    text-decoration: none;
+}
+#content_list #row_header_content {
+    display: none;
+}
+#content_list.view_detalles #row_header_content {
+    display: block;
+}
+.view_detalles #row_header_content .row_header {
+    background-color: #DDDDDD;
+    border-bottom: 1px solid #999;
+    display: table;
+    font-family: tahoma;
+    font-size: 13px;
+    margin: 0;
+    width: 100%;
+}
+.view_detalles #row_header_content .col {
+    display: table-cell;
+    padding: 5px 10px;
+    white-space: nowrap;
+}
+.view_detalles #row_header_content .name {
+    padding-left: 50px;
+}
+.view_detalles #row_header_content .type {
+    width: 70px;
+}
+.view_detalles #row_header_content .size {
+    width: 90px;
+}
+.view_detalles #row_header_content .date {
+    width: 90px;
+}
+.view_detalles #row_header_content .actions {
+    width: 70px;
+}
+.fancybox-title.fancybox-title-inside-wrap h3{
+    margin: 0;
+    font-size: 16px;
+}
+.fancybox-title.fancybox-title-inside-wrap p{
+    margin: 0;
+}
+.menu_contextual li a{
+    padding-left: 15px;
+}
+.menu_contextual li a:before{
+    font-family: "Glyphicons Halflings";
+    padding: 0 5px;
+}
+.menu_contextual li.view a:before{
+    content: "\e105";
+}
+.menu_contextual li.rename a:before{
+    content: "\e065";
+}
+.menu_contextual li.download a:before{
+    content: "\e025";
+}
+.menu_contextual li.delete a:before{
+    content: "\e014";
+}
