@@ -6,13 +6,12 @@ body {
     padding-top: 50px;
 }
 .navbar.navbar-fixed-top {
+    background-color: #fff;
     border: 0 none;
     margin: 0;
     padding: 10px 0 0;
 }
-.navbar.navbar-fixed-top .row > div{
-    width: auto;
-}
+
 .filemanager .list .item {
     background-color: #fff;
     box-shadow: 0 0 1px #666;
@@ -65,6 +64,15 @@ body {
     line-height: 13px;
     padding: 10px;
 }
+.filemanager .list .item .col h3{
+font-size: 13px;
+margin: 0;
+overflow: hidden;
+padding: 0;
+text-overflow: ellipsis;
+white-space: nowrap;
+line-height: 15px; 
+}
 .filemanager .list .scroll {
     /*max-height: 600px;*/
     min-height: 1px;
@@ -85,10 +93,14 @@ body {
     width: 100%;
 }
 .filemanager #content_list.view_detalles .item .image {
-    background-color: #efefef;
-    display: table-cell;
-    height: auto;
-    width: 40px;
+background-color: #efefef;
+display: block;
+height: auto;
+left: 0;
+position: absolute;
+top: 0;
+width: 40px;
+z-index: 1;
 }
 .filemanager #content_list.view_detalles .item img {
     height: 35px;
@@ -97,7 +109,7 @@ body {
 .filemanager #content_list.view_detalles .item {
     border-bottom: 1px solid #999;
     box-shadow: none;
-    display: table;
+    text-align: left;
     position: relative;
     width: 100%;
 
@@ -118,11 +130,14 @@ body {
     width: 40px;
 }
 .filemanager #content_list.view_detalles .item .image span {
-    font-size: 22px;
-    line-height: 32px;
+display: block;
+font-size: 22px;
+line-height: 34px;
+margin: 0 auto;
+text-align: center;
 }
 .filemanager #content_list.view_detalles .item .col {
-    display: table-cell;
+    
     padding: 0 10px;
     text-align: left;    
 }
@@ -134,16 +149,41 @@ body {
     display: none;
 }
 .filemanager #content_list.view_detalles .item .type, .filemanager #content_list.view_detalles .item .size, .filemanager #content_list.view_detalles .item .date, .filemanager #content_list.view_detalles .item .actions {
-    display: table-cell;
+   display: block;
+line-height: 30px;
+margin-top: 2px;
+position: absolute;
+right: 0;
+top: 0;
+}
+.filemanager #content_list.view_detalles .item .name {
+display: block;
+padding-left: 50px;
+padding-right: 330px;
+position: relative;
+}
+.filemanager #content_list.view_detalles .item .name h3{
+font-size: 14px;
+height: 100%;
+line-height: 35px;
+margin: 0;
+overflow: hidden;
+padding: 0;
+text-overflow: ellipsis;
+white-space: nowrap;
+height: 36px;
 }
 .filemanager #content_list.view_detalles .item .type {
-    width: 70px;
+ right: 250px;
+width: 70px;
 }
 .filemanager #content_list.view_detalles .item .size {
-    width: 90px;
+    right: 160px;
+width: 90px;
 }
 .filemanager #content_list.view_detalles .item .date {
-    width: 90px;
+  right: 70px;
+width: 90px;
 }
 .filemanager #content_list.view_detalles .item .actions {
     width: 70px;
@@ -264,4 +304,13 @@ div.table .file-row:nth-child(2n+1) {
 }
 .menu_contextual li.delete a:before{
     content: "\e014";
+}
+.col_top_right > .btn-group{
+    width: 220px;
+}
+.col_top_right > .btn-group > .grupo1{
+    width: 181px;
+}
+.col_top_right > .btn-group > .grupo2{
+    width: 40px;
 }

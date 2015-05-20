@@ -28,4 +28,8 @@
 	.view_detalles #row_header_content .type, .view_detalles #row_header_content .size, .view_detalles #row_header_content .date, .view_detalles #row_header_content .actions{
 		display: none;
 	}
+	.filemanager #content_list.view_detalles .item .name {
+ 
+  padding-right: 0;
+}
 }
