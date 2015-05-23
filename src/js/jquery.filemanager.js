@@ -179,10 +179,10 @@
                 var filenameshort = filename;
                 var filetype = element.filetype;
                 var filesize = formatBytes(element.size);
-                var filedate = moment.unix(element.filemtime).format("DD/MM/YYYY");
+                var filedate = moment.unix(element.lastmodified).format("DD/MM/YYYY");
                 if(element.filename==="" && element.filetype===""){
                     el.find('.image').html('<div class="content_icon"><span aria-hidden="true" class="glyphicon glyphicon-level-up"></span></div>');
-                    el.find('.image').addClass('dir').attr('rel',element.url);
+                    el.find('.image').addClass('dir').attr('rel',element.urlfolder);
                     el.find('.texto').text('Subir');
                     el.find('.type').text('');
                     el.find('.size').text('');
@@ -196,7 +196,7 @@
                     // });
                 }else if(element.filetype===""){
                     el.find('.image').html('<div class="content_icon"><span aria-hidden="true" class="glyphicon glyphicon-folder-close"></span></div>');
-                    el.find('.image').addClass('dir').attr('rel',element.url);
+                    el.find('.image').addClass('dir').attr('rel',element.urlfolder);
                     el.find('.name').attr('data-name-original',filename).attr('data-name',filename);
                      el.find('.texto').text(filenameshort);
                     el.find('.type').text('dir');
@@ -205,7 +205,7 @@
 
                 }else if(element.filetype==="jpg" || element.filetype==="png" || element.filetype=="jpeg" || element.filetype=="gif"){
                     el.find('.image img').attr('src',element.preview);
-                    el.find('.image').addClass('fancybox').attr('href',element.path+element.filename).attr('title',traductor('FE_FILENAME') + element.filename+' | '+ traductor('FE_SIZE') +' '+formatBytes(element.size)+' | '+ traductor('FE_LAST_MODIFIED') +moment.unix(element.filemtime).format("DD/MM/YYYY"));
+                    el.find('.image').addClass('fancybox').attr('href',element.previewfull).attr('title',traductor('FE_FILENAME') + element.filename+' | '+ traductor('FE_SIZE') +' '+formatBytes(element.size)+' | '+ traductor('FE_LAST_MODIFIED') +moment.unix(element.lastmodified).format("DD/MM/YYYY"));
                     el.find('.name').attr('data-name-original',filename).attr('data-name',filename);
                      el.find('.texto').text(filenameshort);
                     el.find('.type').text(filetype);
@@ -213,7 +213,7 @@
                     el.find('.date').text(filedate);
                 }else{
                     el.find('.image').html('<div class="content_icon"><span aria-hidden="true" class="glyphicon glyphicon-file '+ element.filetype +'" ></span></div>');
-                    el.find('.image').addClass('fancybox').attr('href','#preview_file').attr('title',traductor('FE_FILENAME')+element.filename+' | '+ traductor('FE_SIZE')+formatBytes(element.size)+' | '+traductor('FE_LAST_MODIFIED')+moment.unix(element.filemtime).format("DD/MM/YYYY"));
+                    el.find('.image').addClass('fancybox').attr('href','#preview_file').attr('title',traductor('FE_FILENAME')+element.filename+' | '+ traductor('FE_SIZE')+formatBytes(element.size)+' | '+traductor('FE_LAST_MODIFIED')+moment.unix(element.lastmodified).format("DD/MM/YYYY"));
                     el.find('.name').attr('data-name-original',filename).attr('data-name',filename);
                      el.find('.texto').text(filenameshort);
                     el.find('.type').text(filetype);
@@ -268,6 +268,11 @@
             $('#rename_popup').find('#nameold').val(item.find('.name').data('name-original'));
             $('#rename_popup').find('#name').val(removeExtension(item.find('.name').data('name-original')));
         };
+         _this.download = function(item){
+            var name = item.find('.name').data('name-original');
+            var path = $("#path").val();
+            window.document.location.href = settings.url+'?accion=download&path='+ path + '&name=' + name;            
+        };
          _this.viewDelete = function(item){
             var name = item.find('.name').data('name-original');
             var modal = $('#delete_popup');
@@ -296,6 +301,7 @@
                             this.getMenu().find("li").css('display','block');
                             if(context.find('.image.dir').length>0){
                                 this.getMenu().find("li.view").css('display','none');
+                                this.getMenu().find("li.download").css('display','none');
                             }
                             
                             // this.getMenu().find("li").eq(2).find('a').html("This was dynamically changed");
@@ -310,6 +316,9 @@
                             if($(e.target).parent().is('.rename')){
                             _this.viewRename(context);                                
                             }
+                            if($(e.target).parent().is('.download')){
+                            _this.download(context);                                
+                            }
                             if($(e.target).parent().is('.delete')){
                             _this.viewDelete(context);                                
                             }
@@ -322,6 +331,7 @@
                           $(this).find('li').css('display','block');
                           if(context.find('.image.dir').length>0){
                                 $(this).find('li.view').css('display','none');
+                                $(this).find('li.download').css('display','none');
                             }
                         }).bind('contextmenu', function(event) {
                             return false;
@@ -333,6 +343,9 @@
                             }
                             if($(this).parent().is('.rename')){
                             _this.viewRename($(this).parents('.item'));                                
+                            }
+                            if($(this).parent().is('.download')){
+                            _this.download($(this).parents('.item'));                                
                             }
                             if($(this).parent().is('.delete')){
                             _this.viewDelete($(this).parents('.item'));                                
@@ -403,6 +416,23 @@
                         });
                         searchFiles();
                          
+                    }
+                },
+                error: function(request, textStatus, errorThrown){
+                    if (request.status === 0) {
+                        _this.html('<div class="alert alert-danger text-center">Not connect: Verify Network.</div>');
+                    } else if (request.status == 404) {
+                        _this.html('<div class="alert alert-danger text-center">Requested page not found [404]</div>');
+                    } else if (request.status == 500) {
+                        _this.html('<div class="alert alert-danger text-center">Internal Server Error [500].</div>');
+                    } else if (textStatus === 'parsererror') {
+                        _this.html('<div class="alert alert-danger text-center">Requested JSON parse failed.</div>');
+                    } else if (textStatus === 'timeout') {
+                        _this.html('<div class="alert alert-danger text-center">Time out error.</div>');
+                    } else if (textStatus === 'abort') {
+                        _this.html('<div class="alert alert-danger text-center">Ajax request aborted.</div>');
+                    } else {
+                        alert('Uncaught Error: ' + request.responseText);
                     }
                 }
             });
@@ -730,7 +760,7 @@
                     datos = $.parseJSON(datos);
                     var msg = parseMsg(datos.msg);
                     if(datos.status){
-                        getFolder(datos.data.path);                                 
+                        getFolder(path);                                 
                         $("#newfolder_popup_result").html('<div class="alert alert-success">'+ msg +'</div>');
                     }else{                                  
                         $("#newfolder_popup_result").html('<div class="alert alert-danger">'+ msg +'</div>');
