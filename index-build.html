@@ -16,14 +16,22 @@
 	    <div class="navbar-inner">
 	        <div class="container-fluid">
 	        	<div class="row">	        		
-	        	<div class="col-xs-6 col-sm-5 col-md-2">	        		
-		        	<button data-name="demo" data-target="#upload_popup" data-tooltip="tooltip" data-toggle="modal" title="Subir Archivos" data-placement="bottom" class="btn btn-default btn-sm rename">
+	        	<div class="col-xs-6 col-sm-5 col-md-4">	        		
+		        	<button data-target="#upload_popup" data-tooltip="tooltip" data-toggle="modal" title="Subir Archivos" data-placement="bottom" class="btn btn-default btn-sm ">
 						<span aria-hidden="true" class="glyphicon glyphicon-upload"></span>
 						<span aria-hidden="true" class="glyphicon glyphicon-file"></span>
 					</button>
-					<button data-name="demo" data-target="#newfolder_popup" data-tooltip="tooltip" data-toggle="modal" title="Nueva Carpeta " data-placement="bottom" class="btn btn-default btn-sm rename">
+					<button data-target="#newfolder_popup" data-tooltip="tooltip" data-toggle="modal" title="Nueva Carpeta " data-placement="bottom" class="btn btn-default btn-sm ">
 						<span aria-hidden="true" class="glyphicon glyphicon-plus"></span>
 						<span aria-hidden="true" class="glyphicon glyphicon-folder-open"></span>
+					</button>
+					<button id="select_delete_popup" data-tooltip="tooltip" title="Eliminar Seleccionados" data-placement="bottom" class="btn btn-default btn-sm disabled">
+						<span aria-hidden="true" class="glyphicon glyphicon-duplicate"></span> 
+						<span aria-hidden="true" class="glyphicon glyphicon-remove"></span> 
+					</button>
+					<button id="select_insert_popup" data-tooltip="tooltip" title="Insertar Seleccionados" data-placement="bottom" class="btn btn-default btn-sm disabled">
+						<span aria-hidden="true" class="glyphicon glyphicon-file"></span> 
+						<span aria-hidden="true" class="glyphicon glyphicon-ok"></span> 
 					</button>
 	        	</div>
 	        	<div class="col-xs-6 col-sm-3 col-md-2">
@@ -37,34 +45,21 @@
 				</div>
 				<div class="col-xs-12 col-sm-4 col-md-3 col_top_right">
 					<div class="btn-group" role="group" aria-label="First group">
-						<!-- <div class="btn-group" role="toolbar" aria-label="Toolbar with button groups">
-					      <div class="btn-group" role="group" aria-label="First group">
-					        <div class="input-group search_content">
-						      <input id="search" name="search" type="text" class="form-control input-sm" placeholder="Buscar" autocomplete="off" >
-						      <span class="input-group-btn">
-						        <button class="btn btn-default input-sm" type="button" id="search_" data-tooltip="tooltip" data-placement="bottom" title="Buscar">
-						        	<span aria-hidden="true" class="glyphicon glyphicon-search"></span>
-						        </button>
-						      </span>
-						    </div>
-					      </div>
-					      
-				    	</div> -->
-				    		<div class="btn-group grupo1" role="group" aria-label="">
-						      <div class="input-group search_content">
-						      <input id="search" name="search" type="text" class="form-control input-sm" placeholder="Buscar" autocomplete="off" >
-						      <span class="input-group-btn">
-						        <button class="btn btn-default input-sm" type="button" id="search_" data-tooltip="tooltip" data-placement="bottom" title="Buscar">
-						        	<span aria-hidden="true" class="glyphicon glyphicon-search"></span>
-						        </button>
-						      </span>
-						    </div>
-					      	</div>
-				    		<div class="btn-group grupo2" role="group" aria-label="">
-						      <button class="btn btn-default input-sm" type="button" id="search_clear" data-tooltip="tooltip" data-placement="bottom" title="Limpiar">
-						      	<span aria-hidden="true" class="glyphicon glyphicon-remove-sign"></span>
-						      </button>
-					      	</div>
+			    		<div class="btn-group grupo1" role="group" aria-label="">
+					      <div class="input-group search_content">
+					      <input id="search" name="search" type="text" class="form-control input-sm" placeholder="Buscar" autocomplete="off" >
+					      <span class="input-group-btn">
+					        <button class="btn btn-default input-sm" type="button" id="search_" data-tooltip="tooltip" data-placement="bottom" title="Buscar">
+					        	<span aria-hidden="true" class="glyphicon glyphicon-search"></span>
+					        </button>
+					      </span>
+					    </div>
+				      	</div>
+			    		<div class="btn-group grupo2" role="group" aria-label="">
+					      <button class="btn btn-default input-sm" type="button" id="search_clear" data-tooltip="tooltip" data-placement="bottom" title="Limpiar">
+					      	<span aria-hidden="true" class="glyphicon glyphicon-remove-sign"></span>
+					      </button>
+				      	</div>
 					</div>
 				</div>
 	        	</div>
@@ -276,7 +271,7 @@
 		<div class="row">
 			<div class="col-md-12">
 				<ol id="ruta" class="breadcrumb">
-				  <li><a rel="/" href="#"><span aria-hidden="true" class="glyphicon glyphicon-home"></span></a></li><li>demo</li>
+				  <li><a rel="/" href="#"><span aria-hidden="true" class="glyphicon glyphicon-home"></span></a></li>
 				</ol>
 			</div>
 		</div>

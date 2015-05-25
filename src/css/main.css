@@ -19,9 +19,27 @@ body {
     text-align: center;
     width: 120px;
         cursor: pointer;
+        position: relative;
 }
 .filemanager .list .item:hover {
     box-shadow: 0 0 2px #000;
+}
+.filemanager .list .item.active {
+    box-shadow: 0 0 3px #1085E5;
+}
+.filemanager .list .item .check {
+    display: none;
+}
+.filemanager .list .item:hover .check, .filemanager .list .item.active:hover .check{
+    display: block;
+}
+.filemanager .list .item.active .check{
+    display: block;
+    background-color: #337ab7;
+    opacity: 1;
+}
+.filemanager .list .item.active .check input{
+outline: medium none;   
 }
 .filemanager .list .item img {
     height: 90px;
@@ -158,7 +176,7 @@ top: 0;
 }
 .filemanager #content_list.view_detalles .item .name {
 display: block;
-padding-left: 50px;
+padding-left: 100px;
 padding-right: 330px;
 position: relative;
 }
@@ -187,6 +205,20 @@ width: 90px;
 }
 .filemanager #content_list.view_detalles .item .actions {
     width: 70px;
+}
+.filemanager #content_list.view_detalles .item .check {
+  display: block;
+  height: 35px;
+  left: 50px;
+  position: absolute;
+  width: 35px;
+}
+.filemanager #content_list.view_detalles .item .check input {
+  display: block;
+  height: 35px;
+  margin: 0;
+  padding: 0;
+  width: 35px;
 }
 .filemanager #loading {
     background-image: url("../images/loading.gif");
@@ -313,4 +345,15 @@ div.table .file-row:nth-child(2n+1) {
 }
 .col_top_right > .btn-group > .grupo2{
     width: 40px;
+}
+.check{
+    width: 30px; height: 30px; position: absolute; top: 0px; right: 0px; background-color: rgb(102, 102, 102); opacity: 0.6;
+    z-index: 10;
+}
+.check input{
+    display: block;
+height: 30px;
+margin: 0;
+padding: 0;
+width: 30px;
 }

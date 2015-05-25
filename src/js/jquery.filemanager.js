@@ -6,7 +6,7 @@
             languaje: "ES",
             upload_max: 5,
             view: 'thumbs',
-            ext: "jpg,jpeg,gif,png,svg,txt,pdf,odp,ods,odt,rtf,doc,docx,xls,xlsx,ppt,pptx,csv,ogv,mp4,webm,m4v,ogg,mp3,wav,zip,rar"
+            ext: ".jpg,.jpeg,.gif,.png,.svg,.txt,.pdf,.odp,.ods,.odt,.rtf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.csv,.ogv,.mp4,.webm,.m4v,.ogg,.mp3,.wav,.zip,.rar"
         };
         var settings = $.extend({}, defaults, options );
         var LANG = {};        
@@ -197,7 +197,7 @@
             var items = $this;
             items.html('');
             var context_menu = $("#context-menu").clone().html();
-            var item = '<li><div class="item context" ><a class="image" href="#"><img src=""></a><div class="col name"><h3><span class="texto"></span></h3></div><div class="col type"></div><div class="col size"></div><div class="col date"></div><div class="col actions"><div class="btn-group menu_options" data-tooltip="tooltip" data-placement="left" title="Acciones"><button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ><span aria-hidden="true" class="glyphicon glyphicon-tasks" ></button>'+context_menu+'</div></div></div></li>';
+            var item = '<li><div class="item context" ><div class="check"><input type="checkbox" name="check"></div><a class="image" href="#"><img src=""></a><div class="col name"><h3><span class="texto"></span></h3></div><div class="col type"></div><div class="col size"></div><div class="col date"></div><div class="col actions"><div class="btn-group menu_options" data-tooltip="tooltip" data-placement="left" title="Acciones"><button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ><span aria-hidden="true" class="glyphicon glyphicon-tasks" ></button>'+context_menu+'</div></div></div></li>';
             $.each(data,function(index,element){
                 el = $(item);                  
                 var filename = element.filename;
@@ -618,7 +618,22 @@
                     });
                 }
             });
-
+            
+            $("#select_delete_popup").on('click', function(event) {
+                $("#delete_popup_form .result").html('');                
+                var ic = $this.find('.item.active');
+                if(ic.length>0){
+                    var modal = $('#delete_popup');
+                    var r = '';
+                    $.each(ic, function(index, val) {
+                        r = r + '<p>'+ $(val).find('.name').data('name-original') +'</p><input type="hidden" name="name[]" value="'+ $(val).find('.name').data('name-original') +'" />';
+                    });
+                    modal.find('.modal-body .content').html(r);
+                    $('#delete_popup').modal('show');            
+                }else{
+                    return false;
+                }
+            });
 
             $("#delete_popup_form").validate({
                 submitHandler: function(form) {
@@ -636,15 +651,31 @@
                             datos = $.parseJSON(datos);
                             var msg = parseMsg(datos.msg);
                             if(datos.status){
-                                getFolder(path);                                    
-                                $("#delete_popup_form .result").html('<div class="alert alert-success">'+ msg +'</div>');
+                                $("#delete_popup_form .result").html('');
+                                var data = datos.data;
+                                if(data.length>0){
+                                    $.each(data, function(index, val) {                                        
+                                        $("#delete_popup_form .content p").each(function(index2, val2) {
+                                            if($(val2).text()===val.namefile){
+                                                if(val.status)
+                                                    $(val2).append(' <span class="text-success"><span aria-hidden="true" class="glyphicon glyphicon-ok"></span>'+ parseMsg(val)+'</span>');                                                    
+                                                else
+                                                    $(val2).append(' <span class="text-danger"><span aria-hidden="true" class="glyphicon glyphicon-alert"></span>'+ parseMsg(val)+'</span>');                                                    
+                                                return false;
+                                            }
+                                        });                                        
+                                    });
+                                }else{
+                                    $("#delete_popup_form .result").html('<div class="alert alert-success">'+ msg +'</div>');
+                                }                                    
+                                getFolder(path);
                             }else{                                  
                                 $("#delete_popup_form .result").html('<div class="alert alert-danger">'+ msg +'</div>');
                             }                               
                         }
                     });
                 }
-            });
+            });            
 
             $('#newfolder_popup').on('show.bs.modal', function (e) {
                 $("#name").val('');
@@ -691,12 +722,27 @@
             });
             // END ADD EVENT TO UI
             // BEGIN ADD EVENT TO ITEMS
-            $($this).on('click',".item .image, .item .col:not(.actions)", function(event) {
+            $this.on('click',".item .image, .item .col:not(.actions)", function(event) {
                 event.preventDefault();
                 if($(this).parents('.item').find('a.image').is('.dir')){
                     getFolder($(this).parents('.item').find('a.image').attr('rel'));
                 }else{
                     $this.preview($(this).parents('.item'));
+                }
+            });
+            $this.on('click',".check input", function(event) {
+                // event.preventDefault();                
+                if($(this).is(':checked'))
+                    $(this).parents('.item').addClass('active');
+                else
+                    $(this).parents('.item').removeClass('active');
+                if($this.find('.item.active').length>0){
+                    $("#select_delete_popup").removeClass('disabled');
+                    $("#select_insert_popup").removeClass('disabled');
+                }
+                else{
+                    $("#select_delete_popup").addClass('disabled');
+                    $("#select_insert_popup").addClass('disabled');
                 }
             });
             // END ADD EVENT TO ITEMS
