@@ -16,30 +16,30 @@
 	    <div class="navbar-inner">
 	        <div class="container-fluid">
 	        	<div class="row">	        		
-	        	<div class="col-xs-6 col-sm-5 col-md-4">	        		
-		        	<button data-target="#upload_popup" data-tooltip="tooltip" data-toggle="modal" title="Subir Archivos" data-placement="bottom" class="btn btn-default btn-sm ">
+	        	<div class="col-xs-7 col-sm-5 col-md-4">	        		
+		        	<button data-target="#upload_popup" data-tooltip="tooltip" data-toggle="modal" title="FE_UPLOAD" data-placement="bottom" class="btn btn-default btn-sm ">
 						<span aria-hidden="true" class="glyphicon glyphicon-upload"></span>
 						<span aria-hidden="true" class="glyphicon glyphicon-file"></span>
 					</button>
-					<button data-target="#newfolder_popup" data-tooltip="tooltip" data-toggle="modal" title="Nueva Carpeta " data-placement="bottom" class="btn btn-default btn-sm ">
+					<button data-target="#newfolder_popup" data-tooltip="tooltip" data-toggle="modal" title="FE_CREATE_DIRECTORY" data-placement="bottom" class="btn btn-default btn-sm ">
 						<span aria-hidden="true" class="glyphicon glyphicon-plus"></span>
 						<span aria-hidden="true" class="glyphicon glyphicon-folder-open"></span>
 					</button>
-					<button id="select_delete_popup" data-tooltip="tooltip" title="Eliminar Seleccionados" data-placement="bottom" class="btn btn-default btn-sm disabled">
+					<button id="select_delete_popup" data-tooltip="tooltip" title="FE_DELETE_SELECTED" data-placement="bottom" class="btn btn-default btn-sm disabled">
 						<span aria-hidden="true" class="glyphicon glyphicon-duplicate"></span> 
 						<span aria-hidden="true" class="glyphicon glyphicon-remove"></span> 
 					</button>
-					<button id="select_insert_popup" data-tooltip="tooltip" title="Insertar Seleccionados" data-placement="bottom" class="btn btn-default btn-sm disabled">
+					<button id="select_insert" data-tooltip="tooltip" title="FE_INSERT_SELECTED" data-placement="bottom" class="btn btn-default btn-sm disabled">
 						<span aria-hidden="true" class="glyphicon glyphicon-file"></span> 
 						<span aria-hidden="true" class="glyphicon glyphicon-ok"></span> 
 					</button>
 	        	</div>
-	        	<div class="col-xs-6 col-sm-3 col-md-2">
-	        		<span>Vistas:</span>
-					<button id="view_thumbs" data-tooltip="tooltip" title="Vista Miniatura" data-placement="bottom" class="btn btn-default btn-sm active">
+	        	<div class="col-xs-5 col-sm-3 col-md-2">
+	        		<span>FE_VIEWS</span>
+					<button id="view_thumbs" data-tooltip="tooltip" title="FE_VIEW_MINIATURE" data-placement="bottom" class="btn btn-default btn-sm active">
 						<span aria-hidden="true" class="glyphicon glyphicon-th"></span>
 					</button>
-					<button id="view_details" data-tooltip="tooltip" title="Vista Detalle" data-placement="bottom" class="btn btn-default btn-sm">
+					<button id="view_details" data-tooltip="tooltip" title="FE_VIEW_DETAILS" data-placement="bottom" class="btn btn-default btn-sm">
 						<span aria-hidden="true" class="glyphicon glyphicon-align-justify"></span>
 					</button>
 				</div>
@@ -47,16 +47,16 @@
 					<div class="btn-group" role="group" aria-label="First group">
 			    		<div class="btn-group grupo1" role="group" aria-label="">
 					      <div class="input-group search_content">
-					      <input id="search" name="search" type="text" class="form-control input-sm" placeholder="Buscar" autocomplete="off" >
+					      <input id="search" name="search" type="text" class="form-control input-sm" placeholder="FE_SEARCH_NAME_FILES" autocomplete="off" >
 					      <span class="input-group-btn">
-					        <button class="btn btn-default input-sm" type="button" id="search_" data-tooltip="tooltip" data-placement="bottom" title="Buscar">
+					        <button class="btn btn-default input-sm" type="button" id="search_" data-tooltip="tooltip" data-placement="bottom" title="FE_SEARCH_NAME_FILES">
 					        	<span aria-hidden="true" class="glyphicon glyphicon-search"></span>
 					        </button>
 					      </span>
 					    </div>
 				      	</div>
 			    		<div class="btn-group grupo2" role="group" aria-label="">
-					      <button class="btn btn-default input-sm" type="button" id="search_clear" data-tooltip="tooltip" data-placement="bottom" title="Limpiar">
+					      <button class="btn btn-default input-sm" type="button" id="search_clear" data-tooltip="tooltip" data-placement="bottom" title="FE_CLEAR">
 					      	<span aria-hidden="true" class="glyphicon glyphicon-remove-sign"></span>
 					      </button>
 				      	</div>
@@ -72,22 +72,6 @@
 		<div id="preview_file"><span aria-hidden="true" class="glyphicon glyphicon-file txt"></span></div>
 		</div>
 
-		<!-- <div class="hidden">
-			<div id="data_item">
-				<div class="col-xs-6 col-sm-3 col-md-2">
-					<div class="item">
-						<a href="#" class="image"><img src=""></a>
-						<p data-toggle="tooltip" data-placement="top" title=""></p>
-						<button class="btn btn-default btn-xs rename" data-placement="top" title="RENAME" data-toggle="modal" data-target="#rename_popup" data-name="">
-							<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-						</button>
-						<button class="btn btn-default btn-xs delete" data-placement="top" title="DELETE" data-toggle="modal" data-target="#delete_popup" data-name="">
-							<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-						</button>
-					</div>
-				</div>
-			</div>			
-		</div> -->
 		<!-- Begin Modal Upload-->
 		<div class="modal fade" id="upload_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		  <div class="modal-dialog modal-lg">
@@ -242,32 +226,6 @@
 		  </div>
 		</div>
 		<!-- End Modal rename-->
-		<!-- <div class="row">
-			<div class="col-sm-4 col-md-3">
-				<div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-			      <div class="btn-group" role="group" aria-label="First group">
-			        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#newfolder_popup">FE_CREATE_DIRECTORY</button>
-			        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#upload_popup">FE_UPLOAD</button>
-			      </div>		      
-			     
-			    </div>
-			</div>
-			<div class="col-sm-4 col-md-3">
-				<div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-		      
-			      <div class="btn-group" role="group" aria-label="First group">
-			        <div class="input-group search_content">
-				        
-				      <input id="search" name="search" type="text" class="form-control" placeholder="FE_SEARCH_NAME_FILES" autocomplete="off" >
-				      <span class="input-group-btn">
-				        <button class="btn btn-default" type="button" id="search_clear">FE_CLEAR</button>
-				      </span>
-			        
-				    </div>
-			        </div>
-			    </div>
-			</div>
-		</div> -->
 		<div class="row">
 			<div class="col-md-12">
 				<ol id="ruta" class="breadcrumb">
@@ -278,72 +236,24 @@
 		<div id="content_list" class="row">
 			<div class="col-md-12" id="row_header_content">
 				<div class="row_header">
-					<div class="col name">Nombre</div>							
-					<div class="col type">Tipo</div>		
-					<div class="col size">Tamaño</div>		
-					<div class="col date">Fecha</div>
-					<div class="col actions">Acciones</div>
+					<div class="col name">FE_NOMBRE</div>							
+					<div class="col type">FE_TIPO</div>		
+					<div class="col size">FE_TAMANO</div>		
+					<div class="col date">FE_DATE</div>
+					<div class="col actions">FE_ACTIONS</div>
 				</div>
 			</div>
 			<div class="col-md-12 list">
-				<ul id="list" class="scroll">
-					<!-- <li>
-						<div class="item" data-toggle="context" data-target="#context-menu">
-							<a class="image dir" href="#" rel="/demo/">
-								<div class="content_icon"><span aria-hidden="true" class="glyphicon glyphicon-folder-close"></span></div>
-							</a>
-							<div class="col name">desert.jpg</div>
-							<div class="col type">dir</div>		
-							<div class="col size">5 MB</div>		
-							<div class="col date">10/05/2015</div>
-							<div class="col actions">
-								<div class="btn-group" data-tooltip="tooltip" data-placement="left" title="Acciones">
-								  <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
-								    <span aria-hidden="true" class="glyphicon glyphicon-tasks" >
-								  </button>
-								  <ul class="dropdown-menu" role="menu">
-								    <li><a href="#">Ver</a></li>
-								    <li><a href="#">Renombrar</a></li>
-								    <li><a href="#">Descargar</a></li>
-								    <li><a href="#">Eliminar</a></li>
-								  </ul>
-								</div>
-							</div>
-						</div>
-					</li>
-					<li>
-						<div class="item" data-toggle="context" data-target="#context-menu">
-							<a class="image fancybox" href="/filemanager/userfiles/desert.jpg">
-								<img src="/filemanager/userfiles/_thumbs/desert-80x80.jpg">
-							</a>
-							<div class="col name">desert.jpg</div>
-							<div class="col type">dir</div>		
-							<div class="col size">5 MB</div>		
-							<div class="col date">10/05/2015</div>
-							<div class="col actions">
-								<div class="btn-group" data-tooltip="tooltip" data-placement="left" title="Acciones">
-								  <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
-								    <span aria-hidden="true" class="glyphicon glyphicon-tasks" >
-								  </button>
-								  <ul class="dropdown-menu" role="menu">
-								    <li><a href="#">Ver</a></li>
-								    <li><a href="#">Renombrar</a></li>
-								    <li><a href="#">Descargar</a></li>
-								    <li><a href="#">Eliminar</a></li>
-								  </ul>
-								</div>
-							</div>
-						</div>						
-					</li> -->
+				<ul id="list" class="scroll">					
 				</ul>
 			</div>
 		</div>
 		<div id="context-menu">
 	      	<ul class="dropdown-menu menu_contextual" role="menu">
-		       	<li class="view"><a href="#">Ver</a></li>
-	            <li class="rename"><a href="#">Renombrar</a></li>
-	            <li class="download"><a href="#">Descargar</a></li>
-	            <li class="delete"><a href="#">Eliminar</a></li>
+		       	<li class="view"><a href="#">FE_VIEW</a></li>
+	            <li class="rename"><a href="#">FE_RENAME</a></li>
+	            <li class="download"><a href="#">FE_DOWNLOAD</a></li>
+	            <li class="delete"><a href="#">FE_DELETE</a></li>
 	      	</ul>
 	     </div>
 
@@ -363,23 +273,13 @@
 
 	<script type="text/javascript">
 	$(function() {
-		$('[data-tooltip="tooltip"]').tooltip();
 		$("#list").filemanager({
 			url:'http://localhost/github/filemanager/conector.php',
-			languaje: "ES",
+			languaje: "US",
 			upload_max: 5,
-			views:'details'
+			views:'details',
+			insertButton:true
 		});
-		// $('.dropdown-toggle').dropdown();
-		// $('.item').bind('contextmenu', function(e) {
-		//      e.preventDefault();
-		//      console.log('click derecho');
-		// });
-		// $("#list").filemanager({
-		// 	url:'../filemanager/conector.php',
-		// 	languaje: "ES",
-		// 	upload_max: 5,
-		// });
 	});
 		
 	</script>

@@ -6,7 +6,8 @@
             languaje: "ES",
             upload_max: 5,
             view: 'thumbs',
-            ext: ".jpg,.jpeg,.gif,.png,.svg,.txt,.pdf,.odp,.ods,.odt,.rtf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.csv,.ogv,.mp4,.webm,.m4v,.ogg,.mp3,.wav,.zip,.rar"
+            ext: ".jpg,.jpeg,.gif,.png,.svg,.txt,.pdf,.odp,.ods,.odt,.rtf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.csv,.ogv,.mp4,.webm,.m4v,.ogg,.mp3,.wav,.zip,.rar",
+            insertButton: false
         };
         var settings = $.extend({}, defaults, options );
         var LANG = {};        
@@ -208,12 +209,13 @@
                 if(element.filename==="" && element.filetype===""){
                     el.find('.image').html('<div class="content_icon"><span aria-hidden="true" class="glyphicon glyphicon-level-up"></span></div>');
                     el.find('.image').addClass('dir').attr('rel',element.urlfolder);
-                    el.find('.texto').text('Subir');
+                    el.find('.texto').text(traductor('FE_BACK'));
                     el.find('.type').text('');
                     el.find('.size').text('');
                     el.find('.actions').html('');
                     el.addClass('parentup back');
-                    el.find('.item').removeClass('context');                    
+                    el.find('.item').removeClass('context');
+                    el.find('.check').remove();
                 }else if(element.filetype===""){
                     el.find('.image').html('<div class="content_icon"><span aria-hidden="true" class="glyphicon glyphicon-folder-close"></span></div>');
                     el.find('.image').addClass('dir').attr('rel',element.urlfolder);
@@ -269,7 +271,7 @@
                             }
                         }
                     }
-                    this.title = '<h3>Información</h3><div>'+t+'</div';
+                    this.title = '<h3>'+ traductor('FE_INFORMATION') +'</h3><div>'+t+'</div';
                 },
                 helpers : {
                     title : {
@@ -292,7 +294,7 @@
          $this.viewDelete = function(item){
             var name = item.find('.name').data('name-original');
             var modal = $('#delete_popup');
-            modal.find('.modal-body .content').html('<h3>'+ name +'</h3><input type="hidden" name="name" value="'+ name +'" />');
+            modal.find('.modal-body .content').html('<p>'+ name +'</p><input type="hidden" name="name" value="'+ name +'" />');
             modal.find('.modal-body .result').html('');
             $('#delete_popup').modal('show');            
         };       
@@ -319,13 +321,9 @@
                                 this.getMenu().find("li.view").css('display','none');
                                 this.getMenu().find("li.download").css('display','none');
                             }
-                            
-                            // this.getMenu().find("li").eq(2).find('a').html("This was dynamically changed");
                             return true;
                           },
                           onItem: function(context,e) {
-                            // execute on menu item selection
-                            // console.log(context);
                             if($(e.target).parent().is('.view')){
                             $this.preview(context);                                
                             }
@@ -338,8 +336,6 @@
                             if($(e.target).parent().is('.delete')){
                             $this.viewDelete(context);                                
                             }
-                            // console.log($(e.target).parent());
-                            
                           }
                         });
                         $('.menu_options').on('show.bs.dropdown', function (e) {
@@ -381,6 +377,7 @@
                                 $(el).attr('data-name',des).find('.texto').text(ori);
                             });
                         }
+                        // END VIEWS
                         $("#path").val(path);
                         var ruta = path.split('/');
                         var temp = [];
@@ -445,7 +442,7 @@
         }
         $this.init = function(){
             // BEGIN TRADUCIR
-            _html = $(".panel-heading, button, span, label, h4, h3");
+            _html = $(".panel-heading, button, span, label, h4, h3, #row_header_content .col, #context-menu a");
             _html.text(function(index,text){
                 return traductor(text);
             });
@@ -572,7 +569,7 @@
                 getFolder($(this).attr('rel'));
             });
 
-            $('[data-toggle="tooltip"]').tooltip();
+            $('[data-tooltip="tooltip"]').tooltip();
 
             $('#rename_popup').on('show.bs.modal', function (e) {
                 $("#rename_popup #name").val('');
@@ -720,6 +717,15 @@
                     });
                 }
             });
+            if(settings.insertButton===false) $("#select_insert").remove();
+            $("#select_insert").on('click', function(event) {
+                var ic = $this.find('.item.active');
+                if(ic.length>0){
+                    return ic;
+                }else{
+                    return false;
+                }
+            });
             // END ADD EVENT TO UI
             // BEGIN ADD EVENT TO ITEMS
             $this.on('click',".item .image, .item .col:not(.actions)", function(event) {
@@ -738,11 +744,11 @@
                     $(this).parents('.item').removeClass('active');
                 if($this.find('.item.active').length>0){
                     $("#select_delete_popup").removeClass('disabled');
-                    $("#select_insert_popup").removeClass('disabled');
+                    $("#select_insert").removeClass('disabled');
                 }
                 else{
                     $("#select_delete_popup").addClass('disabled');
-                    $("#select_insert_popup").addClass('disabled');
+                    $("#select_insert").addClass('disabled');
                 }
             });
             // END ADD EVENT TO ITEMS
