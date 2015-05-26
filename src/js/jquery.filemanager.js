@@ -7,7 +7,9 @@
             upload_max: 5,
             view: 'thumbs',
             ext: ".jpg,.jpeg,.gif,.png,.svg,.txt,.pdf,.odp,.ods,.odt,.rtf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.csv,.ogv,.mp4,.webm,.m4v,.ogg,.mp3,.wav,.zip,.rar",
-            insertButton: false
+            insertButton: false,
+            token: null,
+            tokenName: '_token'
         };
         var settings = $.extend({}, defaults, options );
         var LANG = {};        
@@ -289,7 +291,10 @@
          $this.download = function(item){
             var name = item.find('.name').data('name-original');
             var path = $("#path").val();
-            window.document.location.href = settings.url+'?accion=download&path='+ path + '&name=' + name;            
+            var datos = settings.url+'?accion=download&path='+ path + '&name=' + name;            
+            if(settings.token!==null) datos = datos + '&' + settings.tokenName + '=' + settings.token;
+            window.document.location.href = datos;
+
         };
          $this.viewDelete = function(item){
             var name = item.find('.name').data('name-original');
@@ -300,7 +305,8 @@
         };       
         function getFolder(path){
             if(!path) path = '/';
-            var datos2 = {accion:"getfolder",path:path};
+            var datos2 = {accion:"getfolder",path:path}; 
+            if(settings.token!==null) datos2[settings.tokenName] = settings.token;
             $.ajax({
                 type: "POST",
                 url: settings.url,
@@ -457,6 +463,11 @@
                return traductor(text) + settings.upload_max; 
             });
             // END TRADUCIR
+            // BEGIN TOKEN
+            if(settings.token){
+                $("body").append('<input type="hidden" id="token" name="'+settings.tokenName+'" value="'+settings.token+'" />');
+            }
+            // END TOKEN
             // BEGIN SEARCH
             $("#search").on('keyup click', function(){
                 searchFiles();                  
@@ -505,7 +516,10 @@
             myDropzone.on("processing", function(file) {
             });
             myDropzone.on("processingmultiple", function(file) {
-                this.options.params = {accion:"uploadfile", path : $("#path").val()};
+                var datos = {accion:"uploadfile", path : $("#path").val()};
+                if(settings.token!==null) datos[settings.tokenName] = settings.token;          
+                this.options.params = datos;
+
             });
             myDropzone.on("success", function(file, responseText, e) {
                 var datos = $.parseJSON(responseText);
@@ -591,7 +605,8 @@
                 },
                 submitHandler: function(form) {
                     var path = $("#path").val();
-                    var datos = {accion:"renamefile",path:path};            
+                    var datos = {accion:"renamefile",path:path};  
+                    if(settings.token!==null) datos[settings.tokenName] = settings.token;          
                     datos = $.param(datos) +'&'+ $(form).serialize();
                     $.ajax({
                         type: "POST",
@@ -636,6 +651,7 @@
                 submitHandler: function(form) {
                     var path = $("#path").val();
                     var datos = {accion:"deletefile",path:path};
+                    if(settings.token!==null) datos[settings.tokenName] = settings.token;          
                     datos = $.param(datos) +'&'+ $(form).serialize();
                     $.ajax({
                         type: "POST",
@@ -696,6 +712,7 @@
                 submitHandler: function(form) {
                     var path = $("#path").val();
                     var datos = {accion:"newfolder",path:path};
+                    if(settings.token!==null) datos[settings.tokenName] = settings.token;          
                     datos = $.param(datos) +'&'+ $(form).serialize();
                     $.ajax({
                         type: "POST",
