@@ -213,12 +213,15 @@ width: 90px;
   position: absolute;
   width: 35px;
 }
-.filemanager #content_list.view_detalles .item .check input {
+.filemanager #content_list.view_detalles .item .check label {
   display: block;
   height: 35px;
   margin: 0;
   padding: 0;
   width: 35px;
+}
+.filemanager #content_list.view_detalles .item .check label input{
+    margin: 11px 10px 10px;
 }
 .filemanager #loading {
     background-image: url("../images/loading.gif");
@@ -350,10 +353,15 @@ div.table .file-row:nth-child(2n+1) {
     width: 30px; height: 30px; position: absolute; top: 0px; right: 0px; background-color: rgb(102, 102, 102); opacity: 0.6;
     z-index: 10;
 }
-.check input{
+.check label{
     display: block;
 height: 30px;
 margin: 0;
 padding: 0;
 width: 30px;
+text-align: center;
+}
+.check label input{
+    margin: 8px 8px 8px 9px;
+    display: inline-block;
 }

@@ -198,7 +198,7 @@
             var items = $this;
             items.html('');
             var context_menu = $("#context-menu").clone().html();
-            var item = '<li><div class="item context" ><div class="check"><input type="checkbox" name="check"></div><a class="image" href="#"><img src=""></a><div class="col name"><h3><span class="texto"></span></h3></div><div class="col type"></div><div class="col size"></div><div class="col date"></div><div class="col actions"><div class="btn-group menu_options" data-tooltip="tooltip" data-placement="left" title="Acciones"><button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ><span aria-hidden="true" class="glyphicon glyphicon-tasks" ></button>'+context_menu+'</div></div></div></li>';
+            var item = '<li><div class="item context" ><div class="check"><label><input type="checkbox" name="check"></label></div><a class="image" href="#"><img src=""></a><div class="col name"><h3><span class="texto"></span></h3></div><div class="col type"></div><div class="col size"></div><div class="col date"></div><div class="col actions"><div class="btn-group menu_options" data-tooltip="tooltip" data-placement="left" title="Acciones"><button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ><span aria-hidden="true" class="glyphicon glyphicon-tasks" ></button>'+context_menu+'</div></div></div></li>';
             $.each(data,function(index,element){
                 el = $(item);                  
                 var filename = element.filename;
