@@ -16,3 +16,5 @@ cp bower_components/filemanager-ui/userfiles filemanager/
 ```
 http://dominio/filemanager/
 ```
+## Demo
+http://php-filemanager.rhcloud.com/filemanager-ui/
