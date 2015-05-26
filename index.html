@@ -2,32 +2,72 @@
 <html lang="es">
 <head>
 	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Filemanager ui</title>
 	<link rel="stylesheet" type="text/css" href="dist/css/filemanager-ui.min.css">
 </head>
 <body>
-	<div class="container filemanager">
+	<div class="navbar navbar-fixed-top">
+	    <div class="navbar-inner">
+	        <div class="container-fluid">
+	        	<div class="row">	        		
+	        	<div class="col-xs-7 col-sm-5 col-md-4">	        		
+		        	<button data-target="#upload_popup" data-tooltip="tooltip" data-toggle="modal" title="FE_UPLOAD" data-placement="bottom" class="btn btn-default btn-sm ">
+						<span aria-hidden="true" class="glyphicon glyphicon-upload"></span>
+						<span aria-hidden="true" class="glyphicon glyphicon-file"></span>
+					</button>
+					<button data-target="#newfolder_popup" data-tooltip="tooltip" data-toggle="modal" title="FE_CREATE_DIRECTORY" data-placement="bottom" class="btn btn-default btn-sm ">
+						<span aria-hidden="true" class="glyphicon glyphicon-plus"></span>
+						<span aria-hidden="true" class="glyphicon glyphicon-folder-open"></span>
+					</button>
+					<button id="select_delete_popup" data-tooltip="tooltip" title="FE_DELETE_SELECTED" data-placement="bottom" class="btn btn-default btn-sm disabled">
+						<span aria-hidden="true" class="glyphicon glyphicon-duplicate"></span> 
+						<span aria-hidden="true" class="glyphicon glyphicon-remove"></span> 
+					</button>
+					<button id="select_insert" data-tooltip="tooltip" title="FE_INSERT_SELECTED" data-placement="bottom" class="btn btn-default btn-sm disabled">
+						<span aria-hidden="true" class="glyphicon glyphicon-file"></span> 
+						<span aria-hidden="true" class="glyphicon glyphicon-ok"></span> 
+					</button>
+	        	</div>
+	        	<div class="col-xs-5 col-sm-3 col-md-2">
+	        		<span>FE_VIEWS</span>
+					<button id="view_thumbs" data-tooltip="tooltip" title="FE_VIEW_MINIATURE" data-placement="bottom" class="btn btn-default btn-sm active">
+						<span aria-hidden="true" class="glyphicon glyphicon-th"></span>
+					</button>
+					<button id="view_details" data-tooltip="tooltip" title="FE_VIEW_DETAILS" data-placement="bottom" class="btn btn-default btn-sm">
+						<span aria-hidden="true" class="glyphicon glyphicon-align-justify"></span>
+					</button>
+				</div>
+				<div class="col-xs-12 col-sm-4 col-md-3 col_top_right">
+					<div class="btn-group" role="group" aria-label="First group">
+			    		<div class="btn-group grupo1" role="group" aria-label="">
+					      <div class="input-group search_content">
+					      <input id="search" name="search" type="text" class="form-control input-sm" placeholder="FE_SEARCH_NAME_FILES" autocomplete="off" >
+					      <span class="input-group-btn">
+					        <button class="btn btn-default input-sm" type="button" id="search_" data-tooltip="tooltip" data-placement="bottom" title="FE_SEARCH_NAME_FILES">
+					        	<span aria-hidden="true" class="glyphicon glyphicon-search"></span>
+					        </button>
+					      </span>
+					    </div>
+				      	</div>
+			    		<div class="btn-group grupo2" role="group" aria-label="">
+					      <button class="btn btn-default input-sm" type="button" id="search_clear" data-tooltip="tooltip" data-placement="bottom" title="FE_CLEAR">
+					      	<span aria-hidden="true" class="glyphicon glyphicon-remove-sign"></span>
+					      </button>
+				      	</div>
+					</div>
+				</div>
+	        	</div>
+	        </div>
+	    </div>
+	</div>
+	<div class="container-fluid filemanager">
 		<input type="hidden" id="path" name="path" value="">
 		<div class="hidden">
 		<div id="preview_file"><span aria-hidden="true" class="glyphicon glyphicon-file txt"></span></div>
 		</div>
 
-		<div class="hidden">
-			<div id="data_item">
-				<div class="col-xs-6 col-sm-3 col-md-2">
-					<div class="item">
-						<a href="#" class="image"><img src=""></a>
-						<p data-toggle="tooltip" data-placement="top" title=""></p>
-						<button class="btn btn-default btn-xs rename" data-placement="top" title="RENAME" data-toggle="modal" data-target="#rename_popup" data-name="">
-							<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-						</button>
-						<button class="btn btn-default btn-xs delete" data-placement="top" title="DELETE" data-toggle="modal" data-target="#delete_popup" data-name="">
-							<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-						</button>
-					</div>
-				</div>
-			</div>			
-		</div>
 		<!-- Begin Modal Upload-->
 		<div class="modal fade" id="upload_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		  <div class="modal-dialog modal-lg">
@@ -167,7 +207,7 @@
 			        <div class="content">
 			        	<div class="form-group">
 						    <label for="exampleInputEmail1">FE_NAME</label>
-						    <input type="hidden" name="nameold">
+						    <input type="hidden" name="nameold" id="nameold">
 						    <input type="text" class="form-control" id="name" name="name" placeholder="FE_ENTER_NAME">
 						</div>
 			        </div>
@@ -183,50 +223,51 @@
 		</div>
 		<!-- End Modal rename-->
 		<div class="row">
-			<div class="col-sm-4 col-md-3">
-				<div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-			      <div class="btn-group" role="group" aria-label="First group">
-			        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#newfolder_popup">FE_CREATE_DIRECTORY</button>
-			        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#upload_popup">FE_UPLOAD</button>
-			      </div>		      
-			     
-			    </div>
-			</div>
-			<div class="col-sm-4 col-md-3">
-				<div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-		      
-			      <div class="btn-group" role="group" aria-label="First group">
-			        <div class="input-group search_content">
-				        
-				      <input id="search" name="search" type="text" class="form-control" placeholder="FE_SEARCH_NAME_FILES" autocomplete="off" >
-				      <span class="input-group-btn">
-				        <button class="btn btn-default" type="button" id="search_clear">FE_CLEAR</button>
-				      </span>
-			        
-				    </div>
-			        </div>
-			    </div>
-			</div>
-		</div>
-		<div class="row">
 			<div class="col-md-12">
 				<ol id="ruta" class="breadcrumb">
-				  
+				  <li><a rel="/" href="#"><span aria-hidden="true" class="glyphicon glyphicon-home"></span></a></li>
 				</ol>
 			</div>
 		</div>
-		<div class="row">
-			<div class="col-md-12 list">
-				<div id="list" class="scroll">
-					<div id="loading"></div>
+		<div id="content_list" class="row">
+			<div class="col-md-12" id="row_header_content">
+				<div class="row_header">
+					<div class="col name">FE_NOMBRE</div>							
+					<div class="col type">FE_TIPO</div>		
+					<div class="col size">FE_TAMANO</div>		
+					<div class="col date">FE_DATE</div>
+					<div class="col actions">FE_ACTIONS</div>
 				</div>
 			</div>
+			<div class="col-md-12 list">
+				<ul id="list" class="scroll">					
+				</ul>
+			</div>
 		</div>
+		<div id="context-menu">
+	      	<ul class="dropdown-menu menu_contextual" role="menu">
+		       	<li class="view"><a href="#">FE_VIEW</a></li>
+	            <li class="rename"><a href="#">FE_RENAME</a></li>
+	            <li class="download"><a href="#">FE_DOWNLOAD</a></li>
+	            <li class="delete"><a href="#">FE_DELETE</a></li>
+	      	</ul>
+	     </div>
 
 	</div>
 	<script type="text/javascript" src="dist/js/filemanager-ui.min.js"></script>
+
 	<script type="text/javascript">
-		$("#list").filemanager();
+	$(function() {
+		$("#list").filemanager({
+			url:'http://localhost/github/filemanager/conector.php',
+			languaje: "US",
+			upload_max: 5,
+			views:'details',
+			insertButton:true,
+			token:'jashd4a5sd4sa'
+		});
+	});
+		
 	</script>
 </body>
 </html>

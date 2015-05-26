@@ -25,7 +25,8 @@ module.exports = function(grunt) {
           'bower_components/fancybox/source/jquery.fancybox.css',
           'bower_components/dropzone/dist/dropzone.css',
           'src/css/bootstrap.css',
-          'src/css/main.css'
+          'src/css/main.css',
+          'src/css/responsive.css'
         ],
         dest: 'dist/css/<%= pkg.name %>.css'
       },      
@@ -54,6 +55,7 @@ module.exports = function(grunt) {
           'bower_components/dropzone/dist/dropzone.js',
           'bower_components/fancybox/source/jquery.fancybox.js',
           'bower_components/moment/moment.js',
+          'bower_components/bootstrap-contextmenu/bootstrap-contextmenu.js',
           'src/js/languaje/us.js',
           'src/js/languaje/es.js',
           'src/js/jquery.filemanager.js'

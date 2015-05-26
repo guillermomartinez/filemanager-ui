@@ -1,5 +1,5 @@
 /*!
- * jQuery JavaScript Library v2.1.3
+ * jQuery JavaScript Library v2.1.4
  * http://jquery.com/
  *
  * Includes Sizzle.js
@@ -9,7 +9,7 @@
  * Released under the MIT license
  * http://jquery.org/license
  *
- * Date: 2014-12-18T15:11Z
+ * Date: 2015-04-28T16:01Z
  */
 
 (function( global, factory ) {
@@ -67,7 +67,7 @@ var
 	// Use the correct document accordingly with window argument (sandbox)
 	document = window.document,
 
-	version = "2.1.3",
+	version = "2.1.4",
 
 	// Define a local copy of jQuery
 	jQuery = function( selector, context ) {
@@ -531,7 +531,12 @@ jQuery.each("Boolean Number String Function Array Date RegExp Object Error".spli
 });
 
 function isArraylike( obj ) {
-	var length = obj.length,
+
+	// Support: iOS 8.2 (not reproducible in simulator)
+	// `in` check used to prevent JIT error (gh-2145)
+	// hasOwn isn't used here due to false negatives
+	// regarding Nodelist length in IE
+	var length = "length" in obj && obj.length,
 		type = jQuery.type( obj );
 
 	if ( type === "function" || jQuery.isWindow( obj ) ) {
@@ -9205,7 +9210,7 @@ return jQuery;
 }));
 
 /* ========================================================================
- * Bootstrap: transition.js v3.3.2
+ * Bootstrap: transition.js v3.3.4
  * http://getbootstrap.com/javascript/#transitions
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -9265,7 +9270,7 @@ return jQuery;
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: alert.js v3.3.2
+ * Bootstrap: alert.js v3.3.4
  * http://getbootstrap.com/javascript/#alerts
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -9284,7 +9289,7 @@ return jQuery;
     $(el).on('click', dismiss, this.close)
   }
 
-  Alert.VERSION = '3.3.2'
+  Alert.VERSION = '3.3.4'
 
   Alert.TRANSITION_DURATION = 150
 
@@ -9360,7 +9365,7 @@ return jQuery;
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: button.js v3.3.2
+ * Bootstrap: button.js v3.3.4
  * http://getbootstrap.com/javascript/#buttons
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -9380,7 +9385,7 @@ return jQuery;
     this.isLoading = false
   }
 
-  Button.VERSION  = '3.3.2'
+  Button.VERSION  = '3.3.4'
 
   Button.DEFAULTS = {
     loadingText: 'loading...'
@@ -9477,7 +9482,169 @@ return jQuery;
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: modal.js v3.3.2
+ * Bootstrap: dropdown.js v3.3.4
+ * http://getbootstrap.com/javascript/#dropdowns
+ * ========================================================================
+ * Copyright 2011-2015 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // DROPDOWN CLASS DEFINITION
+  // =========================
+
+  var backdrop = '.dropdown-backdrop'
+  var toggle   = '[data-toggle="dropdown"]'
+  var Dropdown = function (element) {
+    $(element).on('click.bs.dropdown', this.toggle)
+  }
+
+  Dropdown.VERSION = '3.3.4'
+
+  Dropdown.prototype.toggle = function (e) {
+    var $this = $(this)
+
+    if ($this.is('.disabled, :disabled')) return
+
+    var $parent  = getParent($this)
+    var isActive = $parent.hasClass('open')
+
+    clearMenus()
+
+    if (!isActive) {
+      if ('ontouchstart' in document.documentElement && !$parent.closest('.navbar-nav').length) {
+        // if mobile we use a backdrop because click events don't delegate
+        $('<div class="dropdown-backdrop"/>').insertAfter($(this)).on('click', clearMenus)
+      }
+
+      var relatedTarget = { relatedTarget: this }
+      $parent.trigger(e = $.Event('show.bs.dropdown', relatedTarget))
+
+      if (e.isDefaultPrevented()) return
+
+      $this
+        .trigger('focus')
+        .attr('aria-expanded', 'true')
+
+      $parent
+        .toggleClass('open')
+        .trigger('shown.bs.dropdown', relatedTarget)
+    }
+
+    return false
+  }
+
+  Dropdown.prototype.keydown = function (e) {
+    if (!/(38|40|27|32)/.test(e.which) || /input|textarea/i.test(e.target.tagName)) return
+
+    var $this = $(this)
+
+    e.preventDefault()
+    e.stopPropagation()
+
+    if ($this.is('.disabled, :disabled')) return
+
+    var $parent  = getParent($this)
+    var isActive = $parent.hasClass('open')
+
+    if ((!isActive && e.which != 27) || (isActive && e.which == 27)) {
+      if (e.which == 27) $parent.find(toggle).trigger('focus')
+      return $this.trigger('click')
+    }
+
+    var desc = ' li:not(.disabled):visible a'
+    var $items = $parent.find('[role="menu"]' + desc + ', [role="listbox"]' + desc)
+
+    if (!$items.length) return
+
+    var index = $items.index(e.target)
+
+    if (e.which == 38 && index > 0)                 index--                        // up
+    if (e.which == 40 && index < $items.length - 1) index++                        // down
+    if (!~index)                                      index = 0
+
+    $items.eq(index).trigger('focus')
+  }
+
+  function clearMenus(e) {
+    if (e && e.which === 3) return
+    $(backdrop).remove()
+    $(toggle).each(function () {
+      var $this         = $(this)
+      var $parent       = getParent($this)
+      var relatedTarget = { relatedTarget: this }
+
+      if (!$parent.hasClass('open')) return
+
+      $parent.trigger(e = $.Event('hide.bs.dropdown', relatedTarget))
+
+      if (e.isDefaultPrevented()) return
+
+      $this.attr('aria-expanded', 'false')
+      $parent.removeClass('open').trigger('hidden.bs.dropdown', relatedTarget)
+    })
+  }
+
+  function getParent($this) {
+    var selector = $this.attr('data-target')
+
+    if (!selector) {
+      selector = $this.attr('href')
+      selector = selector && /#[A-Za-z]/.test(selector) && selector.replace(/.*(?=#[^\s]*$)/, '') // strip for ie7
+    }
+
+    var $parent = selector && $(selector)
+
+    return $parent && $parent.length ? $parent : $this.parent()
+  }
+
+
+  // DROPDOWN PLUGIN DEFINITION
+  // ==========================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this = $(this)
+      var data  = $this.data('bs.dropdown')
+
+      if (!data) $this.data('bs.dropdown', (data = new Dropdown(this)))
+      if (typeof option == 'string') data[option].call($this)
+    })
+  }
+
+  var old = $.fn.dropdown
+
+  $.fn.dropdown             = Plugin
+  $.fn.dropdown.Constructor = Dropdown
+
+
+  // DROPDOWN NO CONFLICT
+  // ====================
+
+  $.fn.dropdown.noConflict = function () {
+    $.fn.dropdown = old
+    return this
+  }
+
+
+  // APPLY TO STANDARD DROPDOWN ELEMENTS
+  // ===================================
+
+  $(document)
+    .on('click.bs.dropdown.data-api', clearMenus)
+    .on('click.bs.dropdown.data-api', '.dropdown form', function (e) { e.stopPropagation() })
+    .on('click.bs.dropdown.data-api', toggle, Dropdown.prototype.toggle)
+    .on('keydown.bs.dropdown.data-api', toggle, Dropdown.prototype.keydown)
+    .on('keydown.bs.dropdown.data-api', '[role="menu"]', Dropdown.prototype.keydown)
+    .on('keydown.bs.dropdown.data-api', '[role="listbox"]', Dropdown.prototype.keydown)
+
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: modal.js v3.3.4
  * http://getbootstrap.com/javascript/#modals
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -9492,12 +9659,15 @@ return jQuery;
   // ======================
 
   var Modal = function (element, options) {
-    this.options        = options
-    this.$body          = $(document.body)
-    this.$element       = $(element)
-    this.$backdrop      =
-    this.isShown        = null
-    this.scrollbarWidth = 0
+    this.options             = options
+    this.$body               = $(document.body)
+    this.$element            = $(element)
+    this.$dialog             = this.$element.find('.modal-dialog')
+    this.$backdrop           = null
+    this.isShown             = null
+    this.originalBodyPad     = null
+    this.scrollbarWidth      = 0
+    this.ignoreBackdropClick = false
 
     if (this.options.remote) {
       this.$element
@@ -9508,7 +9678,7 @@ return jQuery;
     }
   }
 
-  Modal.VERSION  = '3.3.2'
+  Modal.VERSION  = '3.3.4'
 
   Modal.TRANSITION_DURATION = 300
   Modal.BACKDROP_TRANSITION_DURATION = 150
@@ -9542,6 +9712,12 @@ return jQuery;
 
     this.$element.on('click.dismiss.bs.modal', '[data-dismiss="modal"]', $.proxy(this.hide, this))
 
+    this.$dialog.on('mousedown.dismiss.bs.modal', function () {
+      that.$element.one('mouseup.dismiss.bs.modal', function (e) {
+        if ($(e.target).is(that.$element)) that.ignoreBackdropClick = true
+      })
+    })
+
     this.backdrop(function () {
       var transition = $.support.transition && that.$element.hasClass('fade')
 
@@ -9553,7 +9729,6 @@ return jQuery;
         .show()
         .scrollTop(0)
 
-      if (that.options.backdrop) that.adjustBackdrop()
       that.adjustDialog()
 
       if (transition) {
@@ -9569,7 +9744,7 @@ return jQuery;
       var e = $.Event('shown.bs.modal', { relatedTarget: _relatedTarget })
 
       transition ?
-        that.$element.find('.modal-dialog') // wait for modal to slide in
+        that.$dialog // wait for modal to slide in
           .one('bsTransitionEnd', function () {
             that.$element.trigger('focus').trigger(e)
           })
@@ -9598,6 +9773,9 @@ return jQuery;
       .removeClass('in')
       .attr('aria-hidden', true)
       .off('click.dismiss.bs.modal')
+      .off('mouseup.dismiss.bs.modal')
+
+    this.$dialog.off('mousedown.dismiss.bs.modal')
 
     $.support.transition && this.$element.hasClass('fade') ?
       this.$element
@@ -9658,13 +9836,18 @@ return jQuery;
       var doAnimate = $.support.transition && animate
 
       this.$backdrop = $('<div class="modal-backdrop ' + animate + '" />')
-        .prependTo(this.$element)
-        .on('click.dismiss.bs.modal', $.proxy(function (e) {
-          if (e.target !== e.currentTarget) return
-          this.options.backdrop == 'static'
-            ? this.$element[0].focus.call(this.$element[0])
-            : this.hide.call(this)
-        }, this))
+        .appendTo(this.$body)
+
+      this.$element.on('click.dismiss.bs.modal', $.proxy(function (e) {
+        if (this.ignoreBackdropClick) {
+          this.ignoreBackdropClick = false
+          return
+        }
+        if (e.target !== e.currentTarget) return
+        this.options.backdrop == 'static'
+          ? this.$element[0].focus()
+          : this.hide()
+      }, this))
 
       if (doAnimate) this.$backdrop[0].offsetWidth // force reflow
 
@@ -9699,14 +9882,7 @@ return jQuery;
   // these following methods are used to handle overflowing modals
 
   Modal.prototype.handleUpdate = function () {
-    if (this.options.backdrop) this.adjustBackdrop()
     this.adjustDialog()
-  }
-
-  Modal.prototype.adjustBackdrop = function () {
-    this.$backdrop
-      .css('height', 0)
-      .css('height', this.$element[0].scrollHeight)
   }
 
   Modal.prototype.adjustDialog = function () {
@@ -9726,17 +9902,23 @@ return jQuery;
   }
 
   Modal.prototype.checkScrollbar = function () {
-    this.bodyIsOverflowing = document.body.scrollHeight > document.documentElement.clientHeight
+    var fullWindowWidth = window.innerWidth
+    if (!fullWindowWidth) { // workaround for missing window.innerWidth in IE8
+      var documentElementRect = document.documentElement.getBoundingClientRect()
+      fullWindowWidth = documentElementRect.right - Math.abs(documentElementRect.left)
+    }
+    this.bodyIsOverflowing = document.body.clientWidth < fullWindowWidth
     this.scrollbarWidth = this.measureScrollbar()
   }
 
   Modal.prototype.setScrollbar = function () {
     var bodyPad = parseInt((this.$body.css('padding-right') || 0), 10)
+    this.originalBodyPad = document.body.style.paddingRight || ''
     if (this.bodyIsOverflowing) this.$body.css('padding-right', bodyPad + this.scrollbarWidth)
   }
 
   Modal.prototype.resetScrollbar = function () {
-    this.$body.css('padding-right', '')
+    this.$body.css('padding-right', this.originalBodyPad)
   }
 
   Modal.prototype.measureScrollbar = function () { // thx walsh
@@ -9802,7 +9984,7 @@ return jQuery;
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: tooltip.js v3.3.2
+ * Bootstrap: tooltip.js v3.3.4
  * http://getbootstrap.com/javascript/#tooltip
  * Inspired by the original jQuery.tipsy by Jason Frame
  * ========================================================================
@@ -9818,17 +10000,17 @@ return jQuery;
   // ===============================
 
   var Tooltip = function (element, options) {
-    this.type       =
-    this.options    =
-    this.enabled    =
-    this.timeout    =
-    this.hoverState =
+    this.type       = null
+    this.options    = null
+    this.enabled    = null
+    this.timeout    = null
+    this.hoverState = null
     this.$element   = null
 
     this.init('tooltip', element, options)
   }
 
-  Tooltip.VERSION  = '3.3.2'
+  Tooltip.VERSION  = '3.3.4'
 
   Tooltip.TRANSITION_DURATION = 150
 
@@ -9854,6 +10036,10 @@ return jQuery;
     this.$element  = $(element)
     this.options   = this.getOptions(options)
     this.$viewport = this.options.viewport && $(this.options.viewport.selector || this.options.viewport)
+
+    if (this.$element[0] instanceof document.constructor && !this.options.selector) {
+      throw new Error('`selector` option must be specified when initializing ' + this.type + ' on the window.document object!')
+    }
 
     var triggers = this.options.trigger.split(' ')
 
@@ -10075,10 +10261,10 @@ return jQuery;
     this.replaceArrow(arrowDelta, $tip[0][arrowOffsetPosition], isVertical)
   }
 
-  Tooltip.prototype.replaceArrow = function (delta, dimension, isHorizontal) {
+  Tooltip.prototype.replaceArrow = function (delta, dimension, isVertical) {
     this.arrow()
-      .css(isHorizontal ? 'left' : 'top', 50 * (1 - delta / dimension) + '%')
-      .css(isHorizontal ? 'top' : 'left', '')
+      .css(isVertical ? 'left' : 'top', 50 * (1 - delta / dimension) + '%')
+      .css(isVertical ? 'top' : 'left', '')
   }
 
   Tooltip.prototype.setContent = function () {
@@ -10091,7 +10277,7 @@ return jQuery;
 
   Tooltip.prototype.hide = function (callback) {
     var that = this
-    var $tip = this.tip()
+    var $tip = $(this.$tip)
     var e    = $.Event('hide.bs.' + this.type)
 
     function complete() {
@@ -10108,7 +10294,7 @@ return jQuery;
 
     $tip.removeClass('in')
 
-    $.support.transition && this.$tip.hasClass('fade') ?
+    $.support.transition && $tip.hasClass('fade') ?
       $tip
         .one('bsTransitionEnd', complete)
         .emulateTransitionEnd(Tooltip.TRANSITION_DURATION) :
@@ -10252,7 +10438,7 @@ return jQuery;
       var data    = $this.data('bs.tooltip')
       var options = typeof option == 'object' && option
 
-      if (!data && option == 'destroy') return
+      if (!data && /destroy|hide/.test(option)) return
       if (!data) $this.data('bs.tooltip', (data = new Tooltip(this, options)))
       if (typeof option == 'string') data[option]()
     })
@@ -10269,6 +10455,115 @@ return jQuery;
 
   $.fn.tooltip.noConflict = function () {
     $.fn.tooltip = old
+    return this
+  }
+
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: popover.js v3.3.4
+ * http://getbootstrap.com/javascript/#popovers
+ * ========================================================================
+ * Copyright 2011-2015 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // POPOVER PUBLIC CLASS DEFINITION
+  // ===============================
+
+  var Popover = function (element, options) {
+    this.init('popover', element, options)
+  }
+
+  if (!$.fn.tooltip) throw new Error('Popover requires tooltip.js')
+
+  Popover.VERSION  = '3.3.4'
+
+  Popover.DEFAULTS = $.extend({}, $.fn.tooltip.Constructor.DEFAULTS, {
+    placement: 'right',
+    trigger: 'click',
+    content: '',
+    template: '<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>'
+  })
+
+
+  // NOTE: POPOVER EXTENDS tooltip.js
+  // ================================
+
+  Popover.prototype = $.extend({}, $.fn.tooltip.Constructor.prototype)
+
+  Popover.prototype.constructor = Popover
+
+  Popover.prototype.getDefaults = function () {
+    return Popover.DEFAULTS
+  }
+
+  Popover.prototype.setContent = function () {
+    var $tip    = this.tip()
+    var title   = this.getTitle()
+    var content = this.getContent()
+
+    $tip.find('.popover-title')[this.options.html ? 'html' : 'text'](title)
+    $tip.find('.popover-content').children().detach().end()[ // we use append for html objects to maintain js events
+      this.options.html ? (typeof content == 'string' ? 'html' : 'append') : 'text'
+    ](content)
+
+    $tip.removeClass('fade top bottom left right in')
+
+    // IE8 doesn't accept hiding via the `:empty` pseudo selector, we have to do
+    // this manually by checking the contents.
+    if (!$tip.find('.popover-title').html()) $tip.find('.popover-title').hide()
+  }
+
+  Popover.prototype.hasContent = function () {
+    return this.getTitle() || this.getContent()
+  }
+
+  Popover.prototype.getContent = function () {
+    var $e = this.$element
+    var o  = this.options
+
+    return $e.attr('data-content')
+      || (typeof o.content == 'function' ?
+            o.content.call($e[0]) :
+            o.content)
+  }
+
+  Popover.prototype.arrow = function () {
+    return (this.$arrow = this.$arrow || this.tip().find('.arrow'))
+  }
+
+
+  // POPOVER PLUGIN DEFINITION
+  // =========================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.popover')
+      var options = typeof option == 'object' && option
+
+      if (!data && /destroy|hide/.test(option)) return
+      if (!data) $this.data('bs.popover', (data = new Popover(this, options)))
+      if (typeof option == 'string') data[option]()
+    })
+  }
+
+  var old = $.fn.popover
+
+  $.fn.popover             = Plugin
+  $.fn.popover.Constructor = Popover
+
+
+  // POPOVER NO CONFLICT
+  // ===================
+
+  $.fn.popover.noConflict = function () {
+    $.fn.popover = old
     return this
   }
 
@@ -18432,6 +18727,212 @@ $.extend($.fn, {
     }
 }).call(this);
 
+/*!
+ * Bootstrap Context Menu
+ * Author: @sydcanem
+ * https://github.com/sydcanem/bootstrap-contextmenu
+ *
+ * Inspired by Bootstrap's dropdown plugin.
+ * Bootstrap (http://getbootstrap.com).
+ *
+ * Licensed under MIT
+ * ========================================================= */
+
+;(function($) {
+
+	'use strict';
+
+	/* CONTEXTMENU CLASS DEFINITION
+	 * ============================ */
+	var toggle = '[data-toggle="context"]';
+
+	var ContextMenu = function (element, options) {
+		this.$element = $(element);
+
+		this.before = options.before || this.before;
+		this.onItem = options.onItem || this.onItem;
+		this.scopes = options.scopes || null;
+
+		if (options.target) {
+			this.$element.data('target', options.target);
+		}
+
+		this.listen();
+	};
+
+	ContextMenu.prototype = {
+
+		constructor: ContextMenu
+		,show: function(e) {
+
+			var $menu
+				, evt
+				, tp
+				, items
+				, relatedTarget = { relatedTarget: this };
+
+			if (this.isDisabled()) return;
+
+			this.closemenu();
+
+			if (!this.before.call(this,e,$(e.currentTarget))) return;
+
+			$menu = this.getMenu();
+			$menu.trigger(evt = $.Event('show.bs.context', relatedTarget));
+
+			tp = this.getPosition(e, $menu);
+			items = 'li:not(.divider)';
+			$menu.attr('style', '')
+				.css(tp)
+				.addClass('open')
+				.on('click.context.data-api', items, $.proxy(this.onItem, this, $(e.currentTarget)))
+				.trigger('shown.bs.context', relatedTarget);
+
+			// Delegating the `closemenu` only on the currently opened menu.
+			// This prevents other opened menus from closing.
+			$('html')
+				.on('click.context.data-api', $menu.selector, $.proxy(this.closemenu, this));
+
+			return false;
+		}
+
+		,closemenu: function(e) {
+			var $menu
+				, evt
+				, items
+				, relatedTarget;
+
+			$menu = this.getMenu();
+
+			if(!$menu.hasClass('open')) return;
+
+			relatedTarget = { relatedTarget: this };
+			$menu.trigger(evt = $.Event('hide.bs.context', relatedTarget));
+
+			items = 'li:not(.divider)';
+			$menu.removeClass('open')
+				.off('click.context.data-api', items)
+				.trigger('hidden.bs.context', relatedTarget);
+
+			$('html')
+				.off('click.context.data-api', $menu.selector);
+			// Don't propagate click event so other currently
+			// opened menus won't close.
+			return false;
+		}
+
+		,keydown: function(e) {
+			if (e.which == 27) this.closemenu(e);
+		}
+
+		,before: function(e) {
+			return true;
+		}
+
+		,onItem: function(e) {
+			return true;
+		}
+
+		,listen: function () {
+			this.$element.on('contextmenu.context.data-api', this.scopes, $.proxy(this.show, this));
+			$('html').on('click.context.data-api', $.proxy(this.closemenu, this));
+			$('html').on('keydown.context.data-api', $.proxy(this.keydown, this));
+		}
+
+		,destroy: function() {
+			this.$element.off('.context.data-api').removeData('context');
+			$('html').off('.context.data-api');
+		}
+
+		,isDisabled: function() {
+			return this.$element.hasClass('disabled') || 
+					this.$element.attr('disabled');
+		}
+
+		,getMenu: function () {
+			var selector = this.$element.data('target')
+				, $menu;
+
+			if (!selector) {
+				selector = this.$element.attr('href');
+				selector = selector && selector.replace(/.*(?=#[^\s]*$)/, ''); //strip for ie7
+			}
+
+			$menu = $(selector);
+
+			return $menu && $menu.length ? $menu : this.$element.find(selector);
+		}
+
+		,getPosition: function(e, $menu) {
+			var mouseX = e.clientX
+				, mouseY = e.clientY
+				, boundsX = $(window).width()
+				, boundsY = $(window).height()
+				, menuWidth = $menu.find('.dropdown-menu').outerWidth()
+				, menuHeight = $menu.find('.dropdown-menu').outerHeight()
+				, tp = {"position":"absolute","z-index":9999}
+				, Y, X, parentOffset;
+
+			if (mouseY + menuHeight > boundsY) {
+				Y = {"top": mouseY - menuHeight + $(window).scrollTop()};
+			} else {
+				Y = {"top": mouseY + $(window).scrollTop()};
+			}
+
+			if ((mouseX + menuWidth > boundsX) && ((mouseX - menuWidth) > 0)) {
+				X = {"left": mouseX - menuWidth + $(window).scrollLeft()};
+			} else {
+				X = {"left": mouseX + $(window).scrollLeft()};
+			}
+
+			// If context-menu's parent is positioned using absolute or relative positioning,
+			// the calculated mouse position will be incorrect.
+			// Adjust the position of the menu by its offset parent position.
+			parentOffset = $menu.offsetParent().offset();
+			X.left = X.left - parentOffset.left;
+			Y.top = Y.top - parentOffset.top;
+ 
+			return $.extend(tp, Y, X);
+		}
+
+	};
+
+	/* CONTEXT MENU PLUGIN DEFINITION
+	 * ========================== */
+
+	$.fn.contextmenu = function (option,e) {
+		return this.each(function () {
+			var $this = $(this)
+				, data = $this.data('context')
+				, options = (typeof option == 'object') && option;
+
+			if (!data) $this.data('context', (data = new ContextMenu($this, options)));
+			if (typeof option == 'string') data[option].call(data, e);
+		});
+	};
+
+	$.fn.contextmenu.Constructor = ContextMenu;
+
+	/* APPLY TO STANDARD CONTEXT MENU ELEMENTS
+	 * =================================== */
+
+	$(document)
+	   .on('contextmenu.context.data-api', function() {
+			$(toggle).each(function () {
+				var data = $(this).data('context');
+				if (!data) return;
+				data.closemenu();
+			});
+		})
+		.on('contextmenu.context.data-api', toggle, function(e) {
+			$(this).contextmenu('show', e);
+
+			e.preventDefault();
+			e.stopPropagation();
+		});
+		
+}(jQuery));
+
 if(typeof LANGS == "undefined") var LANGS = {'US':{}};
 LANGS.US = {
 	"FE_UPLOAD" : "Upload Files",
@@ -18453,6 +18954,20 @@ LANGS.US = {
 	"FE_FILENAME" : "Name file: ",
 	"FE_LAST_MODIFIED" : "Last modified: ",
 	"FE_SIZE" : "Size: ",
+	"FE_DELETE_SELECTED" : "Delete selected",
+	"FE_INSERT_SELECTED" : "Insert selected",
+	"FE_VIEWS" : "Views: ",
+	"FE_VIEW_MINIATURE" : "View miniature",
+	"FE_VIEW_DETAILS" : "View details",
+	"FE_NOMBRE" : "Name",
+	"FE_TIPO" : "Type",
+	"FE_TAMANO" : "Size",
+	"FE_DATE" : "Date",
+	"FE_ACTIONS" : "Actions",
+	"FE_VIEW" : "View",
+	"FE_DOWNLOAD" : "Download",
+	"FE_INFORMATION" : "Information",
+	"FE_BACK" : "Back",
 	"BE_NEW_FOLDER_CREATED" : "Folder created: ",
 	"BE_NEW_FOLDER_EXISTED" : "Folder existed: ",
 	"BE_GETFILEALL_NOT_LEIBLE" : "File not readed",
@@ -18461,8 +18976,6 @@ LANGS.US = {
 	"BE_UPLOADALL_UPLOADS" : "Upload: ",
 	"BE_UPLOADALL_NOT_UPLOADS" : "Not permitido: ",
 	"BE_UPLOAD_MAX_UPLOAD" : "Máximo permitido: ",
-	"BE_NEW_FOLDER_EXISTED" : "Existed: ",
-	"BE_NEW_FOLDER_CREATED" : "Created: ",
 	"BE_DELETE_DELETED" : "File deleted",
 	"BE_DELETE_NOT_EXIED" : "File no existed",
 	"BE_RENAME_MODIFIED" : "File modificaded",
@@ -18493,6 +19006,20 @@ LANGS.ES = {
 	"FE_FILENAME" : "Nombre de archivo: ",
 	"FE_LAST_MODIFIED" : "Última modificación: ",
 	"FE_SIZE" : "Tamaño: ",
+	"FE_DELETE_SELECTED" : "Eliminar seleccionados",
+	"FE_INSERT_SELECTED" : "Insertar seleccionados",
+	"FE_VIEWS" : "Vistas: ",
+	"FE_VIEW_MINIATURE" : "Vista miniatura",
+	"FE_VIEW_DETAILS" : "Vista detalle",
+	"FE_NOMBRE" : "Nombre",
+	"FE_TIPO" : "Tipo",
+	"FE_TAMANO" : "Tamaño",
+	"FE_DATE" : "Fecha",
+	"FE_ACTIONS" : "Acciones",
+	"FE_VIEW" : "Ver",
+	"FE_DOWNLOAD" : "Descargar",
+	"FE_INFORMATION" : "Información",
+	"FE_BACK" : "Subir",
 	"BE_NEW_FOLDER_CREATED" : "Carpeta creada: ",
 	"BE_NEW_FOLDER_EXISTED" : "Carpeta ya existe: ",
 	"BE_GETFILEALL_NOT_LEIBLE" : "Archivo no leible",
@@ -18501,8 +19028,6 @@ LANGS.ES = {
 	"BE_UPLOADALL_UPLOADS" : "Subido: ",
 	"BE_UPLOADALL_NOT_UPLOADS" : "Not permitido: ",
 	"BE_UPLOAD_MAX_UPLOAD" : "Máximo permitido: ",
-	"BE_NEW_FOLDER_EXISTED" : "Ya existe: ",
-	"BE_NEW_FOLDER_CREATED" : "Creado: ",
 	"BE_DELETE_DELETED" : "Archivo borrado",
 	"BE_DELETE_NOT_EXIED" : "Archivo no existe",
 	"BE_RENAME_MODIFIED" : "Archivo modificado",
@@ -18518,8 +19043,13 @@ LANGS.ES = {
         var defaults = {
             url: "../conector.php",
             languaje: "ES",
-            upload_max: 5
-        }
+            upload_max: 5,
+            view: 'thumbs',
+            ext: ".jpg,.jpeg,.gif,.png,.svg,.txt,.pdf,.odp,.ods,.odt,.rtf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.csv,.ogv,.mp4,.webm,.m4v,.ogg,.mp3,.wav,.zip,.rar",
+            insertButton: false,
+            token: null,
+            tokenName: '_token'
+        };
         var settings = $.extend({}, defaults, options );
         var LANG = {};        
         $.each(LANGS, function(index, val) {
@@ -18529,7 +19059,7 @@ LANGS.ES = {
             }
         });
 
-        var _this = this;
+        var $this = this;
 
         function parseMsg(obj){
             if(typeof obj == 'object'){
@@ -18544,7 +19074,7 @@ LANGS.ES = {
                 var i = 0;
                 do{      
                     r = false;              
-                    var n = text.indexOf('%s');
+                    n = text.indexOf('%s');
                     if(n !== -1){
                         if(params.length > i){
                             var res = params[i].toString();
@@ -18644,7 +19174,7 @@ LANGS.ES = {
 
             if(typeof(search) === 'object' && typeof(replace) === 'string' ) {
             temp = replace; 
-            replace = new Array();
+            replace = [];
             for (i=0; i < search.length; i+=1) { 
               replace[i] = temp; 
             }
@@ -18674,98 +19204,22 @@ LANGS.ES = {
             }
             return sa ? s : s[0];
         }
-        function getFolder(path){
-            if(!path) path = '/';
-            var datos = {accion:"getfolder",path:path};
-            $.ajax({
-                type: "POST",
-                url: settings.url,
-                data :  datos,                          
-                beforeSend: function(objeto){
-                    _this.html('<div id="loading"></div>');
-                },
-                success: function(datos){
-                    var datos = $.parseJSON(datos);
-                    var item = $("#data_item > div");
-                    if(datos.status){
-                        var items = _this;
-                        items.html('');
-                        $.each(datos.data,function(index,element){
-                            el = item.clone();                  
-                            if(element.filename=="" && element.filetype==""){
-                                el.find('.image').html('<span class="glyphicon glyphicon-level-up" aria-hidden="true"></span>');
-                                el.find('p, button').remove();
-                                el.find('.image').addClass('dir').attr('rel',element.url);
-                                el.addClass('parentup');
-                            }else if(element.filetype==""){
-                                el.find('.image').html('<span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span>');
-                                el.find('.image').addClass('dir').attr('rel',element.url);
-                                var name = element.filename;if(name.length>18) name = name.substr(0,18)+'...';
-                                el.find('p').attr('title',element.filename).text(name);
-                                el.find('.delete').attr('data-name',element.filename);
-                                el.find('.rename').attr('data-name',element.filename);                      
-
-                            }else if(element.filetype=="jpg" || element.filetype=="png" || element.filetype=="jpeg" || element.filetype=="gif"){
-                                el.find('.image img').attr('src',element.preview);
-                                el.find('.image').addClass('fancybox').attr('href',element.path+element.filename).attr('title',traductor('FE_FILENAME') + element.filename+' | '+ traductor('FE_SIZE') +' '+formatBytes(element.size)+' | '+ traductor('FE_LAST_MODIFIED') +moment.unix(element.filemtime).format("DD/MM/YYYY"));
-                                var name = element.filename;if(name.length>18) name = name.substr(0,18)+'...';
-                                el.find('p').attr('title',element.filename).text(name);
-                                el.find('.delete').attr('data-name',element.filename);
-                                el.find('.rename').attr('data-name',element.filename);
-                            }else{
-                                el.find('.image').html('<span class="glyphicon glyphicon-file '+ element.filetype +'" aria-hidden="true"></span>');
-                                el.find('.image').addClass('fancybox').attr('href','#preview_file').attr('title',traductor('FE_FILENAME')+element.filename+' | '+ traductor('FE_SIZE')+formatBytes(element.size)+' | '+traductor('FE_LAST_MODIFIED')+moment.unix(element.filemtime).format("DD/MM/YYYY"));
-                                var name = element.filename;if(name.length>18) name = name.substr(0,18)+'...';
-                                el.find('p').attr('title',element.filename).text(name);
-                                el.find('.delete').attr('data-name',element.filename);
-                                el.find('.rename').attr('data-name',element.filename);
-                            }
-                            items.append(el);
-                        });
-                        
-                        $("#path").val(path);
-                        var ruta = path.split('/');
-                        var temp = new Array();
-                        var n = ruta.length;
-                        for (var i = 0; i < n; i++) {
-                            if(ruta[i]!==""){
-                                temp.push(ruta[i]);
-                            }
-                        };
-                        
-                        var rutacontent = $("#ruta");
-                        rutacontent.html('<li><a href="#" rel="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span></a></li>');
-                        var url ='/';
-                        $.each(temp,function(index,element){
-                            if( index < temp.length-1 ){
-                                url = url + element + '/';
-                                var el = $('<li><a href="#" rel="'+ url +'">'+element+'</a></li>');
-                                rutacontent.append(el);
-                            }else{
-                                var el = $('<li>'+element+'</li>');
-                                rutacontent.append(el);
-                            }
-                            
-                        });
-                        searchFiles();
-                         
-                    }
+        function validExt(filename){
+            var ext = removeExtension(filename);
+            var r = false;
+            for (var i = 0; i < settings.ext.length; i++) {
+                if(settings.ext[i] === ext){
+                    r = true;
+                    return false;
                 }
-            });
-        } 
-        function searchFiles(){
-            var text = $("#search").val();
-            if(text===""){
-                $("> div",_this).not('.parentup').removeClass('hidden');
-            }else{
-                $("> div",_this).not('.parentup').each(function(index,element){
-                    if($(element).find('p').text().indexOf(text) === -1 ){
-                        $(element).addClass('hidden');
-                    }else{
-                        $(element).removeClass('hidden');
-                    }
-                });
             }
+            return r;
+            
+        }
+        function removeExtension(filename){
+            var lastDotPosition = filename.lastIndexOf(".");
+            if (lastDotPosition === -1) return filename;
+            else return filename.substr(0, lastDotPosition);
         }
         function traductor(text){
             var r = false;
@@ -18781,258 +19235,584 @@ LANGS.ES = {
             });
             if (r) return text.replace(t1,t2); 
         }
-        // BEGIN TRADUCIR
-        _html = $(".panel-heading, button, span, label, h4, h3");
-        _html.text(function(index,text){
-            return traductor(text);
-        });
+        $this.loadFiles = function(data){
+            var items = $this;
+            items.html('');
+            var context_menu = $("#context-menu").clone().html();
+            var item = '<li><div class="item context" ><div class="check"><label><input type="checkbox" name="check"></label></div><a class="image" href="#"><img src=""></a><div class="col name"><h3><span class="texto"></span></h3></div><div class="col type"></div><div class="col size"></div><div class="col date"></div><div class="col actions"><div class="btn-group menu_options" data-tooltip="tooltip" data-placement="left" title="Acciones"><button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ><span aria-hidden="true" class="glyphicon glyphicon-tasks" ></button>'+context_menu+'</div></div></div></li>';
+            $.each(data,function(index,element){
+                el = $(item);                  
+                var filename = element.filename;
+                var filenameshort = filename;
+                var filetype = element.filetype;
+                var filesize = formatBytes(element.size);
+                var filedate = moment.unix(element.lastmodified).format("DD/MM/YYYY");
+                if(element.filename==="" && element.filetype===""){
+                    el.find('.image').html('<div class="content_icon"><span aria-hidden="true" class="glyphicon glyphicon-level-up"></span></div>');
+                    el.find('.image').addClass('dir').attr('rel',element.urlfolder);
+                    el.find('.texto').text(traductor('FE_BACK'));
+                    el.find('.type').text('');
+                    el.find('.size').text('');
+                    el.find('.actions').html('');
+                    el.addClass('parentup back');
+                    el.find('.item').removeClass('context');
+                    el.find('.check').remove();
+                }else if(element.filetype===""){
+                    el.find('.image').html('<div class="content_icon"><span aria-hidden="true" class="glyphicon glyphicon-folder-close"></span></div>');
+                    el.find('.image').addClass('dir').attr('rel',element.urlfolder);
+                    el.find('.name').attr('data-name-original',filename).attr('data-name',filename);
+                     el.find('.texto').text(filenameshort);
+                    el.find('.type').text('dir');
+                    el.find('.size').text('');
+                    el.find('.date').text(filedate);
 
-        _html = $("input[type='text'], button");
-        _html.attr({
-           "placeholder" : function(index,text){return traductor(text);},
-           "title" : function(index,text){return traductor(text);}
-        });        
-
-        $("#upload_max").text(function(index,text){
-           return traductor(text) + settings.upload_max; 
-        });
-        // END TRADUCIR
-
-        $("#search").on('keyup click', function(){
-            searchFiles();                  
-        });
-        $("#search_clear").on('click', function(event) {        
-            $("#search").val('');
-            searchFiles();                  
-        });             
-
-    // BEGIN DROPZONE
-    // http://www.dropzonejs.com/bootstrap.html
-    var previewNode = document.querySelector("#template");
-    previewNode.id = "";
-    var previewTemplate = previewNode.parentNode.innerHTML;
-    previewNode.parentNode.removeChild(previewNode);
-
-    var myDropzone = new Dropzone(document.body, { // Make the whole body a dropzone
-        url: settings.url, // Set the url
-        thumbnailWidth: 80,
-        thumbnailHeight: 80,
-        parallelUploads: 20,
-        previewTemplate: previewTemplate,
-        autoQueue: false, // Make sure the files aren't queued until manually added
-        previewsContainer: "#previews", // Define the container to display the previews
-        clickable: ".fileinput-button", // Define the element that should be used as click trigger to select files.
-        maxFiles: settings.upload_max,
-        // maxFilesize: 2
-        parallelUploads: settings.upload_max,
-        uploadMultiple: true,
-    });
-
-    myDropzone.on("addedfile", function(file) {
-        // Hookup the start button
-        $("#error-all").html('');
-        // file.previewElement.querySelector(".start").onclick = function() { myDropzone.enqueueFile(file); };
-    });
-    myDropzone.on("maxfilesexceeded", function(file) { this.removeFile(file); });
-    // Update the total progress bar
-    myDropzone.on("totaluploadprogress", function(progress) {
-        document.querySelector("#total-progress .progress-bar").style.width = progress + "%";
-    });
-
-    myDropzone.on("sending", function(file) {
-        // Show the total progress bar when upload starts
-        document.querySelector("#total-progress").style.opacity = "1";
-        // And disable the start button
-        // file.previewElement.querySelector(".start").setAttribute("disabled", "disabled");
-    });
-
-    // Hide the total progress bar when nothing's uploading anymore
-    myDropzone.on("queuecomplete", function(progress) {
-        document.querySelector("#total-progress").style.opacity = "0";      
-    });
-    myDropzone.on("processing", function(file) {
-    // this.options.params = {accion:"uploadfile", path : $("#path").val()};
-    });
-    myDropzone.on("processingmultiple", function(file) {
-        this.options.params = {accion:"uploadfile", path : $("#path").val()};
-    });
-    myDropzone.on("success", function(file, responseText, e) {
-        var datos = $.parseJSON(responseText);
-        if(datos.status){
-        $("#reloadfiles").val(1);       
-        }
-    });
-    myDropzone.on("successmultiple", function(file, responseText, e) {
-        var datos = $.parseJSON(responseText);
-        var msg = parseMsg(datos.msg);
-        if(datos.status==false)     
-        $("#error-all").html('<div class="alert alert-danger">'+msg+'</div>');
-        else
-        $("#error-all").html('<div class="alert alert-success">'+msg+'</div>');
-        });
-
-    // Setup the buttons for all transfers
-    // The "add files" button doesn't need to be setup because the config
-    // `clickable` has already been specified.
-    document.querySelector("#actions .start").onclick = function() {
-        myDropzone.enqueueFiles(myDropzone.getFilesWithStatus(Dropzone.ADDED));
-    };
-    document.querySelector("#actions .cancel").onclick = function() {
-        myDropzone.removeAllFiles(true);
-        $("#error-all").html('');
-    };  
-    // END DROPZONE
-
-    // LIST FOR DEFAULT
-    getFolder();
-
-    $(_this).on('click',".item .dir", function(event) {
-        event.preventDefault();
-        getFolder($(this).attr('rel'));
-    });
-
-    $("#ruta").on('click', 'a', function(event) {
-        event.preventDefault();
-        getFolder($(this).attr('rel'));
-    });
-
-    $('[data-toggle="tooltip"]').tooltip();
-     $('.fancybox').fancybox({
-        openEffect  : 'elastic',
-        closeEffect : 'elastic',
-        minWidth : 300,
-        minHeight : 200,
-        helpers : {
-            title : {
-                type : 'inside'
+                }else if(element.filetype==="jpg" || element.filetype==="png" || element.filetype=="jpeg" || element.filetype=="gif"){
+                    el.find('.image img').attr('src',element.preview);
+                    el.find('.image').addClass('fancybox').attr('rel',element.previewfull).attr('title',traductor('FE_FILENAME') + element.filename+' | '+ traductor('FE_SIZE') +' '+formatBytes(element.size)+' | '+ traductor('FE_LAST_MODIFIED') +moment.unix(element.lastmodified).format("DD/MM/YYYY"));
+                    el.find('.name').attr('data-name-original',filename).attr('data-name',filename);
+                     el.find('.texto').text(filenameshort);
+                    el.find('.type').text(filetype);
+                    el.find('.size').text(filesize);
+                    el.find('.date').text(filedate);
+                }else{
+                    el.find('.image').html('<div class="content_icon"><span aria-hidden="true" class="glyphicon glyphicon-file '+ element.filetype +'" ></span></div>');
+                    el.find('.image').addClass('fancybox').attr('rel','#preview_file').attr('title',traductor('FE_FILENAME')+element.filename+' | '+ traductor('FE_SIZE')+formatBytes(element.size)+' | '+traductor('FE_LAST_MODIFIED')+moment.unix(element.lastmodified).format("DD/MM/YYYY"));
+                    el.find('.name').attr('data-name-original',filename).attr('data-name',filename);
+                     el.find('.texto').text(filenameshort);
+                    el.find('.type').text(filetype);
+                    el.find('.size').text(filesize);
+                    el.find('.date').text(filedate);
+                }
+                items.append(el);
+            });            
+        };
+        $this.preview = function(item){
+            $.fancybox( {
+                href : item.find('a').attr('rel'), 
+                title : item.find('a').attr('title')
+            },
+            {
+                openEffect  : 'elastic',
+                closeEffect : 'elastic',
+                minWidth : 300,
+                minHeight : 200,
+                beforeShow:function(){
+                    var a = this.title.split('|');
+                    var t ='';
+                    if(a.length>0){
+                        for (var i = 0; i < a.length; i++) {
+                        var t2 ='';
+                        var t3 =[];
+                            t2 = a[i];
+                            t3 = t2.split(':');
+                            if(t3.length==1){
+                                t = t + '<p><strong>'+t3[0]+'</strong>:</p>';
+                            }else if(t3.length==2){
+                                t = t + '<p><strong>'+t3[0]+'</strong>:'+t3[1]+'</p>';
+                            }
+                        }
+                    }
+                    this.title = '<h3>'+ traductor('FE_INFORMATION') +'</h3><div>'+t+'</div';
+                },
+                helpers : {
+                    title : {
+                        type : 'inside'
+                    }
+                }
             }
-        }
-        });
-     
-
-    $('#rename_popup').on('show.bs.modal', function (e) {
-        $("#rename_popup #name").val('');
-        $("#rename_popup .result").html('');
-        var button = $(e.relatedTarget);
-        var name = button.data('name');
-        var modal = $(this);
-        modal.find('.modal-body .content input[name="name"]').val(name);     
-
-        modal.find('.modal-body .content input[name="nameold"]').val(name);
-        modal.find('.modal-body .result').html('');
-    });
-    $("#rename_popup_form").validate({
-        rules:{
-            name:{
-                required:true,
-                minlength:1
-            }
-        },
-        submitHandler: function(form) {
+            );                
+        };
+         $this.viewRename = function(item){
+            $('#rename_popup').modal('show');
+            $('#rename_popup').find('#nameold').val(item.find('.name').data('name-original'));
+            $('#rename_popup').find('#name').val(removeExtension(item.find('.name').data('name-original')));
+        };
+         $this.download = function(item){
+            var name = item.find('.name').data('name-original');
             var path = $("#path").val();
-            var datos = {accion:"renamefile",path:path};            
-            datos = $.param(datos) +'&'+ $(form).serialize();
+            var datos = settings.url+'?accion=download&path='+ path + '&name=' + name;            
+            if(settings.token!==null) datos = datos + '&' + settings.tokenName + '=' + settings.token;
+            window.document.location.href = datos;
+
+        };
+         $this.viewDelete = function(item){
+            var name = item.find('.name').data('name-original');
+            var modal = $('#delete_popup');
+            modal.find('.modal-body .content').html('<p>'+ name +'</p><input type="hidden" name="name" value="'+ name +'" />');
+            modal.find('.modal-body .result').html('');
+            $('#delete_popup').modal('show');            
+        };       
+        function getFolder(path){
+            if(!path) path = '/';
+            var datos2 = {accion:"getfolder",path:path}; 
+            if(settings.token!==null) datos2[settings.tokenName] = settings.token;
             $.ajax({
                 type: "POST",
                 url: settings.url,
-                data :  datos,                          
+                data :  datos2,                          
                 beforeSend: function(objeto){
-                    $("#rename_popup_form .result").html('<div class="progress"><div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div></div>');
+                    $this.html('<div id="loading"></div>');
                 },
                 success: function(datos){
-                    var datos = $.parseJSON(datos);
-                    var msg = parseMsg(datos.msg);
+                    datos = $.parseJSON(datos);
                     if(datos.status){
-                        getFolder(path);                                    
-                        $("#rename_popup_form .result").html('<div class="alert alert-success">'+ msg +'</div>');
-                        $("#rename_popup_form input[name='nameold']").val($("#rename_popup_form input[name='name']").val());
-                    }else{                                  
-                        $("#rename_popup_form .result").html('<div class="alert alert-danger">'+ msg +'</div>');
-                    }                               
-                }
-            });
-        }
-    });
+                        $this.loadFiles(datos.data);
 
-    $('#delete_popup').on('show.bs.modal', function (e) {
-        var button = $(e.relatedTarget);
-        var name = button.data('name');
-        var modal = $(this);
-        modal.find('.modal-body .content').html('<h3>'+ name +'</h3><input type="hidden" name="name" value="'+ name +'" />');
-        modal.find('.modal-body .result').html('');
-    });
-    
-    $("#delete_popup_form").validate({
-        submitHandler: function(form) {
-            var path = $("#path").val();
-            var datos = {accion:"deletefile",path:path};
-            datos = $.param(datos) +'&'+ $(form).serialize();
-            $.ajax({
-                type: "POST",
-                url: settings.url,
-                data :  datos,                          
-                beforeSend: function(objeto){
-                    $("#delete_popup_form .result").html('<div class="progress"><div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div></div>');
+                        $('.context').contextmenu({
+                          target:'#context-menu', 
+                          before: function(e,context) {
+                            this.getMenu().find("li").css('display','block');
+                            if(context.find('.image.dir').length>0){
+                                this.getMenu().find("li.view").css('display','none');
+                                this.getMenu().find("li.download").css('display','none');
+                            }
+                            return true;
+                          },
+                          onItem: function(context,e) {
+                            if($(e.target).parent().is('.view')){
+                            $this.preview(context);                                
+                            }
+                            if($(e.target).parent().is('.rename')){
+                            $this.viewRename(context);                                
+                            }
+                            if($(e.target).parent().is('.download')){
+                            $this.download(context);                                
+                            }
+                            if($(e.target).parent().is('.delete')){
+                            $this.viewDelete(context);                                
+                            }
+                          }
+                        });
+                        $('.menu_options').on('show.bs.dropdown', function (e) {
+                          var context = $(this).parents('.item');
+                          $(this).find('li').css('display','block');
+                          if(context.find('.image.dir').length>0){
+                                $(this).find('li.view').css('display','none');
+                                $(this).find('li.download').css('display','none');
+                            }
+                        }).bind('contextmenu', function(event) {
+                            return false;
+                        });
+                        $('.menu_options').on('click', 'li > a', function(event) {
+                            event.preventDefault();
+                            if($(this).parent().is('.view')){
+                            $this.preview($(this).parents('.item'));                                
+                            }
+                            if($(this).parent().is('.rename')){
+                            $this.viewRename($(this).parents('.item'));                                
+                            }
+                            if($(this).parent().is('.download')){
+                            $this.download($(this).parents('.item'));                                
+                            }
+                            if($(this).parent().is('.delete')){
+                            $this.viewDelete($(this).parents('.item'));                                
+                            }
+                        });
+                        // BEGIN VIEWS
+                        if($("#view_thumbs").is('.active')){                           
+                            $(".item .col.name").each(function(index, el) {
+                                var ori = $(el).attr('data-name');
+                                var des = $(el).find('.texto').text();
+                                $(el).attr('data-name',ori).find('.texto').text(des);
+                            });
+                        }else if($("#view_details").is('.active')){                           
+                            $(".item .col.name").each(function(index, el) {
+                                var ori = $(el).attr('data-name');
+                                var des = $(el).find('.texto').text();                                
+                                $(el).attr('data-name',des).find('.texto').text(ori);
+                            });
+                        }
+                        // END VIEWS
+                        $("#path").val(path);
+                        var ruta = path.split('/');
+                        var temp = [];
+                        var n = ruta.length;
+                        for (var i = 0; i < n; i++) {
+                            if(ruta[i]!==""){
+                                temp.push(ruta[i]);
+                            }
+                        }
+                        
+                        var rutacontent = $("#ruta");
+                        rutacontent.html('<li><a href="#" rel="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span></a></li>');
+                        var url ='/';
+                        $.each(temp,function(index,element){
+                            var el = null;
+                            if( index < temp.length-1 ){
+                                url = url + element + '/';
+                                el = $('<li><a href="#" rel="'+ url +'">'+element+'</a></li>');
+                                rutacontent.append(el);
+                            }else{
+                                el = $('<li>'+element+'</li>');
+                                rutacontent.append(el);
+                            }
+                            
+                        });
+                        searchFiles();
+                         
+                    }
                 },
-                success: function(datos){
-                    var datos = $.parseJSON(datos);
-                    var msg = parseMsg(datos.msg);
-                    if(datos.status){
-                        getFolder(path);                                    
-                        $("#delete_popup_form .result").html('<div class="alert alert-success">'+ msg +'</div>');
-                    }else{                                  
-                        $("#delete_popup_form .result").html('<div class="alert alert-danger">'+ msg +'</div>');
-                    }                               
+                error: function(request, textStatus, errorThrown){
+                    if (request.status === 0) {
+                        $this.html('<div class="alert alert-danger text-center">Not connect: Verify Network.</div>');
+                    } else if (request.status == 404) {
+                        $this.html('<div class="alert alert-danger text-center">Requested page not found [404]</div>');
+                    } else if (request.status == 500) {
+                        $this.html('<div class="alert alert-danger text-center">Internal Server Error [500].</div>');
+                    } else if (textStatus === 'parsererror') {
+                        $this.html('<div class="alert alert-danger text-center">Requested JSON parse failed.</div>');
+                    } else if (textStatus === 'timeout') {
+                        $this.html('<div class="alert alert-danger text-center">Time out error.</div>');
+                    } else if (textStatus === 'abort') {
+                        $this.html('<div class="alert alert-danger text-center">Ajax request aborted.</div>');
+                    } else {
+                        alert('Uncaught Error: ' + request.responseText);
+                    }
                 }
             });
-        }
-    });
-
-    $('#newfolder_popup').on('show.bs.modal', function (e) {
-        $("#name").val('');
-        $("#newfolder_popup_result").html('');
-    });
-    $('#upload_popup').on('hide.bs.modal', function (e) {
-        $("#error-all").html('');
-        myDropzone.removeAllFiles(true);
-      if($("#reloadfiles").val()==1){                                       
-        $("#reloadfiles").val(0);
-        getFolder($("#path").val());
-      }
-    })
-    $("#form_popup").validate({
-        rules:{
-            name:{
-                required:true,
-                minlength:1
+        } 
+        function searchFiles(){
+            var text = $("#search").val();
+            if(text===""){
+                $("li",$this).not('.parentup').removeClass('hidden');
+            }else{
+                $("li",$this).not('.parentup').find('div.item').each(function(index,element){
+                    if($(element).find('.name').data('name').toLowerCase().indexOf(text.toLowerCase()) === -1 ){
+                        $(element).parent().addClass('hidden');
+                    }else{
+                        $(element).parent().removeClass('hidden');
+                    }
+                });
             }
-        },
-        submitHandler: function(form) {
-            var path = $("#path").val();
-            var datos = {accion:"newfolder",path:path};
-            datos = $.param(datos) +'&'+ $(form).serialize();
-            $.ajax({
-                type: "POST",
-                url: settings.url,
-                data :  datos,                          
-                beforeSend: function(objeto){
-                    $("#newfolder_popup_result").html('<div class="progress"><div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div></div>');
-                },
-                success: function(datos){
-                    var datos = $.parseJSON(datos);
-                    var msg = parseMsg(datos.msg);
-                    if(datos.status){
-                        getFolder(datos.data.path);                                 
-                        $("#newfolder_popup_result").html('<div class="alert alert-success">'+ msg +'</div>');
-                    }else{                                  
-                        $("#newfolder_popup_result").html('<div class="alert alert-danger">'+ msg +'</div>');
-                    }                   
+        }
+        $this.init = function(){
+            // BEGIN TRADUCIR
+            _html = $(".panel-heading, button, span, label, h4, h3, #row_header_content .col, #context-menu a");
+            _html.text(function(index,text){
+                return traductor(text);
+            });
+
+            _html = $("input[type='text'], button");
+            _html.attr({
+               "placeholder" : function(index,text){return traductor(text);},
+               "title" : function(index,text){return traductor(text);}
+            });        
+
+            $("#upload_max").text(function(index,text){
+               return traductor(text) + settings.upload_max; 
+            });
+            // END TRADUCIR
+            // BEGIN TOKEN
+            if(settings.token){
+                $("body").append('<input type="hidden" id="token" name="'+settings.tokenName+'" value="'+settings.token+'" />');
+            }
+            // END TOKEN
+            // BEGIN SEARCH
+            $("#search").on('keyup click', function(){
+                searchFiles();                  
+            });
+            $("#search_clear").on('click', function(event) {        
+                $("#search").val('');
+                searchFiles();                  
+            });            
+            // END SEARCH 
+            // BEGIN DROPZONE
+            var previewNode = $("#template");
+            previewNode.attr('id','');
+            var previewTemplate = previewNode.parent().html();
+            previewNode.remove();
+
+            var myDropzone = new Dropzone(document.body, { 
+                url: settings.url, // Set the url
+                thumbnailWidth: 80,
+                thumbnailHeight: 80,
+                // parallelUploads: 20,
+                previewTemplate: previewTemplate,
+                autoQueue: false, 
+                previewsContainer: "#previews", 
+                clickable: ".fileinput-button", 
+                maxFiles: settings.upload_max,
+                // maxFilesize: 2
+                parallelUploads: settings.upload_max,
+                uploadMultiple: true,
+                acceptedFiles: settings.ext,
+                dictInvalidFileType: traductor("BE_GETFILEALL_NOT_PERMITIDO"),
+            });
+            
+            myDropzone.on("addedfile", function(file) {
+                $("#error-all").html('');
+            });
+            myDropzone.on("maxfilesexceeded", function(file) { this.removeFile(file); });
+            myDropzone.on("totaluploadprogress", function(progress) {
+                $("#total-progress .progress-bar").width(progress + "%");
+            });
+            myDropzone.on("sending", function(file) {
+                $("#total-progress").css('opacity',1);
+            });
+            myDropzone.on("queuecomplete", function(progress) {
+                $("#total-progress").css('opacity',0);    
+            });
+            myDropzone.on("processing", function(file) {
+            });
+            myDropzone.on("processingmultiple", function(file) {
+                var datos = {accion:"uploadfile", path : $("#path").val()};
+                if(settings.token!==null) datos[settings.tokenName] = settings.token;          
+                this.options.params = datos;
+
+            });
+            myDropzone.on("success", function(file, responseText, e) {
+                var datos = $.parseJSON(responseText);
+                if(datos.status){
+                $("#reloadfiles").val(1);       
                 }
             });
-        }
-    });
+            myDropzone.on("successmultiple", function(file, responseText, e) {
+                var datos = $.parseJSON(responseText);
+                var msg = parseMsg(datos.msg);
+                if(datos.status===false)     
+                $("#error-all").html('<div class="alert alert-danger">'+msg+'</div>');
+                else
+                $("#error-all").html('<div class="alert alert-success">'+msg+'</div>');
+            });
+            $("#actions .start").on('click', function(event) {
+                event.preventDefault();
+                myDropzone.enqueueFiles(myDropzone.getFilesWithStatus(Dropzone.ADDED));
+            });
+            
+            $("#actions .cancel").on('click', function(event) {
+                event.preventDefault();
+                myDropzone.removeAllFiles(true);
+                $("#error-all").html('');
+            }); 
+            // END DROPZONE
+            // BEGIN VIEWS
+            if(settings.views=='thumbs'){
+                $("#view_thumbs").addClass('active');
+                $("#view_details").removeClass('active');
+                $("#content_list").removeClass('view_detalles');
+            }else if(settings.views=='details'){
+                $("#view_thumbs").removeClass('active');
+                $("#view_details").addClass('active');
+                $("#content_list").addClass('view_detalles');       
+            }
+            $("#view_thumbs").on('click',  function(event) {        
+                $("#view_thumbs").addClass('active');
+                $("#view_details").removeClass('active');
+                $("#content_list").removeClass('view_detalles');
+                $(".item .col.name").each(function(index, el) {
+                    var ori = $(el).attr('data-name');
+                    var des = $(el).find('.texto').text();
+                    $(el).attr('data-name',des).find('.texto').text(ori);
+                });
+            });
+            $("#view_details").on('click',  function(event) {        
+                $("#view_thumbs").removeClass('active');
+                $("#view_details").addClass('active');
+                $("#content_list").addClass('view_detalles');
+                $(".item .col.name").each(function(index, el) {
+                    var ori = $(el).attr('data-name');
+                    var des = $(el).find('.texto').text();
+                    $(el).attr('data-name',des).find('.texto').text(ori);
+                });
+            });    
+            // END VIEWS
+            // BEGIN ADD EVENT TO UI
+            $("#ruta").on('click', 'a', function(event) {
+                event.preventDefault();
+                getFolder($(this).attr('rel'));
+            });
 
- 
+            $('[data-tooltip="tooltip"]').tooltip();
+
+            $('#rename_popup').on('show.bs.modal', function (e) {
+                $("#rename_popup #name").val('');
+                $("#rename_popup .result").html('');
+                var button = $(e.relatedTarget);
+                var name = button.data('name');
+                var modal = $(this);
+                modal.find('.modal-body .content input[name="name"]').val(name);     
+
+                modal.find('.modal-body .content input[name="nameold"]').val(name);
+                modal.find('.modal-body .result').html('');
+            });
+            $("#rename_popup_form").validate({
+                rules:{
+                    name:{
+                        required:true,
+                        minlength:1
+                    }
+                },
+                submitHandler: function(form) {
+                    var path = $("#path").val();
+                    var datos = {accion:"renamefile",path:path};  
+                    if(settings.token!==null) datos[settings.tokenName] = settings.token;          
+                    datos = $.param(datos) +'&'+ $(form).serialize();
+                    $.ajax({
+                        type: "POST",
+                        url: settings.url,
+                        data :  datos,                          
+                        beforeSend: function(objeto){
+                            $("#rename_popup_form .result").html('<div class="progress"><div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div></div>');
+                        },
+                        success: function(datos){
+                            datos = $.parseJSON(datos);
+                            var msg = parseMsg(datos.msg);
+                            if(datos.status){
+                                getFolder(path);
+                                $("#rename_popup_form .result").html('<div class="alert alert-success">'+ msg +'</div>');
+                                $("#rename_popup_form input[name='nameold']").val(datos.data.namefile);
+                                $("#rename_popup_form input[name='name']").val(removeExtension(datos.data.namefile));
+                            }else{                                  
+                                $("#rename_popup_form .result").html('<div class="alert alert-danger">'+ msg +'</div>');
+                            }                               
+                        }
+                    });
+                }
+            });
+            
+            $("#select_delete_popup").on('click', function(event) {
+                $("#delete_popup_form .result").html('');                
+                var ic = $this.find('.item.active');
+                if(ic.length>0){
+                    var modal = $('#delete_popup');
+                    var r = '';
+                    $.each(ic, function(index, val) {
+                        r = r + '<p>'+ $(val).find('.name').data('name-original') +'</p><input type="hidden" name="name[]" value="'+ $(val).find('.name').data('name-original') +'" />';
+                    });
+                    modal.find('.modal-body .content').html(r);
+                    $('#delete_popup').modal('show');            
+                }else{
+                    return false;
+                }
+            });
+
+            $("#delete_popup_form").validate({
+                submitHandler: function(form) {
+                    var path = $("#path").val();
+                    var datos = {accion:"deletefile",path:path};
+                    if(settings.token!==null) datos[settings.tokenName] = settings.token;          
+                    datos = $.param(datos) +'&'+ $(form).serialize();
+                    $.ajax({
+                        type: "POST",
+                        url: settings.url,
+                        data :  datos,                          
+                        beforeSend: function(objeto){
+                            $("#delete_popup_form .result").html('<div class="progress"><div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div></div>');
+                        },
+                        success: function(datos){
+                            datos = $.parseJSON(datos);
+                            var msg = parseMsg(datos.msg);
+                            if(datos.status){
+                                $("#delete_popup_form .result").html('');
+                                var data = datos.data;
+                                if(data.length>0){
+                                    $.each(data, function(index, val) {                                        
+                                        $("#delete_popup_form .content p").each(function(index2, val2) {
+                                            if($(val2).text()===val.namefile){
+                                                if(val.status)
+                                                    $(val2).append(' <span class="text-success"><span aria-hidden="true" class="glyphicon glyphicon-ok"></span>'+ parseMsg(val)+'</span>');                                                    
+                                                else
+                                                    $(val2).append(' <span class="text-danger"><span aria-hidden="true" class="glyphicon glyphicon-alert"></span>'+ parseMsg(val)+'</span>');                                                    
+                                                return false;
+                                            }
+                                        });                                        
+                                    });
+                                }else{
+                                    $("#delete_popup_form .result").html('<div class="alert alert-success">'+ msg +'</div>');
+                                }                                    
+                                getFolder(path);
+                            }else{                                  
+                                $("#delete_popup_form .result").html('<div class="alert alert-danger">'+ msg +'</div>');
+                            }                               
+                        }
+                    });
+                }
+            });            
+
+            $('#newfolder_popup').on('show.bs.modal', function (e) {
+                $("#name").val('');
+                $("#newfolder_popup_result").html('');
+            });
+            $('#upload_popup').on('hide.bs.modal', function (e) {
+                $("#error-all").html('');
+                myDropzone.removeAllFiles(true);
+              if($("#reloadfiles").val()==1){                                       
+                $("#reloadfiles").val(0);
+                getFolder($("#path").val());
+              }
+            });
+            $("#form_popup").validate({
+                rules:{
+                    name:{
+                        required:true,
+                        minlength:1
+                    }
+                },
+                submitHandler: function(form) {
+                    var path = $("#path").val();
+                    var datos = {accion:"newfolder",path:path};
+                    if(settings.token!==null) datos[settings.tokenName] = settings.token;          
+                    datos = $.param(datos) +'&'+ $(form).serialize();
+                    $.ajax({
+                        type: "POST",
+                        url: settings.url,
+                        data :  datos,                          
+                        beforeSend: function(objeto){
+                            $("#newfolder_popup_result").html('<div class="progress"><div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div></div>');
+                        },
+                        success: function(datos){
+                            datos = $.parseJSON(datos);
+                            var msg = parseMsg(datos.msg);
+                            if(datos.status){
+                                getFolder(path);                                 
+                                $("#newfolder_popup_result").html('<div class="alert alert-success">'+ msg +'</div>');
+                            }else{                                  
+                                $("#newfolder_popup_result").html('<div class="alert alert-danger">'+ msg +'</div>');
+                            }                   
+                        }
+                    });
+                }
+            });
+            if(settings.insertButton===false) $("#select_insert").remove();
+            $("#select_insert").on('click', function(event) {
+                var ic = $this.find('.item.active');
+                if(ic.length>0){
+                    return ic;
+                }else{
+                    return false;
+                }
+            });
+            // END ADD EVENT TO UI
+            // BEGIN ADD EVENT TO ITEMS
+            $this.on('click',".item .image, .item .col:not(.actions)", function(event) {
+                event.preventDefault();
+                if($(this).parents('.item').find('a.image').is('.dir')){
+                    getFolder($(this).parents('.item').find('a.image').attr('rel'));
+                }else{
+                    $this.preview($(this).parents('.item'));
+                }
+            });
+            $this.on('click',".check input", function(event) {
+                // event.preventDefault();                
+                if($(this).is(':checked'))
+                    $(this).parents('.item').addClass('active');
+                else
+                    $(this).parents('.item').removeClass('active');
+                if($this.find('.item.active').length>0){
+                    $("#select_delete_popup").removeClass('disabled');
+                    $("#select_insert").removeClass('disabled');
+                }
+                else{
+                    $("#select_delete_popup").addClass('disabled');
+                    $("#select_insert").addClass('disabled');
+                }
+            });
+            // END ADD EVENT TO ITEMS
+            // BEGIN LIST OF ITEMS
+            getFolder();
+            // END LIST OF ITEMS
+        };
+        $this.init();
     };
  
 }( jQuery ));
