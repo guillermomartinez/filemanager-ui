@@ -12,6 +12,7 @@
 	<link rel="stylesheet" type="text/css" href="src/css/responsive.css">
 </head>
 <body>
+<div class="filemanager">	
 	<div class="navbar navbar-fixed-top">
 	    <div class="navbar-inner">
 	        <div class="container-fluid">
@@ -32,6 +33,10 @@
 					<button id="select_insert" data-tooltip="tooltip" title="FE_INSERT_SELECTED" data-placement="bottom" class="btn btn-default btn-sm disabled">
 						<span aria-hidden="true" class="glyphicon glyphicon-file"></span> 
 						<span aria-hidden="true" class="glyphicon glyphicon-ok"></span> 
+					</button>
+					<button data-target="#new" data-tooltip="tooltip" data-toggle="modal" title="FE_CREATE_DIRECTORY" data-placement="bottom" class="btn btn-default btn-sm ">
+						<span aria-hidden="true" class="glyphicon glyphicon-plus"></span>
+						<span aria-hidden="true" class="glyphicon glyphicon-folder-open"></span>
 					</button>
 	        	</div>
 	        	<div class="col-xs-5 col-sm-3 col-md-2">
@@ -66,7 +71,7 @@
 	        </div>
 	    </div>
 	</div>
-	<div class="container-fluid filemanager">
+	<div class="container-fluid">
 		<input type="hidden" id="path" name="path" value="">
 		<div class="hidden">
 		<div id="preview_file"><span aria-hidden="true" class="glyphicon glyphicon-file txt"></span></div>
@@ -258,6 +263,7 @@
 	     </div>
 
 	</div>
+</div>	
 	<script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
 	<script type="text/javascript" src="src/js/bootstrap.js"></script>
 	<script type="text/javascript" src="bower_components/jquery-validation/dist/jquery.validate.js"></script>

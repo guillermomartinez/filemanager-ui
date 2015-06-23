@@ -19,7 +19,29 @@
                 return false;
             }
         });
-
+        settings.getModalTemplate = function(options){
+            var defaults = {
+                modal_id : '',
+                header : {
+                    title:'Title'
+                },
+                body : '',
+                footer : {
+                    ok:'Ok',
+                    close:'Close'
+                }
+            };
+            var config = $.extend({}, defaults, options );
+            console.log(config);
+            var template = '<div class="modal fade" id="'+config.modal_id+'" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"><div class="modal-dialog"><form id="form_popup" action="" method="post"><div class="modal-content">';
+            if(config.header)
+                template = template + '<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button><h4 class="modal-title" id="myModalLabel">'+config.header.title+'</h4></div>';
+            template = template + '<div class="modal-body">'+config.body+'</div>';
+            if(config.footer)
+                template = template + '<div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">'+config.footer.close+'</button><button type="submit" class="btn btn-primary">'+config.footer.ok+'</button></div>';
+            template = template + '</div></form></div></div>';
+            return template;
+        };
         var $this = this;
 
         function parseMsg(obj){
@@ -468,6 +490,8 @@
             }
         }
         $this.init = function(){
+            $("body").append(settings.getModalTemplate({modal_id:"new",header:false,footer:false}));
+            $("body").append(settings.getModalTemplate({modal_id:"new",header:false,footer:false}));
             // BEGIN TRADUCIR
             _html = $(".panel-heading, button, span, label, h4, h3, #row_header_content .col, #context-menu a");
             _html.text(function(index,text){
