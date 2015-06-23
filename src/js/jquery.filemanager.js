@@ -302,7 +302,28 @@
             modal.find('.modal-body .content').html('<p>'+ name +'</p><input type="hidden" name="name" value="'+ name +'" />');
             modal.find('.modal-body .result').html('');
             $('#delete_popup').modal('show');            
-        };       
+        };
+        $this.insert = function(){
+            var ic = $this.find('.item.active');
+            if(ic.length>0){
+                var res = [];
+                $.each(ic, function(index, val) {
+                    var obj = {};
+                    obj.url = $(val).find(".image").attr("rel");
+                    obj.thumbs = $(val).find(".image img").attr("src");
+                    obj.filename = $(val).find(".name").attr("data-name-original");
+                    obj.filetype = $(val).find(".type").text();
+                    obj.filesize = $(val).find(".size").text();
+                    obj.lastmodified = $(val).find(".date").text();
+                    res.push(obj);
+                    
+                });
+                // console.log(res);
+                return res;
+            }else{
+                return false;
+            }
+        };
         function getFolder(path){
             if(!path) path = '/';
             var datos2 = {accion:"getfolder",path:path}; 
@@ -736,25 +757,41 @@
             });
             if(settings.insertButton===false) $("#select_insert").remove();
             $("#select_insert").on('click', function(event) {
-                var ic = $this.find('.item.active');
-                if(ic.length>0){
-                    var res = [];
-                    $.each(ic, function(index, val) {
-                        var obj = {};
-                        obj.url = $(val).find(".image").attr("rel");
-                        obj.thumbs = $(val).find(".image img").attr("src");
-                        obj.filename = $(val).find(".name").attr("data-name-original");
-                        obj.filetype = $(val).find(".type").text();
-                        obj.filesize = $(val).find(".size").text();
-                        obj.lastmodified = $(val).find(".date").text();
-                        res.push(obj);
-                        
-                    });
-                    // console.log(res);
-                    return res;
-                }else{
-                    return false;
+                var items = $this.insert();
+                if(window.parent.tinymce && window.parent.tinymce.activeEditor.windowManager){
+                    window.parent.tinymce.activeEditor.windowManager.getParams().oninsert(items);
+                    window.parent.tinymce.activeEditor.windowManager.close();
                 }
+                // console.log(r);
+                // console.log(window.parent.tinymce.windowManager);
+                // console.log(window.parent.tinymce.activeEditor.windowManager);
+                // var args = window.parent.tinymce.activeEditor.windowManager.getParams();
+                // console.log(args.arg1, args.arg2);
+                // window.parent.tinymce.activeEditor.windowManager.close();
+                // console.log(window.parent.top);
+                // $(".mce-close").trigger('click');
+                // if (window.opener) {
+                //     window.close();
+                // }
+                // var ic = $this.find('.item.active');
+                // if(ic.length>0){
+                //     var res = [];
+                //     $.each(ic, function(index, val) {
+                //         var obj = {};
+                //         obj.url = $(val).find(".image").attr("rel");
+                //         obj.thumbs = $(val).find(".image img").attr("src");
+                //         obj.filename = $(val).find(".name").attr("data-name-original");
+                //         obj.filetype = $(val).find(".type").text();
+                //         obj.filesize = $(val).find(".size").text();
+                //         obj.lastmodified = $(val).find(".date").text();
+                //         res.push(obj);
+                        
+                //     });
+                //     // console.log(res);
+                //     return res;
+                // }else{
+                //     return false;
+                // }
             });
             // END ADD EVENT TO UI
             // BEGIN ADD EVENT TO ITEMS

@@ -114,7 +114,7 @@ line-height: 15px;
 background-color: #efefef;
 display: block;
 height: auto;
-left: 0;
+left: 35px;
 position: absolute;
 top: 0;
 width: 40px;
@@ -209,9 +209,13 @@ width: 90px;
 .filemanager #content_list.view_detalles .item .check {
   display: block;
   height: 35px;
-  left: 50px;
+  left: 0px;
   position: absolute;
   width: 35px;
+  background-color: transparent;
+}
+.filemanager #content_list.view_detalles .item.active .check {
+    background-color: #337ab7;
 }
 .filemanager #content_list.view_detalles .item .check label {
   display: block;
