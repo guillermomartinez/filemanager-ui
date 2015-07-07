@@ -3,9 +3,12 @@ body {
     color: #000;
     font-family: arial;
     font-size: 14px;
-    padding-top: 50px;
 }
-.navbar.navbar-fixed-top {
+.filemanager{
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.filemanager .navbar {
     background-color: #fff;
     border: 0 none;
     margin: 0;
