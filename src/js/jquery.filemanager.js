@@ -61,68 +61,10 @@
         html_init = html_init+'</div>';
         filemanager.append(html_init);
         var $this = filemanager.find("#list");
-        console.log(filemanager);
-
-        function parseMsg(obj){
-            if(typeof obj == 'object'){
-                var text = obj.query;
-                var params = obj.params;
-                // Loading languaje
-                $.each(LANG, function(index2, valor) {
-                    text = str_replace(index2,valor,text);                    
-                }); 
-                // Replace params
-                var n = text.indexOf('%s');
-                var i = 0;
-                var r = false;              
-                do{      
-                    r = false;              
-                    n = text.indexOf('%s');
-                    if(n !== -1){
-                        if(params.length > i){
-                            var res = params[i].toString();
-                            if(res !==''){
-                                text = substr_replace(text,res,n,2);
-                                i++;
-                                r = true;
-                            }
-                        }
-                    }
-                }
-                while(r);
-                text = str_replace('%s','',text);
-                return text;
-            }
-        }
-
-        function formatBytes(bytes) {
-            if(bytes < 1024) 
-                return bytes + " Bytes";
-            else if(bytes < 1048576) 
-                return(bytes / 1024).toFixed(3) + " KB";
-            else if(bytes < 1073741824) 
-                return(bytes / 1048576).toFixed(3) + " MB";
-            else 
-                return(bytes / 1073741824).toFixed(3) + " GB";
-        }
+        // console.log(filemanager);
         function substr_replace(str, replace, start, length) {
-          //  discuss at: http://phpjs.org/functions/substr_replace/
-          // original by: Brett Zamir (http://brett-zamir.me)
-          //   example 1: substr_replace('ABCDEFGH:/MNRPQR/', 'bob', 0);
-          //   returns 1: 'bob'
-          //   example 2: $var = 'ABCDEFGH:/MNRPQR/';
-          //   example 2: substr_replace($var, 'bob', 0, $var.length);
-          //   returns 2: 'bob'
-          //   example 3: substr_replace('ABCDEFGH:/MNRPQR/', 'bob', 0, 0);
-          //   returns 3: 'bobABCDEFGH:/MNRPQR/'
-          //   example 4: substr_replace('ABCDEFGH:/MNRPQR/', 'bob', 10, -1);
-          //   returns 4: 'ABCDEFGH:/bob/'
-          //   example 5: substr_replace('ABCDEFGH:/MNRPQR/', 'bob', -7, -1);
-          //   returns 5: 'ABCDEFGH:/bob/'
-          //   example 6: substr_replace('ABCDEFGH:/MNRPQR/', '', 10, -1)
-          //   returns 6: 'ABCDEFGH://'
-
-          if (start < 0) { // start position in str
+          //  discuss at: http://phpjs.org/functions/substr_replace/          
+          if (start < 0) { 
             start = start + str.length;
           }
           length = length !== undefined ? length : str.length;
@@ -134,34 +76,6 @@
         }        
         function str_replace(search, replace, subject, count) {
             //  discuss at: http://phpjs.org/functions/str_replace/
-            // original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-            // improved by: Gabriel Paderni
-            // improved by: Philip Peterson
-            // improved by: Simon Willison (http://simonwillison.net)
-            // improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-            // improved by: Onno Marsman
-            // improved by: Brett Zamir (http://brett-zamir.me)
-            //  revised by: Jonas Raoni Soares Silva (http://www.jsfromhell.com)
-            // bugfixed by: Anton Ongson
-            // bugfixed by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-            // bugfixed by: Oleg Eremeev
-            //    input by: Onno Marsman
-            //    input by: Brett Zamir (http://brett-zamir.me)
-            //    input by: Oleg Eremeev
-            //        note: The count parameter must be passed as a string in order
-            //        note: to find a global variable in which the result will be given
-            //   example 1: str_replace(' ', '.', 'Kevin van Zonneveld');
-            //   returns 1: 'Kevin.van.Zonneveld'
-            //   example 2: str_replace(['{name}', 'l'], ['hello', 'm'], '{name}, lars');
-            //   returns 2: 'hemmo, mars'
-            // bugfixed by: Glen Arason (http://CanadianDomainRegistry.ca)
-            //   example 3: str_replace(Array('S','F'),'x','ASDFASDF');
-            //   returns 3: 'AxDxAxDx'
-            // bugfixed by: Glen Arason (http://CanadianDomainRegistry.ca) Corrected count
-            //   example 4: str_replace(['A','D'], ['x','y'] , 'ASDFASDF' , 'cnt');
-            //   returns 4: 'xSyFxSyF' // cnt = 0 (incorrect before fix)
-            //   returns 4: 'xSyFxSyF' // cnt = 4 (correct after fix)
-
             var i = 0,
             j = 0,
             temp = '',
@@ -224,7 +138,7 @@
             if (lastDotPosition === -1) return filename;
             else return filename.substr(0, lastDotPosition);
         }
-        function traductor(text){
+        function translate(text){
             var r = false;
             var t1 = '';
             var t2 = '';
@@ -238,6 +152,49 @@
             });
             if (r) return text.replace(t1,t2); 
         }
+        filemanager.parseMsg = function(obj){
+            if(typeof obj == 'object'){
+                var text = obj.query;
+                var params = obj.params;
+                // Loading languaje
+                $.each(LANG, function(index2, valor) {
+                    text = str_replace(index2,valor,text);                    
+                }); 
+                // Replace params
+                var n = text.indexOf('%s');
+                var i = 0;
+                var r = false;              
+                do{      
+                    r = false;              
+                    n = text.indexOf('%s');
+                    if(n !== -1){
+                        if(params.length > i){
+                            var res = params[i].toString();
+                            if(res !==''){
+                                text = substr_replace(text,res,n,2);
+                                i++;
+                                r = true;
+                            }
+                        }
+                    }
+                }
+                while(r);
+                text = str_replace('%s','',text);
+                return text;
+            }
+        }
+
+        filemanager.formatBytes = function(bytes) {
+            if(bytes < 1024) 
+                return bytes + " Bytes";
+            else if(bytes < 1048576) 
+                return(bytes / 1024).toFixed(3) + " KB";
+            else if(bytes < 1073741824) 
+                return(bytes / 1048576).toFixed(3) + " MB";
+            else 
+                return(bytes / 1073741824).toFixed(3) + " GB";
+        }
+        
         filemanager.loadFiles = function(data){
             var items = $this;
             items.html('');
@@ -249,12 +206,12 @@
                 var filename = element.filename;
                 var filenameshort = filename;
                 var filetype = element.filetype;
-                var filesize = formatBytes(element.size);
+                var filesize = filemanager.formatBytes(element.size);
                 var filedate = moment.unix(element.lastmodified).format("DD/MM/YYYY");
                 if(element.filename==="" && element.filetype===""){
                     el.find('.image').html('<div class="content_icon"><span aria-hidden="true" class="glyphicon glyphicon-level-up"></span></div>');
                     el.find('.image').addClass('dir').attr('rel',element.urlfolder);
-                    el.find('.texto').text(traductor('FE_BACK'));
+                    el.find('.texto').text(translate('FE_BACK'));
                     el.find('.type').text('');
                     el.find('.size').text('');
                     el.find('.actions').html('');
@@ -272,7 +229,7 @@
 
                 }else if(element.filetype==="jpg" || element.filetype==="png" || element.filetype=="jpeg" || element.filetype=="gif"){
                     el.find('.image img').attr('src',element.preview);
-                    el.find('.image').addClass('fancybox').attr('rel',element.previewfull).attr('title',traductor('FE_FILENAME') + element.filename+' | '+ traductor('FE_SIZE') +' '+formatBytes(element.size)+' | '+ traductor('FE_LAST_MODIFIED') +moment.unix(element.lastmodified).format("DD/MM/YYYY"));
+                    el.find('.image').addClass('fancybox').attr('rel',element.previewfull).attr('title',translate('FE_FILENAME') + element.filename+' | '+ translate('FE_SIZE') +' '+filemanager.formatBytes(element.size)+' | '+ translate('FE_LAST_MODIFIED') +moment.unix(element.lastmodified).format("DD/MM/YYYY"));
                     el.find('.name').attr('data-name-original',filename).attr('data-name',filename);
                      el.find('.texto').text(filenameshort);
                     el.find('.type').text(filetype);
@@ -280,7 +237,7 @@
                     el.find('.date').text(filedate);
                 }else{
                     el.find('.image').html('<div class="content_icon"><span aria-hidden="true" class="glyphicon glyphicon-file '+ element.filetype +'" ></span></div>');
-                    el.find('.image').addClass('fancybox').attr('rel','#preview_file').attr('title',traductor('FE_FILENAME')+element.filename+' | '+ traductor('FE_SIZE')+formatBytes(element.size)+' | '+traductor('FE_LAST_MODIFIED')+moment.unix(element.lastmodified).format("DD/MM/YYYY"));
+                    el.find('.image').addClass('fancybox').attr('rel','#preview_file').attr('title',translate('FE_FILENAME')+element.filename+' | '+ translate('FE_SIZE')+filemanager.formatBytes(element.size)+' | '+translate('FE_LAST_MODIFIED')+moment.unix(element.lastmodified).format("DD/MM/YYYY"));
                     el.find('.name').attr('data-name-original',filename).attr('data-name',filename);
                      el.find('.texto').text(filenameshort);
                     el.find('.type').text(filetype);
@@ -316,7 +273,7 @@
                             }
                         }
                     }
-                    this.title = '<h3>'+ traductor('FE_INFORMATION') +'</h3><div>'+t+'</div';
+                    this.title = '<h3>'+ translate('FE_INFORMATION') +'</h3><div>'+t+'</div';
                 },
                 helpers : {
                     title : {
@@ -514,43 +471,43 @@
             $(filemanager).append(settings.getModalTemplate({
                 modal_id:filemanager.config.new_folder,
                 header:{
-                    title:traductor('FE_CREATE_DIRECTORY')
+                    title:translate('FE_CREATE_DIRECTORY')
                 },
-                body:'<div class="form-group"><label for="exampleInputEmail1">'+traductor('FE_NAME')+'</label><input type="text" class="form-control" id="name" name="name" placeholder="'+traductor('FE_ENTER_NAME')+'"></div><div id="newfolder_popup_result"></div>',
+                body:'<div class="form-group"><label for="exampleInputEmail1">'+translate('FE_NAME')+'</label><input type="text" class="form-control" id="name" name="name" placeholder="'+translate('FE_ENTER_NAME')+'"></div><div id="newfolder_popup_result"></div>',
                 footer:{
-                    ok:traductor('FE_SAVE'),
-                    close:traductor('FE_CANCEL')
+                    ok:translate('FE_SAVE'),
+                    close:translate('FE_CANCEL')
                 }
             }));
             $(filemanager).append(settings.getModalTemplate({
                 type:'lg',
                 modal_id:filemanager.config.upload_popup,
                 header:{
-                    title:traductor('FE_UPLOAD')
+                    title:translate('FE_UPLOAD')
                 },
-                body:'<div id="actions" class="row"><input type="hidden" id="reloadfiles" name="reloadfiles" value="0"><div class="col-lg-7"><span class="btn btn-success fileinput-button dz-clickable"><i class="glyphicon glyphicon-plus"></i><span>'+traductor('FE_ADD_FILES')+'</span></span><button type="submit" class="btn btn-primary start"><i class="glyphicon glyphicon-upload"></i><span>'+traductor('FE_START_UPLOAD')+'</span></button><button type="reset" class="btn btn-warning cancel"><i class="glyphicon glyphicon-ban-circle"></i><span>'+traductor('FE_CANCEL_UPLOAD')+'</span></button></div><div class="col-lg-5"><span class="fileupload-process"><div id="total-progress" class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" style="opacity: 0;"><div class="progress-bar progress-bar-success" style="width: 100%;" data-dz-uploadprogress=""></div></div></span></div></div><div class="row"><div class="col-lg-12"><div class="col-lg-12"><div id="error-all"></div></div></div></div><div class="table table-striped" class="files" id="previews"><div class="row"><div class="col-lg-12"><div class="col-lg-12"><small id="upload_max" class="text-info">FE_MAX_FILES_UPLOAD</small></div></div></div></div>',
+                body:'<div id="actions" class="row"><input type="hidden" id="reloadfiles" name="reloadfiles" value="0"><div class="col-lg-7"><span class="btn btn-success fileinput-button dz-clickable"><i class="glyphicon glyphicon-plus"></i><span>'+translate('FE_ADD_FILES')+'</span></span><button type="submit" class="btn btn-primary start"><i class="glyphicon glyphicon-upload"></i><span>'+translate('FE_START_UPLOAD')+'</span></button><button type="reset" class="btn btn-warning cancel"><i class="glyphicon glyphicon-ban-circle"></i><span>'+translate('FE_CANCEL_UPLOAD')+'</span></button></div><div class="col-lg-5"><span class="fileupload-process"><div id="total-progress" class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" style="opacity: 0;"><div class="progress-bar progress-bar-success" style="width: 100%;" data-dz-uploadprogress=""></div></div></span></div></div><div class="row"><div class="col-lg-12"><div class="col-lg-12"><div id="error-all"></div></div></div></div><div class="table table-striped" class="files" id="previews"><div class="row"><div class="col-lg-12"><div class="col-lg-12"><small id="upload_max" class="text-info">FE_MAX_FILES_UPLOAD</small></div></div></div></div>',
                 footer:false
             }));
             $(filemanager).append(settings.getModalTemplate({
                 modal_id:filemanager.config.delete_popup,
                 header:{
-                    title:traductor('FE_DELETE')
+                    title:translate('FE_DELETE')
                 },
-                body:'<div class="content"><div class="form-group"><label for="exampleInputEmail1">'+traductor('FE_NAME')+'</label><input type="hidden" name="nameold" id="nameold"><input type="text" class="form-control" id="name" name="name" placeholder="'+traductor('FE_ENTER_NAME')+'"></div></div><div class="result"></div>',
+                body:'<div class="content"><div class="form-group"><label for="exampleInputEmail1">'+translate('FE_NAME')+'</label><input type="hidden" name="nameold" id="nameold"><input type="text" class="form-control" id="name" name="name" placeholder="'+translate('FE_ENTER_NAME')+'"></div></div><div class="result"></div>',
                 footer:{
-                    ok:traductor('FE_DELETE'),
-                    close:traductor('FE_CLOSE')
+                    ok:translate('FE_DELETE'),
+                    close:translate('FE_CLOSE')
                 }
             }));
             $(filemanager).append(settings.getModalTemplate({
                 modal_id:filemanager.config.rename_popup,
                 header:{
-                    title:traductor('FE_RENAME')
+                    title:translate('FE_RENAME')
                 },
-                body:'<div class="content"><div class="form-group"><label for="exampleInputEmail1">'+traductor('FE_NAME')+'</label><input type="hidden" name="nameold" id="nameold"><input type="text" class="form-control" id="name" name="name" placeholder="'+traductor('FE_ENTER_NAME')+'"></div></div><div class="result"></div>',
+                body:'<div class="content"><div class="form-group"><label for="exampleInputEmail1">'+translate('FE_NAME')+'</label><input type="hidden" name="nameold" id="nameold"><input type="text" class="form-control" id="name" name="name" placeholder="'+translate('FE_ENTER_NAME')+'"></div></div><div class="result"></div>',
                 footer:{
-                    ok:traductor('FE_RENAME'),
-                    close:traductor('FE_CLOSE')
+                    ok:translate('FE_RENAME'),
+                    close:translate('FE_CLOSE')
                 }
             }));
             // BEGIN DROPZONE
@@ -558,7 +515,7 @@
             // previewNode.attr('id','');
             // var previewTemplate = previewNode.parent().html();
             // previewNode.remove();
-            var previewTemplate = '<div class="file-row"><div><span class="preview"><img data-dz-thumbnail /></span></div><div><p class="name" data-dz-name></p><strong class="error text-danger" data-dz-errormessage></strong></div><div><p class="size" data-dz-size></p><div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div></div></div><div><button data-dz-remove class="btn btn-warning cancel"><i class="glyphicon glyphicon-ban-circle"></i><span>'+traductor("FE_CANCEL")+'</span></button><button data-dz-remove class="btn btn-danger delete"><i class="glyphicon glyphicon-trash"></i><span>'+traductor("FE_DELETE")+'</span></button></div></div>';
+            var previewTemplate = '<div class="file-row"><div><span class="preview"><img data-dz-thumbnail /></span></div><div><p class="name" data-dz-name></p><strong class="error text-danger" data-dz-errormessage></strong></div><div><p class="size" data-dz-size></p><div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div></div></div><div><button data-dz-remove class="btn btn-warning cancel"><i class="glyphicon glyphicon-ban-circle"></i><span>'+translate("FE_CANCEL")+'</span></button><button data-dz-remove class="btn btn-danger delete"><i class="glyphicon glyphicon-trash"></i><span>'+translate("FE_DELETE")+'</span></button></div></div>';
             Dropzone.autoDiscover = false;
             var myDropzone = new Dropzone("#"+ filemanager.attr("id"), { 
                 url: settings.url, // Set the url
@@ -574,7 +531,7 @@
                 parallelUploads: settings.upload_max,
                 uploadMultiple: true,
                 acceptedFiles: settings.ext,
-                dictInvalidFileType: traductor("BE_GETFILEALL_NOT_PERMITIDO"),
+                dictInvalidFileType: translate("BE_GETFILEALL_NOT_PERMITIDO"),
             });
             
             myDropzone.on("addedfile", function(file) {
@@ -606,7 +563,7 @@
             });
             myDropzone.on("successmultiple", function(file, responseText, e) {
                 var datos = $.parseJSON(responseText);
-                var msg = parseMsg(datos.msg);
+                var msg = filemanager.parseMsg(datos.msg);
                 if(datos.status===false)     
                 $("#error-all",filemanager).html('<div class="alert alert-danger">'+msg+'</div>');
                 else
@@ -628,17 +585,17 @@
             // BEGIN TRADUCIR
             _html = $(".panel-heading, button, span, label, h4, h3, #row_header_content .col, #context-menu a",filemanager);
             _html.text(function(index,text){
-                return traductor(text);
+                return translate(text);
             });
 
             _html = $("input[type='text'], button",filemanager);
             _html.attr({
-               "placeholder" : function(index,text){return traductor(text);},
-               "title" : function(index,text){return traductor(text);}
+               "placeholder" : function(index,text){return translate(text);},
+               "title" : function(index,text){return translate(text);}
             });        
 
             $("#upload_max",filemanager).text(function(index,text){
-               return traductor(text) + settings.upload_max; 
+               return translate(text) + settings.upload_max; 
             });
             // END TRADUCIR
             // BEGIN TOKEN
@@ -727,7 +684,7 @@
                         },
                         success: function(datos){
                             datos = $.parseJSON(datos);
-                            var msg = parseMsg(datos.msg);
+                            var msg = filemanager.parseMsg(datos.msg);
                             if(datos.status){
                                 filemanager.getFolder(path);
                                 $("#"+filemanager.config.rename_popup+" form .result",filemanager).html('<div class="alert alert-success">'+ msg +'</div>');
@@ -772,7 +729,7 @@
                         },
                         success: function(datos){
                             datos = $.parseJSON(datos);
-                            var msg = parseMsg(datos.msg);
+                            var msg = filemanager.parseMsg(datos.msg);
                             if(datos.status){
                                 $("#"+filemanager.config.delete_popup+" form .result",filemanager).html('');
                                 var data = datos.data;
@@ -781,9 +738,9 @@
                                         $("#"+filemanager.config.delete_popup+" form .content p",filemanager).each(function(index2, val2) {
                                             if($(val2).text()===val.namefile){
                                                 if(val.status)
-                                                    $(val2).append(' <span class="text-success"><span aria-hidden="true" class="glyphicon glyphicon-ok"></span>'+ parseMsg(val)+'</span>');                                                    
+                                                    $(val2).append(' <span class="text-success"><span aria-hidden="true" class="glyphicon glyphicon-ok"></span>'+ filemanager.parseMsg(val)+'</span>');                                                    
                                                 else
-                                                    $(val2).append(' <span class="text-danger"><span aria-hidden="true" class="glyphicon glyphicon-alert"></span>'+ parseMsg(val)+'</span>');                                                    
+                                                    $(val2).append(' <span class="text-danger"><span aria-hidden="true" class="glyphicon glyphicon-alert"></span>'+ filemanager.parseMsg(val)+'</span>');                                                    
                                                 return false;
                                             }
                                         });                                        
@@ -833,7 +790,7 @@
                         },
                         success: function(datos){
                             datos = $.parseJSON(datos);
-                            var msg = parseMsg(datos.msg);
+                            var msg = filemanager.parseMsg(datos.msg);
                             if(datos.status){
                                 filemanager.getFolder(path);                                 
                                 $("#newfolder_popup_result",filemanager).html('<div class="alert alert-success">'+ msg +'</div>');
