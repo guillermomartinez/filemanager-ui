@@ -372,3 +372,9 @@ text-align: center;
     margin: 8px 8px 8px 9px;
     display: inline-block;
 }
+.filemanager .navbar .btn-sm, .btn-group-sm > .btn {
+  margin: 0 2px;
+}
+.filemanager .modal-body #actions .btn{
+    margin: 0 2px;
+}

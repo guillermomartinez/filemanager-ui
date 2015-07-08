@@ -6,7 +6,7 @@
             languaje: "ES",
             upload_max: 5,
             view: 'thumbs',
-            ext: ".jpg,.jpeg,.gif,.png,.svg,.txt,.pdf,.odp,.ods,.odt,.rtf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.csv,.ogv,.mp4,.webm,.m4v,.ogg,.mp3,.wav,.zip,.rar",
+            ext: ["jpg","jpeg","gif","png","svg","txt","pdf","odp","ods","odt","rtf","doc","docx","xls","xlsx","ppt","pptx","csv","ogv","mp4","webm","m4v","ogg","mp3","wav","zip","rar"],
             insertButton: false,
             token: null,
             tokenName: '_token'
@@ -121,22 +121,23 @@
             }
             return sa ? s : s[0];
         }
-        function validExt(filename){
-            var ext = removeExtension(filename);
+        filemanager.validExtension = function (filename){
             var r = false;
+            var ext ='';
+            var lastPosition = filename.lastIndexOf(".");
+            if (lastPosition > 0) ext = filename.substr(lastPosition+1);
             for (var i = 0; i < settings.ext.length; i++) {
                 if(settings.ext[i] === ext){
                     r = true;
-                    return false;
+                    break;
                 }
             }
-            return r;
-            
+            return r;            
         }
         function removeExtension(filename){
-            var lastDotPosition = filename.lastIndexOf(".");
-            if (lastDotPosition === -1) return filename;
-            else return filename.substr(0, lastDotPosition);
+            var lastPosition = filename.lastIndexOf(".");
+            if (lastPosition === -1) return filename;
+            else return filename.substr(0, lastPosition);
         }
         function translate(text){
             var r = false;
@@ -195,56 +196,68 @@
                 return(bytes / 1073741824).toFixed(3) + " GB";
         }
         
-        filemanager.loadFiles = function(data){
+        filemanager.loadFiles = function(data,path){
             var items = $this;
             items.html('');
             var context_menu = $("#context-menu",filemanager).clone().html();
             var item = '<li><div class="item context" ><div class="check"><label><input type="checkbox" name="check"></label></div><a class="image" href="#"><img src=""></a><div class="col name"><h3><span class="texto"></span></h3></div><div class="col type"></div><div class="col size"></div><div class="col date"></div><div class="col actions"><div class="btn-group menu_options" data-tooltip="tooltip" data-placement="left" title="Acciones"><button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ><span aria-hidden="true" class="glyphicon glyphicon-tasks" ></button>'+context_menu+'</div></div></div></li>';
             var el = null;
-            $.each(data,function(index,element){
-                el = $(item);                  
-                var filename = element.filename;
-                var filenameshort = filename;
-                var filetype = element.filetype;
-                var filesize = filemanager.formatBytes(element.size);
-                var filedate = moment.unix(element.lastmodified).format("DD/MM/YYYY");
-                if(element.filename==="" && element.filetype===""){
-                    el.find('.image').html('<div class="content_icon"><span aria-hidden="true" class="glyphicon glyphicon-level-up"></span></div>');
-                    el.find('.image').addClass('dir').attr('rel',element.urlfolder);
-                    el.find('.texto').text(translate('FE_BACK'));
-                    el.find('.type').text('');
-                    el.find('.size').text('');
-                    el.find('.actions').html('');
-                    el.addClass('parentup back');
-                    el.find('.item').removeClass('context');
-                    el.find('.check').remove();
-                }else if(element.filetype===""){
-                    el.find('.image').html('<div class="content_icon"><span aria-hidden="true" class="glyphicon glyphicon-folder-close"></span></div>');
-                    el.find('.image').addClass('dir').attr('rel',element.urlfolder);
-                    el.find('.name').attr('data-name-original',filename).attr('data-name',filename);
-                     el.find('.texto').text(filenameshort);
-                    el.find('.type').text('dir');
-                    el.find('.size').text('');
-                    el.find('.date').text(filedate);
-
-                }else if(element.filetype==="jpg" || element.filetype==="png" || element.filetype=="jpeg" || element.filetype=="gif"){
-                    el.find('.image img').attr('src',element.preview);
-                    el.find('.image').addClass('fancybox').attr('rel',element.previewfull).attr('title',translate('FE_FILENAME') + element.filename+' | '+ translate('FE_SIZE') +' '+filemanager.formatBytes(element.size)+' | '+ translate('FE_LAST_MODIFIED') +moment.unix(element.lastmodified).format("DD/MM/YYYY"));
-                    el.find('.name').attr('data-name-original',filename).attr('data-name',filename);
-                     el.find('.texto').text(filenameshort);
-                    el.find('.type').text(filetype);
-                    el.find('.size').text(filesize);
-                    el.find('.date').text(filedate);
+            if(path!="/" ){
+                var path2 = path.replace(/\//ig,' ').trim().split(' ');
+                if(path2.length==1){
+                    path2 = '/';
                 }else{
-                    el.find('.image').html('<div class="content_icon"><span aria-hidden="true" class="glyphicon glyphicon-file '+ element.filetype +'" ></span></div>');
-                    el.find('.image').addClass('fancybox').attr('rel','#preview_file').attr('title',translate('FE_FILENAME')+element.filename+' | '+ translate('FE_SIZE')+filemanager.formatBytes(element.size)+' | '+translate('FE_LAST_MODIFIED')+moment.unix(element.lastmodified).format("DD/MM/YYYY"));
-                    el.find('.name').attr('data-name-original',filename).attr('data-name',filename);
-                     el.find('.texto').text(filenameshort);
-                    el.find('.type').text(filetype);
-                    el.find('.size').text(filesize);
-                    el.find('.date').text(filedate);
+                    path2 = path2.slice(0,path2.length-1).join('/');
+                    path2 = '/'+path2+'/';
                 }
+                el = $(item);                  
+                el.find('.image').html('<div class="content_icon"><span aria-hidden="true" class="glyphicon glyphicon-level-up"></span></div>');
+                el.find('.image').addClass('dir').attr('rel',path2);
+                el.find('.texto').text(translate('FE_BACK'));
+                el.find('.type').text('');
+                el.find('.size').text('');
+                el.find('.actions').html('');
+                el.addClass('parentup back');
+                el.find('.item').removeClass('context');
+                el.find('.check').remove();
                 items.append(el);
+            }
+            $.each(data,function(index,element){
+                if(element.isdir==true || (element.isdir==false && filemanager.validExtension(element.filename))){
+                    el = $(item);                  
+                    var filename = element.filename;
+                    var filenameshort = filename;
+                    var filetype = element.filetype;
+                    var filesize = filemanager.formatBytes(element.size);
+                    var filedate = moment.unix(element.lastmodified).format("DD/MM/YYYY");
+                    if(element.isdir==true){
+                        el.find('.image').html('<div class="content_icon"><span aria-hidden="true" class="glyphicon glyphicon-folder-close"></span></div>');
+                        el.find('.image').addClass('dir').attr('rel',element.urlfolder);
+                        el.find('.name').attr('data-name-original',filename).attr('data-name',filename);
+                         el.find('.texto').text(filenameshort);
+                        el.find('.type').text('dir');
+                        el.find('.size').text('');
+                        el.find('.date').text(filedate);
+
+                    }else if(element.filetype==="jpg" || element.filetype==="png" || element.filetype=="jpeg" || element.filetype=="gif"){
+                        el.find('.image img').attr('src',element.preview);
+                        el.find('.image').addClass('fancybox').attr('rel',element.previewfull).attr('title',translate('FE_FILENAME') + element.filename+' | '+ translate('FE_SIZE') +' '+filemanager.formatBytes(element.size)+' | '+ translate('FE_LAST_MODIFIED') +moment.unix(element.lastmodified).format("DD/MM/YYYY"));
+                        el.find('.name').attr('data-name-original',filename).attr('data-name',filename);
+                         el.find('.texto').text(filenameshort);
+                        el.find('.type').text(filetype);
+                        el.find('.size').text(filesize);
+                        el.find('.date').text(filedate);
+                    }else{
+                        el.find('.image').html('<div class="content_icon"><span aria-hidden="true" class="glyphicon glyphicon-file '+ element.filetype +'" ></span></div>');
+                        el.find('.image').addClass('fancybox').attr('rel','#preview_file').attr('title',translate('FE_FILENAME')+element.filename+' | '+ translate('FE_SIZE')+filemanager.formatBytes(element.size)+' | '+translate('FE_LAST_MODIFIED')+moment.unix(element.lastmodified).format("DD/MM/YYYY"));
+                        el.find('.name').attr('data-name-original',filename).attr('data-name',filename);
+                         el.find('.texto').text(filenameshort);
+                        el.find('.type').text(filetype);
+                        el.find('.size').text(filesize);
+                        el.find('.date').text(filedate);
+                    }
+                    items.append(el);
+                }
             });            
         };
         filemanager.preview = function(item){
@@ -338,7 +351,7 @@
                 success: function(datos){
                     datos = $.parseJSON(datos);
                     if(datos.status){
-                        filemanager.loadFiles(datos.data);
+                        filemanager.loadFiles(datos.data,path);
 
                         $('.context',filemanager).contextmenu({
                           target: '#'+filemanager.attr('id')+' #context-menu', 
@@ -530,7 +543,7 @@
                 // maxFilesize: 2
                 parallelUploads: settings.upload_max,
                 uploadMultiple: true,
-                acceptedFiles: settings.ext,
+                acceptedFiles: settings.ext.join(",."),
                 dictInvalidFileType: translate("BE_GETFILEALL_NOT_PERMITIDO"),
             });
             
