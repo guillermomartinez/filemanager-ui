@@ -19044,20 +19044,35 @@ LANGS.ES = {
             url: "../conector.php",
             languaje: "ES",
             upload_max: 5,
-            view: 'thumbs',
+            view: "thumbs",
             ext: ["jpeg","gif","jpg","png","svg","txt","pdf","odp","ods","odt","rtf","doc","docx","xls","xlsx","ppt","pptx","csv","ogv","mp4","webm","m4v","ogg","mp3","wav","zip","rar"],
             insertButton: false,
             token: null,
-            tokenName: '_token'
+            tokenName: "_token",
+            typeFile: null,
+            datetimeFormat: "DD/MM/YYYY"
         };
         var settings = $.extend({}, defaults, options );
+        var getParameter = function( param ) {
+            if(!param) param = '';
+            var regex = /[?&]([^=#]+)=([^&#]*)/g, url = window.location.href, params = {},match;
+            while(match = regex.exec(url)) {
+                if(match[2]!=='undefined')
+                params[match[1]] = match[2];
+            }
+            return (params[param] || '');
+        };
+        var lang = getParameter('lang');
+        if(lang!="") settings.languaje = (lang=='en_GB') ? 'us' : lang;
+        var type = getParameter('type');
+        if(type!="") settings.typeFile = type;
         var LANG = {};        
         $.each(LANGS, function(index, val) {
             if(settings.languaje.toUpperCase() == index){
                 LANG = val;
                 return false;
             }
-        });
+        });        
         settings.getModalTemplate = function(options){
             var defaults = {
                 type:"",
@@ -19096,16 +19111,13 @@ LANGS.ES = {
         html_init = html_init+'<div class="row"><div class="col-xs-7 col-sm-5 col-md-4"><button data-target="#'+filemanager.config.upload_popup+'" data-tooltip="tooltip" data-toggle="modal" title="FE_UPLOAD" data-placement="bottom" class="btn btn-default btn-sm "><span aria-hidden="true" class="glyphicon glyphicon-upload"></span><span aria-hidden="true" class="glyphicon glyphicon-file"></span></button><button data-target="#'+filemanager.config.new_folder+'" data-tooltip="tooltip" data-toggle="modal" title="FE_CREATE_DIRECTORY" data-placement="bottom" class="btn btn-default btn-sm "><span aria-hidden="true" class="glyphicon glyphicon-plus"></span><span aria-hidden="true" class="glyphicon glyphicon-folder-open"></span></button><button id="select_delete_popup" data-tooltip="tooltip" title="FE_DELETE_SELECTED" data-placement="bottom" class="btn btn-default btn-sm disabled"><span aria-hidden="true" class="glyphicon glyphicon-duplicate"></span><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button><button id="select_insert" data-tooltip="tooltip" title="FE_INSERT_SELECTED" data-placement="bottom" class="btn btn-default btn-sm disabled"><span aria-hidden="true" class="glyphicon glyphicon-file"></span><span aria-hidden="true" class="glyphicon glyphicon-ok"></span></button></div><div class="col-xs-5 col-sm-3 col-md-2"><span>FE_VIEWS</span><button id="view_thumbs" data-tooltip="tooltip" title="FE_VIEW_MINIATURE" data-placement="bottom" class="btn btn-default btn-sm active"><span aria-hidden="true" class="glyphicon glyphicon-th"></span></button><button id="view_details" data-tooltip="tooltip" title="FE_VIEW_DETAILS" data-placement="bottom" class="btn btn-default btn-sm"><span aria-hidden="true" class="glyphicon glyphicon-align-justify"></span></button></div><div class="col-xs-12 col-sm-4 col-md-3 col_top_right"><div class="btn-group" role="group" aria-label="First group"><div class="btn-group grupo1" role="group" aria-label=""><div class="input-group search_content"><input id="search" name="search" type="text" class="form-control input-sm" placeholder="FE_SEARCH_NAME_FILES" autocomplete="off" ><span class="input-group-btn"><button class="btn btn-default input-sm" type="button" id="search_" data-tooltip="tooltip" data-placement="bottom" title="FE_SEARCH_NAME_FILES"><span aria-hidden="true" class="glyphicon glyphicon-search"></span></button></span></div></div><div class="btn-group grupo2" role="group" aria-label=""><button class="btn btn-default input-sm" type="button" id="search_clear" data-tooltip="tooltip" data-placement="bottom" title="FE_CLEAR"><span aria-hidden="true" class="glyphicon glyphicon-remove-sign"></span></button></div></div></div></div>';
         html_init = html_init+'<div class="row"><div class="col-md-12"><ol id="ruta" class="breadcrumb"><li><a rel="/" href="#"><span aria-hidden="true" class="glyphicon glyphicon-home"></span></a></li></ol></div></div>';
         html_init = html_init+'</div></div></div>';
-        filemanager.append(html_init);
-        // filemanager.append('<div class="navbar"><div class="navbar-inner"><div class="container-fluid"><div class="row"><div class="col-xs-7 col-sm-5 col-md-4"><button data-target="#'+filemanager.config.upload_popup+'" data-tooltip="tooltip" data-toggle="modal" title="FE_UPLOAD" data-placement="bottom" class="btn btn-default btn-sm "><span aria-hidden="true" class="glyphicon glyphicon-upload"></span><span aria-hidden="true" class="glyphicon glyphicon-file"></span></button><button data-target="#'+filemanager.config.new_folder+'" data-tooltip="tooltip" data-toggle="modal" title="FE_CREATE_DIRECTORY" data-placement="bottom" class="btn btn-default btn-sm "><span aria-hidden="true" class="glyphicon glyphicon-plus"></span><span aria-hidden="true" class="glyphicon glyphicon-folder-open"></span></button><button id="select_delete_popup" data-tooltip="tooltip" title="FE_DELETE_SELECTED" data-placement="bottom" class="btn btn-default btn-sm disabled"><span aria-hidden="true" class="glyphicon glyphicon-duplicate"></span><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button><button id="select_insert" data-tooltip="tooltip" title="FE_INSERT_SELECTED" data-placement="bottom" class="btn btn-default btn-sm disabled"><span aria-hidden="true" class="glyphicon glyphicon-file"></span><span aria-hidden="true" class="glyphicon glyphicon-ok"></span></button></div><div class="col-xs-5 col-sm-3 col-md-2"><span>FE_VIEWS</span><button id="view_thumbs" data-tooltip="tooltip" title="FE_VIEW_MINIATURE" data-placement="bottom" class="btn btn-default btn-sm active"><span aria-hidden="true" class="glyphicon glyphicon-th"></span></button><button id="view_details" data-tooltip="tooltip" title="FE_VIEW_DETAILS" data-placement="bottom" class="btn btn-default btn-sm"><span aria-hidden="true" class="glyphicon glyphicon-align-justify"></span></button></div><div class="col-xs-12 col-sm-4 col-md-3 col_top_right"><div class="btn-group" role="group" aria-label="First group"><div class="btn-group grupo1" role="group" aria-label=""><div class="input-group search_content"><input id="search" name="search" type="text" class="form-control input-sm" placeholder="FE_SEARCH_NAME_FILES" autocomplete="off" ><span class="input-group-btn"><button class="btn btn-default input-sm" type="button" id="search_" data-tooltip="tooltip" data-placement="bottom" title="FE_SEARCH_NAME_FILES"><span aria-hidden="true" class="glyphicon glyphicon-search"></span></button></span></div></div><div class="btn-group grupo2" role="group" aria-label=""><button class="btn btn-default input-sm" type="button" id="search_clear" data-tooltip="tooltip" data-placement="bottom" title="FE_CLEAR"><span aria-hidden="true" class="glyphicon glyphicon-remove-sign"></span></button></div></div></div></div></div></div></div>');
-        html_init = '<div class="container-fluid">';
+        html_init = html_init+'<div class="container-fluid">';
         html_init = html_init+'<input type="hidden" id="path" name="path" value=""><div class="hidden"><div id="preview_file"><span aria-hidden="true" class="glyphicon glyphicon-file txt"></span></div></div>';        
         html_init = html_init+'<div id="content_list" class="row"><div class="col-md-12" id="row_header_content"><div class="row_header"><div class="col name">FE_NOMBRE</div><div class="col type">FE_TIPO</div><div class="col size">FE_TAMANO</div><div class="col date">FE_DATE</div><div class="col actions">FE_ACTIONS</div></div></div><div class="col-md-12 list"><ul id="list" class="scroll"></ul></div></div>';
         html_init = html_init+'<div id="context-menu"><ul class="dropdown-menu menu_contextual" role="menu"><li class="view"><a href="#">FE_VIEW</a></li><li class="rename"><a href="#">FE_RENAME</a></li><li class="download"><a href="#">FE_DOWNLOAD</a></li><li class="delete"><a href="#">FE_DELETE</a></li></ul></div>';
         html_init = html_init+'</div>';
         filemanager.append(html_init);
         var $this = filemanager.find("#list");
-        // console.log(filemanager);
         function substr_replace(str, replace, start, length) {
           //  discuss at: http://phpjs.org/functions/substr_replace/          
           if (start < 0) { 
@@ -19164,7 +19176,7 @@ LANGS.ES = {
             }
             }
             return sa ? s : s[0];
-        }
+        }        
         filemanager.validExtension = function (filename){
             var r = false;
             var ext ='';
@@ -19273,7 +19285,7 @@ LANGS.ES = {
                     var filenameshort = filename;
                     var filetype = element.filetype;
                     var filesize = filemanager.formatBytes(element.size);
-                    var filedate = moment.unix(element.lastmodified).format("DD/MM/YYYY");
+                    var filedate = moment.unix(element.lastmodified).format(settings.datetimeFormat);
                     if(element.isdir==true){
                         el.find('.image').html('<div class="content_icon"><span aria-hidden="true" class="glyphicon glyphicon-folder-close"></span></div>');
                         el.find('.image').addClass('dir').attr('rel',element.urlfolder);
@@ -19285,7 +19297,7 @@ LANGS.ES = {
 
                     }else if(element.filetype==="jpg" || element.filetype==="png" || element.filetype=="jpeg" || element.filetype=="gif"){
                         el.find('.image img').attr('src',element.preview);
-                        el.find('.image').addClass('fancybox').attr('rel',element.previewfull).attr('title',translate('FE_FILENAME') + element.filename+' | '+ translate('FE_SIZE') +' '+filemanager.formatBytes(element.size)+' | '+ translate('FE_LAST_MODIFIED') +moment.unix(element.lastmodified).format("DD/MM/YYYY"));
+                        el.find('.image').addClass('fancybox').attr('data-url',element.previewfull).attr('rel',element.previewfull).attr('title',translate('FE_FILENAME') + element.filename+' | '+ translate('FE_SIZE') +' '+filemanager.formatBytes(element.size)+' | '+ translate('FE_LAST_MODIFIED') +moment.unix(element.lastmodified).format(settings.datetimeFormat));
                         el.find('.name').attr('data-name-original',filename).attr('data-name',filename);
                          el.find('.texto').text(filenameshort);
                         el.find('.type').text(filetype);
@@ -19293,7 +19305,7 @@ LANGS.ES = {
                         el.find('.date').text(filedate);
                     }else{
                         el.find('.image').html('<div class="content_icon"><span aria-hidden="true" class="glyphicon glyphicon-file '+ element.filetype +'" ></span></div>');
-                        el.find('.image').addClass('fancybox').attr('rel','#preview_file').attr('title',translate('FE_FILENAME')+element.filename+' | '+ translate('FE_SIZE')+filemanager.formatBytes(element.size)+' | '+translate('FE_LAST_MODIFIED')+moment.unix(element.lastmodified).format("DD/MM/YYYY"));
+                        el.find('.image').addClass('fancybox').attr('data-url',element.previewfull).attr('rel','#preview_file').attr('title',translate('FE_FILENAME')+element.filename+' | '+ translate('FE_SIZE')+filemanager.formatBytes(element.size)+' | '+translate('FE_LAST_MODIFIED')+moment.unix(element.lastmodified).format(settings.datetimeFormat));
                         el.find('.name').attr('data-name-original',filename).attr('data-name',filename);
                          el.find('.texto').text(filenameshort);
                         el.find('.type').text(filetype);
@@ -19348,7 +19360,7 @@ LANGS.ES = {
          filemanager.download = function(item){
             var name = item.find('.name').data('name-original');
             var path = $("#path",filemanager).val();
-            var datos = settings.url+'?accion=download&path='+ path + '&name=' + name;            
+            var datos = settings.url+'?action=download&path='+ path + '&name=' + name;            
             if(settings.token!==null) datos = datos + '&' + settings.tokenName + '=' + settings.token;
             window.document.location.href = datos;
 
@@ -19356,7 +19368,7 @@ LANGS.ES = {
          filemanager.viewDelete = function(item){
             var name = item.find('.name').data('name-original');
             var modal = $('#'+filemanager.config.delete_popup,filemanager);
-            modal.find('.modal-body .content').html('<p>'+ name +'</p><input type="hidden" name="name" value="'+ name +'" />');
+            modal.find('.modal-body .content').html('<p class="filename_delete">'+ name +'</p><input type="hidden" name="name" value="'+ name +'" />');
             modal.find('.modal-body .result').html('');
             $('#'+filemanager.config.delete_popup,filemanager).modal('show');            
         };
@@ -19366,7 +19378,7 @@ LANGS.ES = {
                 var res = [];
                 $.each(ic, function(index, val) {
                     var obj = {};
-                    obj.url = $(val).find(".image").attr("rel");
+                    obj.url = $(val).find(".image").attr("data-url");
                     obj.thumbs = $(val).find(".image img").attr("src");
                     obj.filename = $(val).find(".name").attr("data-name-original");
                     obj.filetype = $(val).find(".type").text();
@@ -19374,7 +19386,7 @@ LANGS.ES = {
                     obj.lastmodified = $(val).find(".date").text();
                     res.push(obj);
                     
-                });                
+                });
                 return res;
             }else{
                 return false;
@@ -19382,8 +19394,9 @@ LANGS.ES = {
         };
         filemanager.getFolder = function(path){
             if(!path) path = '/';
-            var datos2 = {accion:"getfolder",path:path}; 
+            var datos2 = {action:"getfolder",path:path}; 
             if(settings.token!==null) datos2[settings.tokenName] = settings.token;
+            if(settings.typeFile!==null) datos2.typeFile = settings.typeFile;
             $.ajax({
                 type: "POST",
                 url: settings.url,
@@ -19393,7 +19406,7 @@ LANGS.ES = {
                 },
                 success: function(datos){
                     datos = $.parseJSON(datos);
-                    if(datos.status){
+                    if(datos.status==1){
                         filemanager.loadFiles(datos.data,path);
 
                         $('.context',filemanager).contextmenu({
@@ -19492,17 +19505,17 @@ LANGS.ES = {
                 },
                 error: function(request, textStatus, errorThrown){
                     if (request.status === 0) {
-                        $this.html('<div class="alert alert-danger text-center">Not connect: Verify Network.</div>');
+                        $this.html('<div class="alert alert-info text-center">Not connect: Verify Network.</div>');
                     } else if (request.status == 404) {
-                        $this.html('<div class="alert alert-danger text-center">Requested page not found [404]</div>');
+                        $this.html('<div class="alert alert-info text-center">Requested page not found [404]</div>');
                     } else if (request.status == 500) {
-                        $this.html('<div class="alert alert-danger text-center">Internal Server Error [500].</div>');
+                        $this.html('<div class="alert alert-info text-center">Internal Server Error [500].</div>');
                     } else if (textStatus === 'parsererror') {
-                        $this.html('<div class="alert alert-danger text-center">Requested JSON parse failed.</div>');
+                        $this.html('<div class="alert alert-info text-center">Requested JSON parse failed.</div>');
                     } else if (textStatus === 'timeout') {
-                        $this.html('<div class="alert alert-danger text-center">Time out error.</div>');
+                        $this.html('<div class="alert alert-info text-center">Time out error.</div>');
                     } else if (textStatus === 'abort') {
-                        $this.html('<div class="alert alert-danger text-center">Ajax request aborted.</div>');
+                        $this.html('<div class="alert alert-info text-center">Ajax request aborted.</div>');
                     } else {
                         alert('Uncaught Error: ' + request.responseText);
                     }
@@ -19571,7 +19584,7 @@ LANGS.ES = {
             // previewNode.attr('id','');
             // var previewTemplate = previewNode.parent().html();
             // previewNode.remove();
-            var previewTemplate = '<div class="file-row"><div><span class="preview"><img data-dz-thumbnail /></span></div><div><p class="name" data-dz-name></p><strong class="error text-danger" data-dz-errormessage></strong></div><div><p class="size" data-dz-size></p><div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div></div></div><div><button data-dz-remove class="btn btn-warning cancel"><i class="glyphicon glyphicon-ban-circle"></i><span>'+translate("FE_CANCEL")+'</span></button><button data-dz-remove class="btn btn-danger delete"><i class="glyphicon glyphicon-trash"></i><span>'+translate("FE_DELETE")+'</span></button></div></div>';
+            var previewTemplate = '<div class="file-row"><div><span class="preview"><img data-dz-thumbnail /></span></div><div><p class="name" data-dz-name></p><strong class="error text-info" data-dz-errormessage></strong></div><div><p class="size" data-dz-size></p><div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div></div></div><div><button data-dz-remove class="btn btn-warning cancel"><i class="glyphicon glyphicon-ban-circle"></i><span>'+translate("FE_CANCEL")+'</span></button><button data-dz-remove class="btn btn-danger delete"><i class="glyphicon glyphicon-trash"></i><span>'+translate("FE_DELETE")+'</span></button></div></div>';
             Dropzone.autoDiscover = false;
             var myDropzone = new Dropzone("#"+ filemanager.attr("id"), { 
                 url: settings.url, // Set the url
@@ -19606,22 +19619,23 @@ LANGS.ES = {
             myDropzone.on("processing", function(file) {
             });
             myDropzone.on("processingmultiple", function(file) {
-                var datos = {accion:"uploadfile", path : $("#path",filemanager).val()};
-                if(settings.token!==null) datos[settings.tokenName] = settings.token;          
+                var datos = {action:"uploadfile", path : $("#path",filemanager).val()};
+                if(settings.token!==null) datos[settings.tokenName] = settings.token;  
+                if(settings.typeFile!==null) datos.typeFile = settings.typeFile;               
                 this.options.params = datos;
 
             });
             myDropzone.on("success", function(file, responseText, e) {
                 var datos = $.parseJSON(responseText);
-                if(datos.status){
+                if(datos.status==1){
                 $("#reloadfiles",filemanager).val(1);       
                 }
             });
             myDropzone.on("successmultiple", function(file, responseText, e) {
                 var datos = $.parseJSON(responseText);
                 var msg = filemanager.parseMsg(datos.msg);
-                if(datos.status===false)     
-                $("#error-all",filemanager).html('<div class="alert alert-danger">'+msg+'</div>');
+                if(datos.status==0)     
+                $("#error-all",filemanager).html('<div class="alert alert-info">'+msg+'</div>');
                 else
                 $("#error-all",filemanager).html('<div class="alert alert-success">'+msg+'</div>');
             });
@@ -19728,8 +19742,9 @@ LANGS.ES = {
                 },
                 submitHandler: function(form) {
                     var path = $("#path",filemanager).val();
-                    var datos = {accion:"renamefile",path:path};  
-                    if(settings.token!==null) datos[settings.tokenName] = settings.token;          
+                    var datos = {action:"renamefile",path:path};  
+                    if(settings.token!==null) datos[settings.tokenName] = settings.token;   
+                    if(settings.typeFile!==null) datos.typeFile = settings.typeFile;       
                     datos = $.param(datos) +'&'+ $(form).serialize();
                     $.ajax({
                         type: "POST",
@@ -19741,13 +19756,13 @@ LANGS.ES = {
                         success: function(datos){
                             datos = $.parseJSON(datos);
                             var msg = filemanager.parseMsg(datos.msg);
-                            if(datos.status){
+                            if(datos.status==1){
                                 filemanager.getFolder(path);
                                 $("#"+filemanager.config.rename_popup+" form .result",filemanager).html('<div class="alert alert-success">'+ msg +'</div>');
                                 $("#"+filemanager.config.rename_popup+" form input[name='nameold']",filemanager).val(datos.data.namefile);
                                 $("#"+filemanager.config.rename_popup+" form input[name='name']",filemanager).val(removeExtension(datos.data.namefile));
                             }else{                                  
-                                $("#"+filemanager.config.rename_popup+" form .result",filemanager).html('<div class="alert alert-danger">'+ msg +'</div>');
+                                $("#"+filemanager.config.rename_popup+" form .result",filemanager).html('<div class="alert alert-info">'+ msg +'</div>');
                             }                               
                         }
                     });
@@ -19761,7 +19776,7 @@ LANGS.ES = {
                     var modal = $('#'+filemanager.config.delete_popup,filemanager);
                     var r = '';
                     $.each(ic, function(index, val) {
-                        r = r + '<p>'+ $(val).find('.name').data('name-original') +'</p><input type="hidden" name="name[]" value="'+ $(val).find('.name').data('name-original') +'" />';
+                        r = r + '<p class="filename_delete">'+ $(val).find('.name').data('name-original') +'</p><input type="hidden" name="name[]" value="'+ $(val).find('.name').data('name-original') +'" />';
                     });
                     modal.find('.modal-body .content').html(r);
                     $('#'+filemanager.config.delete_popup,filemanager).modal('show');            
@@ -19773,8 +19788,9 @@ LANGS.ES = {
             $("#"+filemanager.config.delete_popup+" form",filemanager).validate({
                 submitHandler: function(form) {
                     var path = $("#path",filemanager).val();
-                    var datos = {accion:"deletefile",path:path};
-                    if(settings.token!==null) datos[settings.tokenName] = settings.token;          
+                    var datos = {action:"deletefile",path:path};
+                    if(settings.token!==null) datos[settings.tokenName] = settings.token;   
+                    if(settings.typeFile!==null) datos.typeFile = settings.typeFile;       
                     datos = $.param(datos) +'&'+ $(form).serialize();
                     $.ajax({
                         type: "POST",
@@ -19786,17 +19802,21 @@ LANGS.ES = {
                         success: function(datos){
                             datos = $.parseJSON(datos);
                             var msg = filemanager.parseMsg(datos.msg);
-                            if(datos.status){
+                            if(datos.status==1){
                                 $("#"+filemanager.config.delete_popup+" form .result",filemanager).html('');
                                 var data = datos.data;
                                 if(data.length>0){
                                     $.each(data, function(index, val) {                                        
                                         $("#"+filemanager.config.delete_popup+" form .content p",filemanager).each(function(index2, val2) {
-                                            if($(val2).text()===val.namefile){
-                                                if(val.status)
+                                            var t = $(val2).clone().children().remove().end().text().trim();
+                                            if(t==val.namefile){
+                                                $(val2).find('span').remove();
+                                                if(val.status==1){
                                                     $(val2).append(' <span class="text-success"><span aria-hidden="true" class="glyphicon glyphicon-ok"></span>'+ filemanager.parseMsg(val)+'</span>');                                                    
-                                                else
-                                                    $(val2).append(' <span class="text-danger"><span aria-hidden="true" class="glyphicon glyphicon-alert"></span>'+ filemanager.parseMsg(val)+'</span>');                                                    
+                                                }
+                                                else if(val.status==0){
+                                                    $(val2).append(' <span class="text-info"><span aria-hidden="true" class="glyphicon glyphicon-alert"></span>'+ filemanager.parseMsg(val)+'</span>');                                                    
+                                                }
                                                 return false;
                                             }
                                         });                                        
@@ -19806,7 +19826,7 @@ LANGS.ES = {
                                 }                                    
                                 filemanager.getFolder(path);
                             }else{                                  
-                                $("#"+filemanager.config.delete_popup+" form .result",filemanager).html('<div class="alert alert-danger">'+ msg +'</div>');
+                                $("#"+filemanager.config.delete_popup+" form .result",filemanager).html('<div class="alert alert-info">'+ msg +'</div>');
                             }                               
                         }
                     });
@@ -19834,8 +19854,9 @@ LANGS.ES = {
                 },
                 submitHandler: function(form) {
                     var path = $("#path",filemanager).val();
-                    var datos = {accion:"newfolder",path:path};
+                    var datos = {action:"newfolder",path:path};
                     if(settings.token!==null) datos[settings.tokenName] = settings.token;          
+                    if(settings.typeFile!==null) datos.typeFile = settings.typeFile;       
                     datos = $.param(datos) +'&'+ $(form).serialize();
                     $.ajax({
                         type: "POST",
@@ -19847,11 +19868,11 @@ LANGS.ES = {
                         success: function(datos){
                             datos = $.parseJSON(datos);
                             var msg = filemanager.parseMsg(datos.msg);
-                            if(datos.status){
+                            if(datos.status==1){
                                 filemanager.getFolder(path);                                 
                                 $("#newfolder_popup_result",filemanager).html('<div class="alert alert-success">'+ msg +'</div>');
                             }else{                                  
-                                $("#newfolder_popup_result",filemanager).html('<div class="alert alert-danger">'+ msg +'</div>');
+                                $("#newfolder_popup_result",filemanager).html('<div class="alert alert-info">'+ msg +'</div>');
                             }                   
                         }
                     });
@@ -19859,49 +19880,16 @@ LANGS.ES = {
             });
             if(settings.insertButton===false) $("#select_insert",filemanager).remove();
             $("#select_insert",filemanager).on('click', function(event) {
-                var items = filemanager.insert();
+                var items = filemanager.insert();                
+                if(window.parent.tinymce && window.parent.tinymce.activeEditor.windowManager){
+                    var field_name = getParameter('field_name');
+                    window.parent.document.getElementById(field_name).value = items[0].url;
+                    window.parent.tinymce.activeEditor.windowManager.close();
+                }               
                 if (window.opener) {
                     window.opener.setData(items);
                     window.close();
-                }
-                if(window.parent.tinymce && window.parent.tinymce.activeEditor.windowManager){
-                    // top.tinymce.activeEditor.windowManager.getParams().oninsert(items);
-                    // top.tinymce.activeEditor.windowManager.getParams();
-                    var field_name = '';                    
-                    field_name = location.search.split('field_name=')[1];
-                    parent.document.getElementById(field_name).value = items[0].url;
-                    parent.tinymce.activeEditor.windowManager.close();
-                }
-                // console.log(r);
-                // console.log(window.parent.tinymce.windowManager);
-                // console.log(window.parent.tinymce.activeEditor.windowManager);
-                // var args = window.parent.tinymce.activeEditor.windowManager.getParams();
-                // console.log(args.arg1, args.arg2);
-                // window.parent.tinymce.activeEditor.windowManager.close();
-                // console.log(window.parent.top);
-                // $(".mce-close").trigger('click');
-                // if (window.opener) {
-                //     window.close();
-                // }
-                // var ic = $this.find('.item.active');
-                // if(ic.length>0){
-                //     var res = [];
-                //     $.each(ic, function(index, val) {
-                //         var obj = {};
-                //         obj.url = $(val).find(".image").attr("rel");
-                //         obj.thumbs = $(val).find(".image img").attr("src");
-                //         obj.filename = $(val).find(".name").attr("data-name-original");
-                //         obj.filetype = $(val).find(".type").text();
-                //         obj.filesize = $(val).find(".size").text();
-                //         obj.lastmodified = $(val).find(".date").text();
-                //         res.push(obj);
-                        
-                //     });
-                //     // console.log(res);
-                //     return res;
-                // }else{
-                //     return false;
-                // }
+                }                
             });
             // END ADD EVENT TO UI
             // BEGIN ADD EVENT TO ITEMS

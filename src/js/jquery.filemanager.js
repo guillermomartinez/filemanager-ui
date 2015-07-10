@@ -79,7 +79,6 @@
         html_init = html_init+'</div>';
         filemanager.append(html_init);
         var $this = filemanager.find("#list");
-        // console.log(filemanager);
         function substr_replace(str, replace, start, length) {
           //  discuss at: http://phpjs.org/functions/substr_replace/          
           if (start < 0) { 
@@ -330,7 +329,7 @@
          filemanager.viewDelete = function(item){
             var name = item.find('.name').data('name-original');
             var modal = $('#'+filemanager.config.delete_popup,filemanager);
-            modal.find('.modal-body .content').html('<p>'+ name +'</p><input type="hidden" name="name" value="'+ name +'" />');
+            modal.find('.modal-body .content').html('<p class="filename_delete">'+ name +'</p><input type="hidden" name="name" value="'+ name +'" />');
             modal.find('.modal-body .result').html('');
             $('#'+filemanager.config.delete_popup,filemanager).modal('show');            
         };
@@ -738,7 +737,7 @@
                     var modal = $('#'+filemanager.config.delete_popup,filemanager);
                     var r = '';
                     $.each(ic, function(index, val) {
-                        r = r + '<p>'+ $(val).find('.name').data('name-original') +'</p><input type="hidden" name="name[]" value="'+ $(val).find('.name').data('name-original') +'" />';
+                        r = r + '<p class="filename_delete">'+ $(val).find('.name').data('name-original') +'</p><input type="hidden" name="name[]" value="'+ $(val).find('.name').data('name-original') +'" />';
                     });
                     modal.find('.modal-body .content').html(r);
                     $('#'+filemanager.config.delete_popup,filemanager).modal('show');            
@@ -770,11 +769,15 @@
                                 if(data.length>0){
                                     $.each(data, function(index, val) {                                        
                                         $("#"+filemanager.config.delete_popup+" form .content p",filemanager).each(function(index2, val2) {
-                                            if($(val2).text()===val.namefile){
-                                                if(val.status==1)
+                                            var t = $(val2).clone().children().remove().end().text().trim();
+                                            if(t==val.namefile){
+                                                $(val2).find('span').remove();
+                                                if(val.status==1){
                                                     $(val2).append(' <span class="text-success"><span aria-hidden="true" class="glyphicon glyphicon-ok"></span>'+ filemanager.parseMsg(val)+'</span>');                                                    
-                                                else
+                                                }
+                                                else if(val.status==0){
                                                     $(val2).append(' <span class="text-info"><span aria-hidden="true" class="glyphicon glyphicon-alert"></span>'+ filemanager.parseMsg(val)+'</span>');                                                    
+                                                }
                                                 return false;
                                             }
                                         });                                        
