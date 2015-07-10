@@ -3,14 +3,14 @@
 @media (min-width: 1300px) {}
 @media (min-width: 992px) and (max-width: 1200px) {}
 @media (max-width: 1400px) {
-	.filemanager.col-sm-6 .navbar .container-fluid > .row > div{
+	.filemanager.col-sm-6 .navbar .container-fluid > .row.tooolbar > div{
 		width: 50%;
 		margin-bottom: 10px;
 	}
-	.filemanager.col-sm-6 .navbar .container-fluid > .row > div.col_top_right{
+	.filemanager.col-sm-6 .navbar .container-fluid > .row.tooolbar > div.col_top_right{
 		width: 100%;
 	}
-	.filemanager.col-sm-6 .navbar .container-fluid > .row > div.col_top_right > div{
+	.filemanager.col-sm-6 .navbar .container-fluid > .row.tooolbar > div.col_top_right > div{
 
 		float: left;
 	}
@@ -59,11 +59,11 @@
 	}
 }
 @media (max-width: 400px) {
-	.filemanager .navbar .container-fluid > .row > div{
+	.filemanager .navbar .container-fluid > .row.tooolbar > div{
 		width: 100%;
 		margin-bottom: 10px;
 	}
-	.filemanager .navbar .container-fluid > .row > div.col_top_right > div{
+	.filemanager .navbar .container-fluid > .row.tooolbar > div.col_top_right > div{
 		float: left;
 	}
 	.col_top_right{

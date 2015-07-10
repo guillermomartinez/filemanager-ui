@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Filemanager ui</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	
+</head>
+<body>
+	<div class="container">
+		<h3>Filemanager UI</h3>
+		<p>Es la interfaz del Administrador de archivos, <a href="https://github.com/guillermomartinez/filemanager-php" target="_blank">guillermomartinez/filemanager-php</a> es el conector de php.</p>
+		<h3>Ejemplos</h3>
+		<ul>
+			<li><a target="_blank" href="http://php-filemanager.rhcloud.com/examples/basic.html">Basic</a></li>
+			<li><a target="_blank" href="http://php-filemanager.rhcloud.com/examples/multiple.html">Multiple</a></li>
+			<li><a target="_blank" href="http://php-filemanager.rhcloud.com/examples/popup.html">Popup</a></li>
+			<li><a target="_blank" href="http://php-filemanager.rhcloud.com/examples/popup_advanced.html">Popup advanced</a></li>
+			<li><a target="_blank" href="http://php-filemanager.rhcloud.com/examples/tinymce.html">Tinymce</a></li>
+		</ul>
+		<h3>Instalación</h3>
+		<p>Descarga https://github.com/guillermomartinez/filemanager-ui/archive/master.zip</p>
+		<pre><code>composer require guillermomartinez/filemanager-php:0.1.*</code></pre>
+<p>Crear un archivo conector.php</p>		
+<pre><code>&lt;?php
+include(&quot;vendor/autoload.php&quot;);
+use GuillermoMartinez\Filemanager\Filemanager;
+
+// Add your own authentication method
+
+$extra = array(
+	// path after of root folder
+	"source" => "userfiles",
+	// url domain
+	"url" => "http://php-filemanager.rhcloud.com/",
+	"debug" => false,
+	);
+if(isset($_POST['typeFile']) && $_POST['typeFile']=='images'){
+	$extra['type_file'] = 'images';
+}
+$f = new Filemanager($extra);
+$f->run();
+?&gt;
+</code></pre>		
+<p>Crear un archivo index.html</p>
+		<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;es&quot;&gt;
+&lt;head&gt;
+	&lt;meta charset=&quot;UTF-8&quot;&gt;
+	&lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;
+	&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+	&lt;title&gt;Filemanager ui&lt;/title&gt;
+	&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;../js/filemanager-ui/dist/css/filemanager-ui.min.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+	&lt;div id=&quot;filemanager1&quot; class=&quot;filemanager&quot;&gt;&lt;/div&gt;	
+	
+	&lt;script type=&quot;text/javascript&quot; src=&quot;../js/filemanager-ui/dist/js/filemanager-ui.min.js&quot;&gt;&lt;/script&gt;	
+	&lt;script type=&quot;text/javascript&quot;&gt;
+		$(function() {
+			$(&quot;#filemanager1&quot;).filemanager({
+				url:&#039;http://php-filemanager.rhcloud.com/conector.php&#039;,
+				languaje: &quot;ES&quot;,
+				upload_max: 5,
+				views:&#039;thumbs&#039;,
+				insertButton:true,
+				token:&#039;jashd4a5sd4sa&#039;
+			});
+		});
+	&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+		
+	</div>	
+</body>
+</html>
