@@ -6,13 +6,14 @@
             languaje: "ES",
             upload_max: 5,
             view: 'thumbs',
-            ext: ["jpg","jpeg","gif","png","svg","txt","pdf","odp","ods","odt","rtf","doc","docx","xls","xlsx","ppt","pptx","csv","ogv","mp4","webm","m4v","ogg","mp3","wav","zip","rar"],
+            ext: ["jpeg","gif","jpg","png","svg","txt","pdf","odp","ods","odt","rtf","doc","docx","xls","xlsx","ppt","pptx","csv","ogv","mp4","webm","m4v","ogg","mp3","wav","zip","rar"],
             insertButton: false,
             token: null,
             tokenName: '_token'
-        };
-        var settings = $.extend({}, defaults, options );
-        var LANG = {};        
+        },
+        settings = $.extend({}, defaults, options ),
+        LANG = {};    
+        if(typeof LANGS == "undefined") var LANGS = {'US':{}};    
         $.each(LANGS, function(index, val) {
             if(settings.languaje.toUpperCase() == index){
                 LANG = val;
@@ -52,16 +53,18 @@
             delete_popup: "delete_popup_"+filemanager.token,
             rename_popup: "rename_popup_"+filemanager.token,
         };
-        filemanager.append('<div class="navbar"><div class="navbar-inner"><div class="container-fluid"><div class="row"><div class="col-xs-7 col-sm-5 col-md-4"><button data-target="#'+filemanager.config.upload_popup+'" data-tooltip="tooltip" data-toggle="modal" title="FE_UPLOAD" data-placement="bottom" class="btn btn-default btn-sm "><span aria-hidden="true" class="glyphicon glyphicon-upload"></span><span aria-hidden="true" class="glyphicon glyphicon-file"></span></button><button data-target="#'+filemanager.config.new_folder+'" data-tooltip="tooltip" data-toggle="modal" title="FE_CREATE_DIRECTORY" data-placement="bottom" class="btn btn-default btn-sm "><span aria-hidden="true" class="glyphicon glyphicon-plus"></span><span aria-hidden="true" class="glyphicon glyphicon-folder-open"></span></button><button id="select_delete_popup" data-tooltip="tooltip" title="FE_DELETE_SELECTED" data-placement="bottom" class="btn btn-default btn-sm disabled"><span aria-hidden="true" class="glyphicon glyphicon-duplicate"></span><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button><button id="select_insert" data-tooltip="tooltip" title="FE_INSERT_SELECTED" data-placement="bottom" class="btn btn-default btn-sm disabled"><span aria-hidden="true" class="glyphicon glyphicon-file"></span><span aria-hidden="true" class="glyphicon glyphicon-ok"></span></button></div><div class="col-xs-5 col-sm-3 col-md-2"><span>FE_VIEWS</span><button id="view_thumbs" data-tooltip="tooltip" title="FE_VIEW_MINIATURE" data-placement="bottom" class="btn btn-default btn-sm active"><span aria-hidden="true" class="glyphicon glyphicon-th"></span></button><button id="view_details" data-tooltip="tooltip" title="FE_VIEW_DETAILS" data-placement="bottom" class="btn btn-default btn-sm"><span aria-hidden="true" class="glyphicon glyphicon-align-justify"></span></button></div><div class="col-xs-12 col-sm-4 col-md-3 col_top_right"><div class="btn-group" role="group" aria-label="First group"><div class="btn-group grupo1" role="group" aria-label=""><div class="input-group search_content"><input id="search" name="search" type="text" class="form-control input-sm" placeholder="FE_SEARCH_NAME_FILES" autocomplete="off" ><span class="input-group-btn"><button class="btn btn-default input-sm" type="button" id="search_" data-tooltip="tooltip" data-placement="bottom" title="FE_SEARCH_NAME_FILES"><span aria-hidden="true" class="glyphicon glyphicon-search"></span></button></span></div></div><div class="btn-group grupo2" role="group" aria-label=""><button class="btn btn-default input-sm" type="button" id="search_clear" data-tooltip="tooltip" data-placement="bottom" title="FE_CLEAR"><span aria-hidden="true" class="glyphicon glyphicon-remove-sign"></span></button></div></div></div></div></div></div></div>');
-        var html_init = '<div class="container-fluid">';
-        html_init = html_init+'<input type="hidden" id="path" name="path" value=""><div class="hidden"><div id="preview_file"><span aria-hidden="true" class="glyphicon glyphicon-file txt"></span></div></div>';
+        var html_init = '<div class="navbar">';
+        html_init = html_init+'<div class="navbar-inner"><div class="container-fluid">';
+        html_init = html_init+'<div class="row"><div class="col-xs-7 col-sm-5 col-md-4"><button data-target="#'+filemanager.config.upload_popup+'" data-tooltip="tooltip" data-toggle="modal" title="FE_UPLOAD" data-placement="bottom" class="btn btn-default btn-sm "><span aria-hidden="true" class="glyphicon glyphicon-upload"></span><span aria-hidden="true" class="glyphicon glyphicon-file"></span></button><button data-target="#'+filemanager.config.new_folder+'" data-tooltip="tooltip" data-toggle="modal" title="FE_CREATE_DIRECTORY" data-placement="bottom" class="btn btn-default btn-sm "><span aria-hidden="true" class="glyphicon glyphicon-plus"></span><span aria-hidden="true" class="glyphicon glyphicon-folder-open"></span></button><button id="select_delete_popup" data-tooltip="tooltip" title="FE_DELETE_SELECTED" data-placement="bottom" class="btn btn-default btn-sm disabled"><span aria-hidden="true" class="glyphicon glyphicon-duplicate"></span><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button><button id="select_insert" data-tooltip="tooltip" title="FE_INSERT_SELECTED" data-placement="bottom" class="btn btn-default btn-sm disabled"><span aria-hidden="true" class="glyphicon glyphicon-file"></span><span aria-hidden="true" class="glyphicon glyphicon-ok"></span></button></div><div class="col-xs-5 col-sm-3 col-md-2"><span>FE_VIEWS</span><button id="view_thumbs" data-tooltip="tooltip" title="FE_VIEW_MINIATURE" data-placement="bottom" class="btn btn-default btn-sm active"><span aria-hidden="true" class="glyphicon glyphicon-th"></span></button><button id="view_details" data-tooltip="tooltip" title="FE_VIEW_DETAILS" data-placement="bottom" class="btn btn-default btn-sm"><span aria-hidden="true" class="glyphicon glyphicon-align-justify"></span></button></div><div class="col-xs-12 col-sm-4 col-md-3 col_top_right"><div class="btn-group" role="group" aria-label="First group"><div class="btn-group grupo1" role="group" aria-label=""><div class="input-group search_content"><input id="search" name="search" type="text" class="form-control input-sm" placeholder="FE_SEARCH_NAME_FILES" autocomplete="off" ><span class="input-group-btn"><button class="btn btn-default input-sm" type="button" id="search_" data-tooltip="tooltip" data-placement="bottom" title="FE_SEARCH_NAME_FILES"><span aria-hidden="true" class="glyphicon glyphicon-search"></span></button></span></div></div><div class="btn-group grupo2" role="group" aria-label=""><button class="btn btn-default input-sm" type="button" id="search_clear" data-tooltip="tooltip" data-placement="bottom" title="FE_CLEAR"><span aria-hidden="true" class="glyphicon glyphicon-remove-sign"></span></button></div></div></div></div>';
         html_init = html_init+'<div class="row"><div class="col-md-12"><ol id="ruta" class="breadcrumb"><li><a rel="/" href="#"><span aria-hidden="true" class="glyphicon glyphicon-home"></span></a></li></ol></div></div>';
+        html_init = html_init+'</div></div></div>';
+        html_init = html_init+'<div class="container-fluid">';
+        html_init = html_init+'<input type="hidden" id="path" name="path" value=""><div class="hidden"><div id="preview_file"><span aria-hidden="true" class="glyphicon glyphicon-file txt"></span></div></div>';        
         html_init = html_init+'<div id="content_list" class="row"><div class="col-md-12" id="row_header_content"><div class="row_header"><div class="col name">FE_NOMBRE</div><div class="col type">FE_TIPO</div><div class="col size">FE_TAMANO</div><div class="col date">FE_DATE</div><div class="col actions">FE_ACTIONS</div></div></div><div class="col-md-12 list"><ul id="list" class="scroll"></ul></div></div>';
         html_init = html_init+'<div id="context-menu"><ul class="dropdown-menu menu_contextual" role="menu"><li class="view"><a href="#">FE_VIEW</a></li><li class="rename"><a href="#">FE_RENAME</a></li><li class="download"><a href="#">FE_DOWNLOAD</a></li><li class="delete"><a href="#">FE_DELETE</a></li></ul></div>';
         html_init = html_init+'</div>';
         filemanager.append(html_init);
         var $this = filemanager.find("#list");
-        // console.log(filemanager);
         function substr_replace(str, replace, start, length) {
           //  discuss at: http://phpjs.org/functions/substr_replace/          
           if (start < 0) { 
@@ -330,8 +333,7 @@
                     obj.lastmodified = $(val).find(".date").text();
                     res.push(obj);
                     
-                });
-                // console.log(res);
+                });                
                 return res;
             }else{
                 return false;
@@ -818,8 +820,16 @@
             $("#select_insert",filemanager).on('click', function(event) {
                 var items = filemanager.insert();
                 if(window.parent.tinymce && window.parent.tinymce.activeEditor.windowManager){
-                    window.parent.tinymce.activeEditor.windowManager.getParams().oninsert(items);
-                    window.parent.tinymce.activeEditor.windowManager.close();
+                    // top.tinymce.activeEditor.windowManager.getParams().oninsert(items);
+                    // top.tinymce.activeEditor.windowManager.getParams();
+                    var field_name = '';                    
+                    field_name = location.search.split('field_name=')[1];
+                    parent.document.getElementById(field_name).value = items[0].url;
+                    parent.tinymce.activeEditor.windowManager.close();
+                }
+                if (window.opener) {
+                    window.opener.setData(items);
+                    window.close();
                 }
                 // console.log(r);
                 // console.log(window.parent.tinymce.windowManager);

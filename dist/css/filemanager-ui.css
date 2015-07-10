@@ -6612,15 +6612,29 @@ body {
     color: #000;
     font-family: arial;
     font-size: 14px;
-    padding-top: 50px;
 }
-.navbar.navbar-fixed-top {
+.filemanager{
+    margin-bottom: 20px;
+}
+.filemanager .navbar {
     background-color: #fff;
     border: 0 none;
     margin: 0;
     padding: 10px 0 0;
 }
 
+.filemanager.fixed-top > .navbar{
+left: 0;
+margin-top: 0;
+padding-top: 10px;
+position: fixed;
+right: 0;
+z-index: 1030;
+top: 0;
+}
+.filemanager.fixed-top > .container-fluid{
+    margin-top: 92px;
+}
 .filemanager .list .item {
     background-color: #fff;
     box-shadow: 0 0 1px #666;
@@ -6723,7 +6737,7 @@ line-height: 15px;
 background-color: #efefef;
 display: block;
 height: auto;
-left: 0;
+left: 35px;
 position: absolute;
 top: 0;
 width: 40px;
@@ -6818,9 +6832,13 @@ width: 90px;
 .filemanager #content_list.view_detalles .item .check {
   display: block;
   height: 35px;
-  left: 50px;
+  left: 0px;
   position: absolute;
   width: 35px;
+  background-color: transparent;
+}
+.filemanager #content_list.view_detalles .item.active .check {
+    background-color: #337ab7;
 }
 .filemanager #content_list.view_detalles .item .check label {
   display: block;
@@ -6844,6 +6862,7 @@ width: 90px;
 }
 .filemanager .btn-toolbar, .filemanager .breadcrumb {
     margin-bottom: 10px;
+    margin-top: 10px;
 }
 #actions {
     margin: 10px 0 0;
@@ -6974,28 +6993,59 @@ text-align: center;
     margin: 8px 8px 8px 9px;
     display: inline-block;
 }
+.filemanager .navbar .btn-sm, .btn-group-sm > .btn {
+  margin: 0 2px;
+}
+.filemanager .modal-body #actions .btn{
+    margin: 0 2px;
+}
 @media (min-width: 1600px) {}
 @media (min-width: 1200px) {}
 @media (min-width: 1300px) {}
 @media (min-width: 992px) and (max-width: 1200px) {}
-@media (min-width: 768px) and (max-width: 991px) {}
+@media (max-width: 1400px) {
+	.filemanager.col-sm-6 .navbar .container-fluid > .row > div{
+		width: 50%;
+		margin-bottom: 10px;
+	}
+	.filemanager.col-sm-6 .navbar .container-fluid > .row > div.col_top_right{
+		width: 100%;
+	}
+	.filemanager.col-sm-6 .navbar .container-fluid > .row > div.col_top_right > div{
+
+		float: left;
+	}
+}
+@media (min-width: 768px) and (max-width: 991px) {
+	.filemanager.col-sm-6 #content_list.view_detalles .item .col.type, .filemanager.col-sm-6 #content_list.view_detalles .item .col.size, .filemanager.col-sm-6 #content_list.view_detalles .item .col.date, .filemanager.col-sm-6 #content_list.view_detalles .item .col.actions{
+		display: none;
+	}
+	.filemanager.col-sm-6 .view_detalles #row_header_content .type, .view_detalles #row_header_content .size, .view_detalles #row_header_content .date, .view_detalles #row_header_content .actions{
+		display: none;
+	}
+	.filemanager.col-sm-6 #content_list.view_detalles .item .name {
+
+		padding-right: 0;
+	}
+
+}
 @media (max-width: 767px) {
 	body {
- 
-  padding-top: 0;
+
+		padding-top: 0;
+	}
+	
+	.col_top_right{
+		padding-top: 10px;
+	}
+	.col_top_right > div{
+		float: none;
+	}
+		.filemanager.fixed-top > .container-fluid{
+    margin-top: 135px;
 }
-	.navbar.navbar-fixed-top {
-  border: 0 none;
-  margin: 10px 0;
-  padding: 0;
-  position: relative;
-}
-.col_top_right{
-	padding-top: 10px;
-}
-.col_top_right > div{
-    float: none;
-}
+	
+	
 }
 @media (max-width: 600px) {
 	.filemanager #content_list.view_detalles .item .col.type, .filemanager #content_list.view_detalles .item .col.size, .filemanager #content_list.view_detalles .item .col.date, .filemanager #content_list.view_detalles .item .col.actions{
@@ -7005,7 +7055,25 @@ text-align: center;
 		display: none;
 	}
 	.filemanager #content_list.view_detalles .item .name {
- 
-  padding-right: 0;
+
+		padding-right: 0;
+	}
+}
+@media (max-width: 400px) {
+	.filemanager .navbar .container-fluid > .row > div{
+		width: 100%;
+		margin-bottom: 10px;
+	}
+	.filemanager .navbar .container-fluid > .row > div.col_top_right > div{
+		float: left;
+	}
+	.col_top_right{
+		padding-top: 0;
+	}
+	.filemanager .btn-toolbar, .filemanager .breadcrumb {
+	  margin-top: 0px;
+	}
+	.filemanager.fixed-top > .container-fluid{
+    margin-top: 175px;
 }
 }

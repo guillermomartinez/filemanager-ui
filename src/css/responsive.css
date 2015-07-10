@@ -26,25 +26,23 @@
 
 		padding-right: 0;
 	}
+
 }
 @media (max-width: 767px) {
 	body {
 
 		padding-top: 0;
 	}
-	.navbar.navbar-fixed-top {
-		border: 0 none;
-		margin: 10px 0;
-		padding: 0;
-		position: relative;
-	}
+	
 	.col_top_right{
-		margin-bottom: 10px;
 		padding-top: 10px;
 	}
 	.col_top_right > div{
 		float: none;
 	}
+		.filemanager.fixed-top > .container-fluid{
+    margin-top: 135px;
+}
 	
 	
 }
@@ -71,4 +69,10 @@
 	.col_top_right{
 		padding-top: 0;
 	}
+	.filemanager .btn-toolbar, .filemanager .breadcrumb {
+	  margin-top: 0px;
+	}
+	.filemanager.fixed-top > .container-fluid{
+    margin-top: 175px;
+}
 }

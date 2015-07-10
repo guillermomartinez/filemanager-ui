@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Filemanager ui</title>
+	<script type="text/javascript">
+      
+     var urlobj;
+
+     function BrowseServer(obj)
+     {
+          urlobj = obj;
+          OpenServerBrowser(
+          'http://localhost/github/filemanager-ui/examples/basic.html',
+          screen.width * 0.7,
+          screen.height * 0.7 ) ;
+     }
+
+     function OpenServerBrowser( url, width, height )
+     {
+          var iLeft = (screen.width - width) / 2 ;
+          var iTop = (screen.height - height) / 2 ;
+          var sOptions = "scrollbars=yes,toolbar=no,status=no,resizable=yes,dependent=yes" ;
+          sOptions += ",width=" + width ;
+          sOptions += ",height=" + height ;
+          sOptions += ",left=" + iLeft ;
+          sOptions += ",top=" + iTop ;
+          var oWindow = window.open( url, "BrowseWindow", sOptions ) ;
+     }
+
+     function setData( data )
+     {
+     	if(data.length>0){
+               var el = document.getElementById(urlobj);
+               el.innerHTML = '';
+               for (var i = 0; i < data.length; i++) {
+                    var content = document.createElement('div');
+                    var input = document.createElement('input');
+                    input.value = data[i].url.replace("/github/filemanager/userfiles/", "") ;
+                    content.appendChild(input);
+                    el.appendChild(content);
+               };
+     	}
+     	oWindow = null;
+     }
+     </script>
+</head>
+<body>
+	<div class="container">		
+	<form class="form-horizontal">
+          <div class="row">
+          <button type="button" onclick="BrowseServer('id_of_the_target_input');">Examinar</button>
+          </div>
+          <div id="id_of_the_target_input">
+               
+          </div>
+	</form>
+	</div>
+
+</body>
+</html>

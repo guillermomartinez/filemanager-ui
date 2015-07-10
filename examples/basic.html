@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Filemanager ui</title>
+	<link rel="stylesheet" type="text/css" href="../dist/css/filemanager-ui.min.css">
+
+</head>
+<body>
+	<div id="filemanager1" class="filemanager"></div>	
+	
+	<script type="text/javascript" src="../dist/js/filemanager-ui.min.js"></script>	
+
+	<script type="text/javascript">
+		$(function() {
+			$("#filemanager1").filemanager({
+				url:'http://localhost/github/filemanager/conector.php',
+				languaje: "ES",
+				upload_max: 5,
+				views:'thumbs',
+				insertButton:true,
+				token:'jashd4a5sd4sa'
+			});
+		});
+		
+	</script>
+</body>
+</html>

@@ -5,7 +5,6 @@ body {
     font-size: 14px;
 }
 .filemanager{
-    margin-top: 20px;
     margin-bottom: 20px;
 }
 .filemanager .navbar {
@@ -15,6 +14,18 @@ body {
     padding: 10px 0 0;
 }
 
+.filemanager.fixed-top > .navbar{
+left: 0;
+margin-top: 0;
+padding-top: 10px;
+position: fixed;
+right: 0;
+z-index: 1030;
+top: 0;
+}
+.filemanager.fixed-top > .container-fluid{
+    margin-top: 92px;
+}
 .filemanager .list .item {
     background-color: #fff;
     box-shadow: 0 0 1px #666;
@@ -242,6 +253,7 @@ width: 90px;
 }
 .filemanager .btn-toolbar, .filemanager .breadcrumb {
     margin-bottom: 10px;
+    margin-top: 10px;
 }
 #actions {
     margin: 10px 0 0;
