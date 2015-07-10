@@ -5,21 +5,35 @@
             url: "../conector.php",
             languaje: "ES",
             upload_max: 5,
-            view: 'thumbs',
+            view: "thumbs",
             ext: ["jpeg","gif","jpg","png","svg","txt","pdf","odp","ods","odt","rtf","doc","docx","xls","xlsx","ppt","pptx","csv","ogv","mp4","webm","m4v","ogg","mp3","wav","zip","rar"],
             insertButton: false,
             token: null,
-            tokenName: '_token'
-        },
-        settings = $.extend({}, defaults, options ),
-        LANG = {};    
-        if(typeof LANGS == "undefined") var LANGS = {'US':{}};    
+            tokenName: "_token",
+            typeFile: null,
+            datetimeFormat: "DD/MM/YYYY"
+        };
+        var settings = $.extend({}, defaults, options );
+        var getParameter = function( param ) {
+            if(!param) param = '';
+            var regex = /[?&]([^=#]+)=([^&#]*)/g, url = window.location.href, params = {},match;
+            while(match = regex.exec(url)) {
+                if(match[2]!=='undefined')
+                params[match[1]] = match[2];
+            }
+            return (params[param] || '');
+        };
+        var lang = getParameter('lang');
+        if(lang!="") settings.languaje = (lang=='en_GB') ? 'us' : lang;
+        var type = getParameter('type');
+        if(type!="") settings.typeFile = type;
+        var LANG = {};        
         $.each(LANGS, function(index, val) {
             if(settings.languaje.toUpperCase() == index){
                 LANG = val;
                 return false;
             }
-        });
+        });        
         settings.getModalTemplate = function(options){
             var defaults = {
                 type:"",
@@ -65,6 +79,7 @@
         html_init = html_init+'</div>';
         filemanager.append(html_init);
         var $this = filemanager.find("#list");
+        // console.log(filemanager);
         function substr_replace(str, replace, start, length) {
           //  discuss at: http://phpjs.org/functions/substr_replace/          
           if (start < 0) { 
@@ -123,7 +138,7 @@
             }
             }
             return sa ? s : s[0];
-        }
+        }        
         filemanager.validExtension = function (filename){
             var r = false;
             var ext ='';
@@ -232,7 +247,7 @@
                     var filenameshort = filename;
                     var filetype = element.filetype;
                     var filesize = filemanager.formatBytes(element.size);
-                    var filedate = moment.unix(element.lastmodified).format("DD/MM/YYYY");
+                    var filedate = moment.unix(element.lastmodified).format(settings.datetimeFormat);
                     if(element.isdir==true){
                         el.find('.image').html('<div class="content_icon"><span aria-hidden="true" class="glyphicon glyphicon-folder-close"></span></div>');
                         el.find('.image').addClass('dir').attr('rel',element.urlfolder);
@@ -244,7 +259,7 @@
 
                     }else if(element.filetype==="jpg" || element.filetype==="png" || element.filetype=="jpeg" || element.filetype=="gif"){
                         el.find('.image img').attr('src',element.preview);
-                        el.find('.image').addClass('fancybox').attr('rel',element.previewfull).attr('title',translate('FE_FILENAME') + element.filename+' | '+ translate('FE_SIZE') +' '+filemanager.formatBytes(element.size)+' | '+ translate('FE_LAST_MODIFIED') +moment.unix(element.lastmodified).format("DD/MM/YYYY"));
+                        el.find('.image').addClass('fancybox').attr('data-url',element.previewfull).attr('rel',element.previewfull).attr('title',translate('FE_FILENAME') + element.filename+' | '+ translate('FE_SIZE') +' '+filemanager.formatBytes(element.size)+' | '+ translate('FE_LAST_MODIFIED') +moment.unix(element.lastmodified).format(settings.datetimeFormat));
                         el.find('.name').attr('data-name-original',filename).attr('data-name',filename);
                          el.find('.texto').text(filenameshort);
                         el.find('.type').text(filetype);
@@ -252,7 +267,7 @@
                         el.find('.date').text(filedate);
                     }else{
                         el.find('.image').html('<div class="content_icon"><span aria-hidden="true" class="glyphicon glyphicon-file '+ element.filetype +'" ></span></div>');
-                        el.find('.image').addClass('fancybox').attr('rel','#preview_file').attr('title',translate('FE_FILENAME')+element.filename+' | '+ translate('FE_SIZE')+filemanager.formatBytes(element.size)+' | '+translate('FE_LAST_MODIFIED')+moment.unix(element.lastmodified).format("DD/MM/YYYY"));
+                        el.find('.image').addClass('fancybox').attr('data-url',element.previewfull).attr('rel','#preview_file').attr('title',translate('FE_FILENAME')+element.filename+' | '+ translate('FE_SIZE')+filemanager.formatBytes(element.size)+' | '+translate('FE_LAST_MODIFIED')+moment.unix(element.lastmodified).format(settings.datetimeFormat));
                         el.find('.name').attr('data-name-original',filename).attr('data-name',filename);
                          el.find('.texto').text(filenameshort);
                         el.find('.type').text(filetype);
@@ -307,7 +322,7 @@
          filemanager.download = function(item){
             var name = item.find('.name').data('name-original');
             var path = $("#path",filemanager).val();
-            var datos = settings.url+'?accion=download&path='+ path + '&name=' + name;            
+            var datos = settings.url+'?action=download&path='+ path + '&name=' + name;            
             if(settings.token!==null) datos = datos + '&' + settings.tokenName + '=' + settings.token;
             window.document.location.href = datos;
 
@@ -325,7 +340,7 @@
                 var res = [];
                 $.each(ic, function(index, val) {
                     var obj = {};
-                    obj.url = $(val).find(".image").attr("rel");
+                    obj.url = $(val).find(".image").attr("data-url");
                     obj.thumbs = $(val).find(".image img").attr("src");
                     obj.filename = $(val).find(".name").attr("data-name-original");
                     obj.filetype = $(val).find(".type").text();
@@ -333,7 +348,7 @@
                     obj.lastmodified = $(val).find(".date").text();
                     res.push(obj);
                     
-                });                
+                });
                 return res;
             }else{
                 return false;
@@ -341,8 +356,9 @@
         };
         filemanager.getFolder = function(path){
             if(!path) path = '/';
-            var datos2 = {accion:"getfolder",path:path}; 
+            var datos2 = {action:"getfolder",path:path}; 
             if(settings.token!==null) datos2[settings.tokenName] = settings.token;
+            if(settings.typeFile!==null) datos2.typeFile = settings.typeFile;
             $.ajax({
                 type: "POST",
                 url: settings.url,
@@ -352,7 +368,7 @@
                 },
                 success: function(datos){
                     datos = $.parseJSON(datos);
-                    if(datos.status){
+                    if(datos.status==1){
                         filemanager.loadFiles(datos.data,path);
 
                         $('.context',filemanager).contextmenu({
@@ -451,17 +467,17 @@
                 },
                 error: function(request, textStatus, errorThrown){
                     if (request.status === 0) {
-                        $this.html('<div class="alert alert-danger text-center">Not connect: Verify Network.</div>');
+                        $this.html('<div class="alert alert-info text-center">Not connect: Verify Network.</div>');
                     } else if (request.status == 404) {
-                        $this.html('<div class="alert alert-danger text-center">Requested page not found [404]</div>');
+                        $this.html('<div class="alert alert-info text-center">Requested page not found [404]</div>');
                     } else if (request.status == 500) {
-                        $this.html('<div class="alert alert-danger text-center">Internal Server Error [500].</div>');
+                        $this.html('<div class="alert alert-info text-center">Internal Server Error [500].</div>');
                     } else if (textStatus === 'parsererror') {
-                        $this.html('<div class="alert alert-danger text-center">Requested JSON parse failed.</div>');
+                        $this.html('<div class="alert alert-info text-center">Requested JSON parse failed.</div>');
                     } else if (textStatus === 'timeout') {
-                        $this.html('<div class="alert alert-danger text-center">Time out error.</div>');
+                        $this.html('<div class="alert alert-info text-center">Time out error.</div>');
                     } else if (textStatus === 'abort') {
-                        $this.html('<div class="alert alert-danger text-center">Ajax request aborted.</div>');
+                        $this.html('<div class="alert alert-info text-center">Ajax request aborted.</div>');
                     } else {
                         alert('Uncaught Error: ' + request.responseText);
                     }
@@ -530,7 +546,7 @@
             // previewNode.attr('id','');
             // var previewTemplate = previewNode.parent().html();
             // previewNode.remove();
-            var previewTemplate = '<div class="file-row"><div><span class="preview"><img data-dz-thumbnail /></span></div><div><p class="name" data-dz-name></p><strong class="error text-danger" data-dz-errormessage></strong></div><div><p class="size" data-dz-size></p><div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div></div></div><div><button data-dz-remove class="btn btn-warning cancel"><i class="glyphicon glyphicon-ban-circle"></i><span>'+translate("FE_CANCEL")+'</span></button><button data-dz-remove class="btn btn-danger delete"><i class="glyphicon glyphicon-trash"></i><span>'+translate("FE_DELETE")+'</span></button></div></div>';
+            var previewTemplate = '<div class="file-row"><div><span class="preview"><img data-dz-thumbnail /></span></div><div><p class="name" data-dz-name></p><strong class="error text-info" data-dz-errormessage></strong></div><div><p class="size" data-dz-size></p><div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div></div></div><div><button data-dz-remove class="btn btn-warning cancel"><i class="glyphicon glyphicon-ban-circle"></i><span>'+translate("FE_CANCEL")+'</span></button><button data-dz-remove class="btn btn-danger delete"><i class="glyphicon glyphicon-trash"></i><span>'+translate("FE_DELETE")+'</span></button></div></div>';
             Dropzone.autoDiscover = false;
             var myDropzone = new Dropzone("#"+ filemanager.attr("id"), { 
                 url: settings.url, // Set the url
@@ -565,22 +581,23 @@
             myDropzone.on("processing", function(file) {
             });
             myDropzone.on("processingmultiple", function(file) {
-                var datos = {accion:"uploadfile", path : $("#path",filemanager).val()};
-                if(settings.token!==null) datos[settings.tokenName] = settings.token;          
+                var datos = {action:"uploadfile", path : $("#path",filemanager).val()};
+                if(settings.token!==null) datos[settings.tokenName] = settings.token;  
+                if(settings.typeFile!==null) datos.typeFile = settings.typeFile;               
                 this.options.params = datos;
 
             });
             myDropzone.on("success", function(file, responseText, e) {
                 var datos = $.parseJSON(responseText);
-                if(datos.status){
+                if(datos.status==1){
                 $("#reloadfiles",filemanager).val(1);       
                 }
             });
             myDropzone.on("successmultiple", function(file, responseText, e) {
                 var datos = $.parseJSON(responseText);
                 var msg = filemanager.parseMsg(datos.msg);
-                if(datos.status===false)     
-                $("#error-all",filemanager).html('<div class="alert alert-danger">'+msg+'</div>');
+                if(datos.status==0)     
+                $("#error-all",filemanager).html('<div class="alert alert-info">'+msg+'</div>');
                 else
                 $("#error-all",filemanager).html('<div class="alert alert-success">'+msg+'</div>');
             });
@@ -687,8 +704,9 @@
                 },
                 submitHandler: function(form) {
                     var path = $("#path",filemanager).val();
-                    var datos = {accion:"renamefile",path:path};  
-                    if(settings.token!==null) datos[settings.tokenName] = settings.token;          
+                    var datos = {action:"renamefile",path:path};  
+                    if(settings.token!==null) datos[settings.tokenName] = settings.token;   
+                    if(settings.typeFile!==null) datos.typeFile = settings.typeFile;       
                     datos = $.param(datos) +'&'+ $(form).serialize();
                     $.ajax({
                         type: "POST",
@@ -700,13 +718,13 @@
                         success: function(datos){
                             datos = $.parseJSON(datos);
                             var msg = filemanager.parseMsg(datos.msg);
-                            if(datos.status){
+                            if(datos.status==1){
                                 filemanager.getFolder(path);
                                 $("#"+filemanager.config.rename_popup+" form .result",filemanager).html('<div class="alert alert-success">'+ msg +'</div>');
                                 $("#"+filemanager.config.rename_popup+" form input[name='nameold']",filemanager).val(datos.data.namefile);
                                 $("#"+filemanager.config.rename_popup+" form input[name='name']",filemanager).val(removeExtension(datos.data.namefile));
                             }else{                                  
-                                $("#"+filemanager.config.rename_popup+" form .result",filemanager).html('<div class="alert alert-danger">'+ msg +'</div>');
+                                $("#"+filemanager.config.rename_popup+" form .result",filemanager).html('<div class="alert alert-info">'+ msg +'</div>');
                             }                               
                         }
                     });
@@ -732,8 +750,9 @@
             $("#"+filemanager.config.delete_popup+" form",filemanager).validate({
                 submitHandler: function(form) {
                     var path = $("#path",filemanager).val();
-                    var datos = {accion:"deletefile",path:path};
-                    if(settings.token!==null) datos[settings.tokenName] = settings.token;          
+                    var datos = {action:"deletefile",path:path};
+                    if(settings.token!==null) datos[settings.tokenName] = settings.token;   
+                    if(settings.typeFile!==null) datos.typeFile = settings.typeFile;       
                     datos = $.param(datos) +'&'+ $(form).serialize();
                     $.ajax({
                         type: "POST",
@@ -745,17 +764,17 @@
                         success: function(datos){
                             datos = $.parseJSON(datos);
                             var msg = filemanager.parseMsg(datos.msg);
-                            if(datos.status){
+                            if(datos.status==1){
                                 $("#"+filemanager.config.delete_popup+" form .result",filemanager).html('');
                                 var data = datos.data;
                                 if(data.length>0){
                                     $.each(data, function(index, val) {                                        
                                         $("#"+filemanager.config.delete_popup+" form .content p",filemanager).each(function(index2, val2) {
                                             if($(val2).text()===val.namefile){
-                                                if(val.status)
+                                                if(val.status==1)
                                                     $(val2).append(' <span class="text-success"><span aria-hidden="true" class="glyphicon glyphicon-ok"></span>'+ filemanager.parseMsg(val)+'</span>');                                                    
                                                 else
-                                                    $(val2).append(' <span class="text-danger"><span aria-hidden="true" class="glyphicon glyphicon-alert"></span>'+ filemanager.parseMsg(val)+'</span>');                                                    
+                                                    $(val2).append(' <span class="text-info"><span aria-hidden="true" class="glyphicon glyphicon-alert"></span>'+ filemanager.parseMsg(val)+'</span>');                                                    
                                                 return false;
                                             }
                                         });                                        
@@ -765,7 +784,7 @@
                                 }                                    
                                 filemanager.getFolder(path);
                             }else{                                  
-                                $("#"+filemanager.config.delete_popup+" form .result",filemanager).html('<div class="alert alert-danger">'+ msg +'</div>');
+                                $("#"+filemanager.config.delete_popup+" form .result",filemanager).html('<div class="alert alert-info">'+ msg +'</div>');
                             }                               
                         }
                     });
@@ -793,8 +812,9 @@
                 },
                 submitHandler: function(form) {
                     var path = $("#path",filemanager).val();
-                    var datos = {accion:"newfolder",path:path};
+                    var datos = {action:"newfolder",path:path};
                     if(settings.token!==null) datos[settings.tokenName] = settings.token;          
+                    if(settings.typeFile!==null) datos.typeFile = settings.typeFile;       
                     datos = $.param(datos) +'&'+ $(form).serialize();
                     $.ajax({
                         type: "POST",
@@ -806,11 +826,11 @@
                         success: function(datos){
                             datos = $.parseJSON(datos);
                             var msg = filemanager.parseMsg(datos.msg);
-                            if(datos.status){
+                            if(datos.status==1){
                                 filemanager.getFolder(path);                                 
                                 $("#newfolder_popup_result",filemanager).html('<div class="alert alert-success">'+ msg +'</div>');
                             }else{                                  
-                                $("#newfolder_popup_result",filemanager).html('<div class="alert alert-danger">'+ msg +'</div>');
+                                $("#newfolder_popup_result",filemanager).html('<div class="alert alert-info">'+ msg +'</div>');
                             }                   
                         }
                     });
@@ -818,49 +838,16 @@
             });
             if(settings.insertButton===false) $("#select_insert",filemanager).remove();
             $("#select_insert",filemanager).on('click', function(event) {
-                var items = filemanager.insert();
+                var items = filemanager.insert();                
                 if(window.parent.tinymce && window.parent.tinymce.activeEditor.windowManager){
-                    // top.tinymce.activeEditor.windowManager.getParams().oninsert(items);
-                    // top.tinymce.activeEditor.windowManager.getParams();
-                    var field_name = '';                    
-                    field_name = location.search.split('field_name=')[1];
-                    parent.document.getElementById(field_name).value = items[0].url;
-                    parent.tinymce.activeEditor.windowManager.close();
-                }
+                    var field_name = getParameter('field_name');
+                    window.parent.document.getElementById(field_name).value = items[0].url;
+                    window.parent.tinymce.activeEditor.windowManager.close();
+                }               
                 if (window.opener) {
                     window.opener.setData(items);
                     window.close();
-                }
-                // console.log(r);
-                // console.log(window.parent.tinymce.windowManager);
-                // console.log(window.parent.tinymce.activeEditor.windowManager);
-                // var args = window.parent.tinymce.activeEditor.windowManager.getParams();
-                // console.log(args.arg1, args.arg2);
-                // window.parent.tinymce.activeEditor.windowManager.close();
-                // console.log(window.parent.top);
-                // $(".mce-close").trigger('click');
-                // if (window.opener) {
-                //     window.close();
-                // }
-                // var ic = $this.find('.item.active');
-                // if(ic.length>0){
-                //     var res = [];
-                //     $.each(ic, function(index, val) {
-                //         var obj = {};
-                //         obj.url = $(val).find(".image").attr("rel");
-                //         obj.thumbs = $(val).find(".image img").attr("src");
-                //         obj.filename = $(val).find(".name").attr("data-name-original");
-                //         obj.filetype = $(val).find(".type").text();
-                //         obj.filesize = $(val).find(".size").text();
-                //         obj.lastmodified = $(val).find(".date").text();
-                //         res.push(obj);
-                        
-                //     });
-                //     // console.log(res);
-                //     return res;
-                // }else{
-                //     return false;
-                // }
+                }                
             });
             // END ADD EVENT TO UI
             // BEGIN ADD EVENT TO ITEMS

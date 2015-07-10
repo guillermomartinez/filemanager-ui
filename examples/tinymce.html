@@ -10,7 +10,7 @@
      <script>
      var editor_config = {
          path_absolute : '',
-          language : 'es',
+          language : 'en_GB',
          // selector: "textarea",
          theme: "modern",
          plugins: [
@@ -45,11 +45,11 @@
                  // Url absolute
                  // var cmsURL = 'http://localhost/filemanager/show?&field_name='+field_name+'&lang='+tinymce.settings.language;
                  // var cmsURL = 'http://localhost/otherfolder/filemanager/show?&field_name='+field_name+'&lang='+tinymce.settings.language;
-                 var cmsURL = editor_config.path_absolute+'?&field_name='+field_name+'&lang='+tinymce.settings.language;
+                 var cmsURL = editor_config.path_absolute+'?field_name='+field_name+'&lang='+tinymce.settings.language;
 
-                 // if(type == 'image') {           
-                 //     cmsURL = cmsURL + "&type=images";
-                 // }
+                 if(type == 'image') {           
+                     cmsURL = cmsURL + "&type=images";
+                 }
 
                  tinyMCE.activeEditor.windowManager.open({
                      file : cmsURL,
