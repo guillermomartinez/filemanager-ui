@@ -27,8 +27,12 @@ use GuillermoMartinez\Filemanager\Filemanager;
 //	exit();
 $extra = array(
 	// path after of root folder
+	// if /var/www/public_html is your document root web server
+	// then source= usefiles o filemanager/usefiles
 	"source" => "userfiles",
 	// url domain
+	// so that the files and show well http://php-filemanager.rhcloud.com/userfiles/imagen.jpg
+	// o http://php-filemanager.rhcloud.com/filemanager/userfiles/imagen.jpg
 	"url" => "http://php-filemanager.rhcloud.com/",
 	"debug" => false,
 	);
