@@ -1,5 +1,7 @@
 {
   "name": "filemanager-ui",
+  "description":"It is the graphical user interface File Manager, regardless of the backend, lets you work with PHP, Python, nodejs or another.",
+  "keywords": ["filemanager", "upload", "file", "document", "management"],
   "version": "0.1",
   "license": "MIT",
   "ignore": [
