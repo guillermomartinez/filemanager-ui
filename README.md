@@ -1,6 +1,6 @@
 # Filemanager UI
-Es la interfaz del Administrador de archivos, https://github.com/guillermomartinez/filemanager-php es el conector de php.
-##Ejemplos
+It is the graphical user interface File Manager, https://github.com/guillermomartinez/filemanager-php It is the connector for php.
+##Examples
 * [Basic](http://php-filemanager.rhcloud.com/examples/basic.html)
 * [Multiple](http://php-filemanager.rhcloud.com/examples/basic.html)
 * [Popup](http://php-filemanager.rhcloud.com/examples/popup.html)
@@ -8,15 +8,55 @@ Es la interfaz del Administrador de archivos, https://github.com/guillermomartin
 * [Tinymce](http://php-filemanager.rhcloud.com/examples/tinymce.html)
 
 
-##Instalación
-Descarga https://github.com/guillermomartinez/filemanager-ui/archive/master.zip
+##Installation of Filemanager UI
+Create a folder of name filemanager within your public_html folder
+Download https://github.com/guillermomartinez/filemanager-ui/archive/master.zip
+o
+```
+bower install --save filemanager-ui
+```
+
+Create file index.html
+```
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Filemanager ui</title>
+	<link rel="stylesheet" type="text/css" href="/js/filemanager-ui/dist/css/filemanager-ui.min.css">
+</head>
+<body>
+	<div id="filemanager1" class="filemanager"></div>	
+	
+	<script type="text/javascript" src="/js/filemanager-ui/dist/js/filemanager-ui.min.js"></script>	
+	<script type="text/javascript">
+		$(function() {
+			$("#filemanager1").filemanager({
+				// Url absolute of file conector,
+				url:'http://php-filemanager.rhcloud.com/conector.php',
+				languaje: "ES",
+				upload_max: 5,
+				views:'thumbs',
+				insertButton:true,
+				token:'jashd4a5sd4sa'
+			});
+		});
+	</script>
+</body>
+</html>
+```
+
+##Installation of Filemanager for PHP
+
 ```
 composer require guillermomartinez/filemanager-php:0.1.*
 ```
 
-Crear un archivo conector.php
+Create file conector.php
 
-:exclamation: **No olvides agregar tu metodo de autenticación.**
+:exclamation: **Please add your method of authentication.**
 ```
 <?php
 include("vendor/autoload.php");
@@ -33,8 +73,7 @@ $extra = array(
 	// url domain
 	// so that the files and show well http://php-filemanager.rhcloud.com/userfiles/imagen.jpg
 	// o http://php-filemanager.rhcloud.com/filemanager/userfiles/imagen.jpg
-	"url" => "http://php-filemanager.rhcloud.com/",
-	"debug" => false,
+	"url" => "http://php-filemanager.rhcloud.com/"
 	);
 if(isset($_POST['typeFile']) && $_POST['typeFile']=='images'){
 	$extra['type_file'] = 'images';
@@ -44,38 +83,101 @@ $f->run();
 ?>
 ```
 
-Crear un archivo index.html
+##Integration with laravel
+```
+composer require guillermomartinez/filemanager-php:0.1.*
+```
+
+Create Controller FilemanagerController.php
+```
+<?php namespace App\Http\Controllers;
+
+use App\Http\Requests;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+
+use GuillermoMartinez\Filemanager\Filemanager;
+
+class FilemanagerController extends Controller {
+	public function __construct(){
+		// $this->middleware('auth');
+	}
+	public function getIndex()
+	{
+		return view('filemanager');
+	}
+	public function getConnection()
+	{
+		$extra = array(
+		    // path after of root folder
+		    // if /var/www/public_html is your document root web server
+		    // then source= usefiles o filemanager/usefiles
+		    "source" => "github/filemanagertest/laravel/public/userfiles",
+		    // url domain
+		    // so that the files and show well http://php-filemanager.rhcloud.com/userfiles/imagen.jpg
+		    // o http://php-filemanager.rhcloud.com/filemanager/userfiles/imagen.jpg
+		    "url" => "http://localhost/",
+		    );						
+		$f = new Filemanager($extra);
+		$f->run();
+	}
+	public function postConnection()
+	{
+		$extra = array(
+		    // path after of root folder
+		    // if /var/www/public_html is your document root web server
+		    // then source= usefiles o filemanager/usefiles
+		    "source" => "github/filemanagertest/laravel/public/userfiles",
+		    // url domain
+		    // so that the files and show well http://php-filemanager.rhcloud.com/userfiles/imagen.jpg
+		    // o http://php-filemanager.rhcloud.com/filemanager/userfiles/imagen.jpg
+		    "url" => "http://localhost/",
+		    );
+		if(isset($_POST['typeFile']) && $_POST['typeFile']=='images'){
+		    $extra['type_file'] = 'images';
+		}
+		$f = new Filemanager($extra);
+		$f->run();
+	}
+}
+```
+Create view filemanager.blade.php
 ```
 <!DOCTYPE html>
 <html lang="es">
 <head>
-	<meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Filemanager ui</title>
-	<link rel="stylesheet" type="text/css" href="../js/filemanager-ui/dist/css/filemanager-ui.min.css">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Filemanager ui</title>
+    <link rel="stylesheet" type="text/css" href="{{url('/')}}/bower_components/filemanager-ui/dist/css/filemanager-ui.min.css">
 </head>
 <body>
-	<div id="filemanager1" class="filemanager"></div>	
-	
-	<script type="text/javascript" src="../js/filemanager-ui/dist/js/filemanager-ui.min.js"></script>	
-	<script type="text/javascript">
-		$(function() {
-			$("#filemanager1").filemanager({
-				url:'http://php-filemanager.rhcloud.com/conector.php',
-				languaje: "ES",
-				upload_max: 5,
-				views:'thumbs',
-				insertButton:true,
-				token:'jashd4a5sd4sa'
-			});
-		});
-	</script>
+    <div id="filemanager1" class="filemanager"></div>   
+
+    <script type="text/javascript" src="{{url('/')}}/bower_components/filemanager-ui/dist/js/filemanager-ui.min.js"></script>   
+    <script type="text/javascript">
+        $(function() {
+            $("#filemanager1").filemanager({
+                url:'{{url("/")}}/filemanager/connection',
+                languaje: "ES",
+                upload_max: 5,
+                views:'thumbs',
+                insertButton:true,
+                token:"{{csrf_token()}}"
+            });
+        });
+    </script>
 </body>
 </html>
 ```
 
-## Demo
+routes.php
+```
+Route::controller('/filemanager','FilemanagerController');
+```
+
+##Demo
 http://php-filemanager.rhcloud.com/
 
 ![demo2](https://cloud.githubusercontent.com/assets/5642429/8630887/aec46114-2731-11e5-9a7b-907127d77891.jpg)
