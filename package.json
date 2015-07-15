@@ -1,7 +1,8 @@
 {
   "name": "filemanager-ui",
-  "version": "0.0.0",
-  "description": "",
+  "version": "0.1.0",
+  "description":"It is the graphical user interface File Manager, regardless of the backend, lets you work with PHP, Python, nodejs or another.",
+  "keywords": ["filemanager", "upload", "file", "document", "management"],
   "main": "Gruntfile.js",
   "directories": {
     "test": "tests"
