@@ -2,7 +2,7 @@
 It is the graphical user interface File Manager, https://github.com/guillermomartinez/filemanager-php It is the connector for php.
 ##Examples
 * [Basic](http://php-filemanager.rhcloud.com/examples/basic.html)
-* [Multiple](http://php-filemanager.rhcloud.com/examples/basic.html)
+* [Multiple](http://php-filemanager.rhcloud.com/examples/multiple.html)
 * [Popup](http://php-filemanager.rhcloud.com/examples/popup.html)
 * [Popup advanced](http://php-filemanager.rhcloud.com/examples/popup_advanced.html)
 * [Tinymce](http://php-filemanager.rhcloud.com/examples/tinymce.html)
