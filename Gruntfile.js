@@ -29,6 +29,15 @@ module.exports = function(grunt) {
           'src/css/responsive.css'
         ],
         dest: 'dist/css/<%= pkg.name %>.css'
+      },
+      css2: {
+        src: [
+          'bower_components/fancybox/source/jquery.fancybox.css',
+          'bower_components/dropzone/dist/dropzone.css',
+          'src/css/main.css',
+          'src/css/responsive.css'
+        ],
+        dest: 'dist/css/<%= pkg.name %>-without.css'
       },      
       js_build: {
         src: [
@@ -61,6 +70,19 @@ module.exports = function(grunt) {
           'src/js/jquery.filemanager.js'
         ],
         dest: 'dist/js/<%= pkg.name %>.js'
+      },      
+      js2: {
+        src: [
+          'bower_components/jquery-validation/dist/jquery.validate.js',
+          'bower_components/dropzone/dist/dropzone.js',
+          'bower_components/fancybox/source/jquery.fancybox.js',
+          'bower_components/moment/moment.js',
+          'bower_components/bootstrap-contextmenu/bootstrap-contextmenu.js',
+          'src/js/languaje/us.js',
+          'src/js/languaje/es.js',
+          'src/js/jquery.filemanager.js'
+        ],
+        dest: 'dist/js/<%= pkg.name %>-without.js'
       }
     },
 		cssmin: {
@@ -72,6 +94,10 @@ module.exports = function(grunt) {
       minifyCore: {
         src: 'dist/css/<%= pkg.name %>.css',
         dest: 'dist/css/<%= pkg.name %>.min.css'
+      },
+      minifyCore2: {
+        src: 'dist/css/<%= pkg.name %>-without.css',
+        dest: 'dist/css/<%= pkg.name %>-without.min.css'
       }      
     },
     uglify: {
@@ -81,7 +107,11 @@ module.exports = function(grunt) {
       core: {
         src: 'dist/js/<%= pkg.name %>.js',
         dest: 'dist/js/<%= pkg.name %>.min.js'
-      }      
+      },
+      core2: {
+        src: 'dist/js/<%= pkg.name %>-without.js',
+        dest: 'dist/js/<%= pkg.name %>-without.min.js'
+      }       
     },
     copy: {
       fonts_build: {
@@ -126,7 +156,7 @@ module.exports = function(grunt) {
   require('time-grunt')(grunt);
   
   grunt.registerTask('build', ['less', 'concat:js_build','copy:fonts_build','copy:fancybox_build']);
-  grunt.registerTask('dist', ['clean','less', 'concat:css', 'concat:js', 'cssmin:minifyCore','uglify:core','copy:fonts','copy:fancybox','copy:images']);
+  grunt.registerTask('dist', ['clean','less', 'concat:css', 'concat:css2', 'concat:js', 'concat:js2', 'cssmin:minifyCore', 'cssmin:minifyCore2', 'uglify:core','uglify:core2','copy:fonts','copy:fancybox','copy:images']);
 
 
 };
