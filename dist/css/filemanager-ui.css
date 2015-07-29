@@ -6607,14 +6607,13 @@ button.close {
   }
 }
 
-
-body {
+.filemanager{
     color: #000;
     font-family: arial;
     font-size: 14px;
-}
-.filemanager{
     margin-bottom: 20px;
+    background-color: #fff;
+    padding-bottom: 15px;
 }
 .filemanager .navbar {
     background-color: #fff;
@@ -6622,7 +6621,114 @@ body {
     margin: 0;
     padding: 10px 0 0;
 }
-
+.filemanager .form-control {
+  color: #000;
+  height: 30px;
+  padding: 5px 10px;
+}
+.filemanager .tooltip {
+  position: absolute;
+  z-index: 1070;
+  display: block;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  font-weight: normal;
+  line-height: 1.4;
+  opacity: 0;
+  filter: alpha(opacity=0);
+}
+.filemanager .tooltip.in {
+  opacity: 0.9;
+  filter: alpha(opacity=90);
+}
+.filemanager .tooltip.top {
+  margin-top: -3px;
+  padding: 5px 0;
+}
+.filemanager .tooltip.right {
+  margin-left: 3px;
+  padding: 0 5px;
+}
+.filemanager .tooltip.bottom {
+  margin-top: 3px;
+  padding: 5px 0;
+}
+.filemanager .tooltip.left {
+  margin-left: -3px;
+  padding: 0 5px;
+}
+.filemanager .tooltip-inner {
+  max-width: 200px;
+  padding: 3px 8px;
+  color: #ffffff;
+  text-align: center;
+  text-decoration: none;
+  background-color: #000000;
+  border-radius: 4px;
+}
+.filemanager .tooltip-arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+}
+.filemanager .tooltip.top .tooltip-arrow {
+  bottom: 0;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px 5px 0;
+  border-top-color: #000000;
+}
+.filemanager .tooltip.top-left .tooltip-arrow {
+  bottom: 0;
+  right: 5px;
+  margin-bottom: -5px;
+  border-width: 5px 5px 0;
+  border-top-color: #000000;
+}
+.filemanager .tooltip.top-right .tooltip-arrow {
+  bottom: 0;
+  left: 5px;
+  margin-bottom: -5px;
+  border-width: 5px 5px 0;
+  border-top-color: #000000;
+}
+.filemanager .tooltip.right .tooltip-arrow {
+  top: 50%;
+  left: 0;
+  margin-top: -5px;
+  border-width: 5px 5px 5px 0;
+  border-right-color: #000000;
+}
+.filemanager .tooltip.left .tooltip-arrow {
+  top: 50%;
+  right: 0;
+  margin-top: -5px;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #000000;
+}
+.filemanager .tooltip.bottom .tooltip-arrow {
+  top: 0;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 0 5px 5px;
+  border-bottom-color: #000000;
+}
+.filemanager .tooltip.bottom-left .tooltip-arrow {
+  top: 0;
+  right: 5px;
+  margin-top: -5px;
+  border-width: 0 5px 5px;
+  border-bottom-color: #000000;
+}
+.filemanager .tooltip.bottom-right .tooltip-arrow {
+  top: 0;
+  left: 5px;
+  margin-top: -5px;
+  border-width: 0 5px 5px;
+  border-bottom-color: #000000;
+}
 .filemanager.fixed-top > .navbar{
 left: 0;
 margin-top: 0;
