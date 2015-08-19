@@ -48,5 +48,11 @@ LANGS.ES = {
 	"BE_RENAME_NOT_EXISTS" : "Archivo no existe",
 	"BE_RUN_NOT_VALID" : "No valido: ",
 	"BE_RENAME_EXT_NOT_EQUALS" : "La extensión no es igual",
-	"BE_RENAME_FILENAME_NOT_VALID" : "Nombre de archivo no valido"
+	"BE_RENAME_FILENAME_NOT_VALID" : "Nombre de archivo no valido",
+	"FE_MOVE" : "Mover",
+	"BE_MOVE_MOVED" : "Archivo movido",
+	"BE_MOVE_EXISTED" : "Archivo ya existe",
+	"BE_MOVE_NOT_EXISTS" : "Archivo no existe",
+	"BE_MOVE_FILENAME_NOT_VALID" : "Nombre de archivo no valido",
+	"FE_FOLDER" : "Carpeta"
 };

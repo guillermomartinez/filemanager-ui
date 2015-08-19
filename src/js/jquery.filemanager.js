@@ -129,6 +129,7 @@
             upload_popup: "upload_popup_"+filemanager.token,
             delete_popup: "delete_popup_"+filemanager.token,
             rename_popup: "rename_popup_"+filemanager.token,
+            move_popup: "move_popup_"+filemanager.token,
         };
         var html_init = '<div class="navbar">';
         html_init = html_init+'<div class="navbar-inner"><div class="container-fluid">';
@@ -138,7 +139,7 @@
         html_init = html_init+'<div class="container-fluid">';
         html_init = html_init+'<input type="hidden" id="path" name="path" value=""><div class="hidden"><div id="preview_file"><span aria-hidden="true" class="glyphicon glyphicon-file txt"></span></div></div>';        
         html_init = html_init+'<div id="content_list" class="row"><div class="col-md-12" id="row_header_content"><div class="row_header"><div class="col name">FE_NOMBRE</div><div class="col type">FE_TIPO</div><div class="col size">FE_TAMANO</div><div class="col date">FE_DATE</div><div class="col actions">FE_ACTIONS</div></div></div><div class="col-md-12 list"><ul id="list" class="scroll"></ul></div></div>';
-        html_init = html_init+'<div id="context-menu"><ul class="dropdown-menu menu_contextual" role="menu"><li class="view"><a href="#">FE_VIEW</a></li><li class="rename"><a href="#">FE_RENAME</a></li><li class="download"><a href="#">FE_DOWNLOAD</a></li><li class="delete"><a href="#">FE_DELETE</a></li></ul></div>';
+        html_init = html_init+'<div id="context-menu"><ul class="dropdown-menu menu_contextual" role="menu"><li class="view"><a href="#">FE_VIEW</a></li><li class="rename"><a href="#">FE_RENAME</a></li><li class="move"><a href="#">FE_MOVE</a></li><li class="download"><a href="#">FE_DOWNLOAD</a></li><li class="delete"><a href="#">FE_DELETE</a></li></ul></div>';
         html_init = html_init+'</div>';
         filemanager.append(html_init);
         var $this = filemanager.find("#list");
@@ -233,7 +234,7 @@
                     if(element.isdir==true){
                         el.find('.image').html('<div class="content_icon"><span aria-hidden="true" class="glyphicon glyphicon-folder-close"></span></div>');
                         el.find('.image').addClass('dir').attr('rel',element.urlfolder);
-                        el.find('.name').attr('data-name-original',filename).attr('data-name',filename);
+                        el.find('.name').attr('data-name-original',filename).attr('data-name',filename).attr('data-isdir',element.isdir);
                         el.find('.texto').text(filenameshort);
                         el.find('.type').text('dir');
                         el.find('.size').text('');
@@ -241,7 +242,7 @@
                     }else if(element.filetype==="jpg" || element.filetype==="png" || element.filetype=="jpeg" || element.filetype=="gif"){
                         el.find('.image img').attr('src',element.preview);
                         el.find('.image').addClass('fancybox').attr('data-url',element.previewfull).attr('rel',element.previewfull).attr('title',translate('FE_FILENAME') + element.filename+' | '+ translate('FE_SIZE') +' '+filemanager.formatBytes(element.size)+' | '+ translate('FE_LAST_MODIFIED') +moment.unix(element.lastmodified).format(settings.datetimeFormat));
-                        el.find('.name').attr('data-name-original',filename).attr('data-name',filename);
+                        el.find('.name').attr('data-name-original',filename).attr('data-name',filename).attr('data-isdir',element.isdir);
                         el.find('.texto').text(filenameshort);
                         el.find('.type').text(filetype);
                         el.find('.size').text(filesize);
@@ -250,7 +251,7 @@
                     else{
                         el.find('.image').html('<div class="content_icon"><span aria-hidden="true" class="glyphicon glyphicon-file '+ element.filetype +'" ></span></div>');
                         el.find('.image').addClass('fancybox').attr('data-url',element.previewfull).attr('rel','#preview_file').attr('title',translate('FE_FILENAME')+element.filename+' | '+ translate('FE_SIZE')+filemanager.formatBytes(element.size)+' | '+translate('FE_LAST_MODIFIED')+moment.unix(element.lastmodified).format(settings.datetimeFormat));
-                        el.find('.name').attr('data-name-original',filename).attr('data-name',filename);
+                        el.find('.name').attr('data-name-original',filename).attr('data-name',filename).attr('data-isdir',element.isdir);
                         el.find('.texto').text(filenameshort);
                         el.find('.type').text(filetype);
                         el.find('.size').text(filesize);
@@ -295,6 +296,15 @@
                 }
             }
             );                
+        };
+        filemanager.viewMove = function(item){            
+            var path = $("#path",filemanager).val();
+            $("#"+filemanager.config.move_popup,filemanager).modal('show');
+            $("#"+filemanager.config.move_popup,filemanager).find('#nameold').val(item.find('.name').data('name-original'));
+            $("#"+filemanager.config.move_popup,filemanager).find('.label_namefile').text("Archivo");
+            $("#"+filemanager.config.move_popup,filemanager).find('.namefile').text(path+item.find('.name').data('name-original'));
+            // $("#"+filemanager.config.move_popup,filemanager).find('.label_name').text(item.find('.name').data('name-original'));
+            // $("#"+filemanager.config.move_popup,filemanager).find('#name').val(removeExtension(item.find('.name').data('name-original')));
         };
         filemanager.viewRename = function(item){
             $("#"+filemanager.config.rename_popup,filemanager).modal('show');
@@ -364,6 +374,9 @@
                                 if($(e.target).parent().is('.view')){
                                     filemanager.preview(context);                                
                                 }
+                                if($(e.target).parent().is('.move')){
+                                    filemanager.viewMove(context);                                
+                                }
                                 if($(e.target).parent().is('.rename')){
                                     filemanager.viewRename(context);                                
                                 }
@@ -389,6 +402,9 @@
                             event.preventDefault();
                             if($(this).parent().is('.view')){
                                 filemanager.preview($(this).parents('.item'));                                
+                            }
+                            if($(this).parent().is('.move')){
+                                filemanager.viewMove($(this).parents('.item'));                                
                             }
                             if($(this).parent().is('.rename')){
                                 filemanager.viewRename($(this).parents('.item'));                                
@@ -514,6 +530,16 @@
                 body:'<div class="content"><div class="form-group"><label for="exampleInputEmail1">'+translate('FE_NAME')+'</label><input type="hidden" name="nameold" id="nameold"><input type="text" class="form-control" id="name" name="name" placeholder="'+translate('FE_ENTER_NAME')+'"></div></div><div class="result"></div>',
                 footer:{
                     ok:translate('FE_RENAME'),
+                    close:translate('FE_CLOSE')
+                } }));
+            $(filemanager).append(settings.getModalTemplate({
+                modal_id:filemanager.config.move_popup,
+                header:{
+                    title:translate('FE_MOVE')
+                },
+                body:'<div class="content"><div class="form-group"><label class="label_namefile">'+translate('FE_FILENAME')+'</label><p class="namefile"></p><label class="label_name" for="exampleInputEmail1">'+translate('FE_FOLDER')+'</label><input type="hidden" name="nameold" id="nameold"><input type="text" class="form-control" id="name" name="name" placeholder="/"></div></div><div class="result"></div>',
+                footer:{
+                    ok:translate('FE_MOVE'),
                     close:translate('FE_CLOSE')
                 }
             }));
@@ -651,6 +677,51 @@
                 filemanager.getFolder($(this).attr('rel'));
             });
             $('[data-tooltip="tooltip"]',filemanager).tooltip();
+            $("#"+filemanager.config.move_popup,filemanager).on('show.bs.modal', function (e) {
+                $("#"+filemanager.config.move_popup+" #name",filemanager).val('');
+                $("#"+filemanager.config.move_popup+" .result",filemanager).html('');
+                var button = $(e.relatedTarget);
+                var name = button.data('name');
+                var modal = $(this);
+                modal.find('.modal-body .content input[name="name"]').val(name);     
+                modal.find('.modal-body .content input[name="nameold"]').val(name);
+                modal.find('.modal-body .result').html('');
+            });
+            $("#"+filemanager.config.move_popup+" form",filemanager).validate({
+                rules:{
+                    name:{
+                        required:true,
+                        minlength:1
+                    }
+                },
+                submitHandler: function(form) {
+                    var path = $("#path",filemanager).val();
+                    var datos = {action:"movefile",path:path};  
+                    if(settings.token!==null) datos[settings.tokenName] = settings.token;   
+                    if(settings.typeFile!==null) datos.typeFile = settings.typeFile;       
+                    datos = $.param(datos) +'&'+ $(form).serialize();
+                    $.ajax({
+                        type: "POST",
+                        url: settings.url,
+                        data :  datos,                          
+                        beforeSend: function(objeto){
+                            $("#"+filemanager.config.move_popup+" form .result",filemanager).html('<div class="progress"><div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div></div>');
+                        },
+                        success: function(datos){
+                            datos = $.parseJSON(datos);
+                            var msg = filemanager.parseMsg(datos.msg);
+                            if(datos.status==1){
+                                filemanager.getFolder(path);
+                                $("#"+filemanager.config.move_popup+" form .result",filemanager).html('<div class="alert alert-success">'+ msg +'<br>'+datos.data.namefile+'</div>');
+                                $("#"+filemanager.config.move_popup+" form input[name='nameold']",filemanager).val(datos.data.namefile);
+                            }else{                                  
+                                $("#"+filemanager.config.move_popup+" form .result",filemanager).html('<div class="alert alert-info">'+ msg +'</div>');
+                            }                               
+                        }
+                    });
+                }
+            });
+
             $("#"+filemanager.config.rename_popup,filemanager).on('show.bs.modal', function (e) {
                 $("#"+filemanager.config.rename_popup+" #name",filemanager).val('');
                 $("#"+filemanager.config.rename_popup+" .result",filemanager).html('');

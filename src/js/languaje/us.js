@@ -48,5 +48,11 @@ LANGS.US = {
 	"BE_RENAME_NOT_EXISTS" : "File not existed",
 	"BE_RUN_NOT_VALID" : "Not valid: ",
 	"BE_RENAME_EXT_NOT_EQUALS" : "The extension not equal",
-	"BE_RENAME_FILENAME_NOT_VALID" : "Name file not valid"
+	"BE_RENAME_FILENAME_NOT_VALID" : "Name file not valid",
+	"FE_MOVE" : "Move",
+	"BE_MOVE_MOVED" : "File moved",
+	"BE_MOVE_EXISTED" : "File existed",
+	"BE_MOVE_NOT_EXISTS" : "File not existed",
+	"BE_MOVE_FILENAME_NOT_VALID" : "Name file not valid",
+	"FE_FOLDER" : "Folder"
 };
