@@ -1,5 +1,4 @@
 (function ( $ ) {
- 
     $.fn.filemanager = function( options ) {
         var defaults = {
             url: "../conector.php",
@@ -19,7 +18,7 @@
             var regex = /[?&]([^=#]+)=([^&#]*)/g, url = window.location.href, params = {},match;
             while(match = regex.exec(url)) {
                 if(match[2]!=='undefined')
-                params[match[1]] = match[2];
+                    params[match[1]] = match[2];
             }
             return (params[param] || '');
         };
@@ -59,6 +58,70 @@
             template = template + '</div></form></div></div>';
             return template;
         };
+        function substr_replace(str, replace, start, length) {
+            //  discuss at: http://phpjs.org/functions/substr_replace/          
+            if (start < 0) { 
+                start = start + str.length;
+            }
+            length = length !== undefined ? length : str.length;
+            if (length < 0) {
+                length = length + str.length - start;
+            }
+            return str.slice(0, start) + replace.substr(0, length) + replace.slice(length) + str.slice(start + length);
+        }        
+        function str_replace(search, replace, subject, count) {
+            //  discuss at: http://phpjs.org/functions/str_replace/
+            var i = 0,j = 0,temp = '',repl = '',sl = 0,fl = 0,f = [].concat(search),r = [].concat(replace),s = subject,ra = Object.prototype.toString.call(r) === '[object Array]',sa = Object.prototype.toString.call(s) === '[object Array]';
+            s = [].concat(s);
+            if(typeof(search) === 'object' && typeof(replace) === 'string' ) {
+                temp = replace; 
+                replace = [];
+                for (i=0; i < search.length; i+=1) { 
+                    replace[i] = temp; 
+                }
+                temp = ''; 
+                r = [].concat(replace); 
+                ra = Object.prototype.toString.call(r) === '[object Array]';
+            }
+            if (count) {
+                this.window[count] = 0;
+            }
+            for (i = 0, sl = s.length; i < sl; i++) {
+                if (s[i] === '') {
+                    continue;
+                }
+                for (j = 0, fl = f.length; j < fl; j++) {
+                    temp = s[i] + '';
+                    repl = ra ? (r[j] !== undefined ? r[j] : '') : r[0];
+                    s[i] = (temp)
+                    .split(f[j])
+                    .join(repl);
+                    if (count) {
+                        this.window[count] += ((temp.split(f[j])).length - 1);
+                    } 
+                }
+            }
+            return sa ? s : s[0];
+        } 
+        function removeExtension(filename){
+            var lastPosition = filename.lastIndexOf(".");
+            if (lastPosition === -1) return filename;
+            else return filename.substr(0, lastPosition);
+        }
+        function translate(text){
+            var r = false;
+            var t1 = '';
+            var t2 = '';
+            $.each(LANG, function(index2, valor) {
+                if(text==index2){
+                    r = true;
+                    t1 = index2;
+                    t2 = valor;
+                    return false;
+                }
+            });
+            if (r) return text.replace(t1,t2); 
+        }        
         var filemanager = $(this);
         filemanager.token = Math.floor((1 + Math.random()) * 0x10000);
         filemanager.config = {
@@ -79,65 +142,6 @@
         html_init = html_init+'</div>';
         filemanager.append(html_init);
         var $this = filemanager.find("#list");
-        function substr_replace(str, replace, start, length) {
-          //  discuss at: http://phpjs.org/functions/substr_replace/          
-          if (start < 0) { 
-            start = start + str.length;
-          }
-          length = length !== undefined ? length : str.length;
-          if (length < 0) {
-            length = length + str.length - start;
-          }
-
-          return str.slice(0, start) + replace.substr(0, length) + replace.slice(length) + str.slice(start + length);
-        }        
-        function str_replace(search, replace, subject, count) {
-            //  discuss at: http://phpjs.org/functions/str_replace/
-            var i = 0,
-            j = 0,
-            temp = '',
-            repl = '',
-            sl = 0,
-            fl = 0,
-            f = [].concat(search),
-            r = [].concat(replace),
-            s = subject,
-            ra = Object.prototype.toString.call(r) === '[object Array]',
-            sa = Object.prototype.toString.call(s) === '[object Array]';
-            s = [].concat(s);
-
-            if(typeof(search) === 'object' && typeof(replace) === 'string' ) {
-            temp = replace; 
-            replace = [];
-            for (i=0; i < search.length; i+=1) { 
-              replace[i] = temp; 
-            }
-            temp = ''; 
-            r = [].concat(replace); 
-            ra = Object.prototype.toString.call(r) === '[object Array]';
-            }
-
-            if (count) {
-            this.window[count] = 0;
-            }
-
-            for (i = 0, sl = s.length; i < sl; i++) {
-            if (s[i] === '') {
-              continue;
-            }
-            for (j = 0, fl = f.length; j < fl; j++) {
-              temp = s[i] + '';
-              repl = ra ? (r[j] !== undefined ? r[j] : '') : r[0];
-              s[i] = (temp)
-                .split(f[j])
-                .join(repl);
-              if (count) {
-                this.window[count] += ((temp.split(f[j])).length - 1);
-              } 
-            }
-            }
-            return sa ? s : s[0];
-        }        
         filemanager.validExtension = function (filename){
             var r = false;
             var ext ='';
@@ -150,25 +154,6 @@
                 }
             }
             return r;            
-        }
-        function removeExtension(filename){
-            var lastPosition = filename.lastIndexOf(".");
-            if (lastPosition === -1) return filename;
-            else return filename.substr(0, lastPosition);
-        }
-        function translate(text){
-            var r = false;
-            var t1 = '';
-            var t2 = '';
-            $.each(LANG, function(index2, valor) {
-                if(text==index2){
-                    r = true;
-                    t1 = index2;
-                    t2 = valor;
-                    return false;
-                }
-            });
-            if (r) return text.replace(t1,t2); 
         }
         filemanager.parseMsg = function(obj){
             if(typeof obj == 'object'){
@@ -201,7 +186,6 @@
                 return text;
             }
         }
-
         filemanager.formatBytes = function(bytes) {
             if(bytes < 1024) 
                 return bytes + " Bytes";
@@ -212,7 +196,6 @@
             else 
                 return(bytes / 1073741824).toFixed(3) + " GB";
         }
-        
         filemanager.loadFiles = function(data,path){
             var items = $this;
             items.html('');
@@ -251,32 +234,32 @@
                         el.find('.image').html('<div class="content_icon"><span aria-hidden="true" class="glyphicon glyphicon-folder-close"></span></div>');
                         el.find('.image').addClass('dir').attr('rel',element.urlfolder);
                         el.find('.name').attr('data-name-original',filename).attr('data-name',filename);
-                         el.find('.texto').text(filenameshort);
+                        el.find('.texto').text(filenameshort);
                         el.find('.type').text('dir');
                         el.find('.size').text('');
                         el.find('.date').text(filedate);
-
                     }else if(element.filetype==="jpg" || element.filetype==="png" || element.filetype=="jpeg" || element.filetype=="gif"){
                         el.find('.image img').attr('src',element.preview);
                         el.find('.image').addClass('fancybox').attr('data-url',element.previewfull).attr('rel',element.previewfull).attr('title',translate('FE_FILENAME') + element.filename+' | '+ translate('FE_SIZE') +' '+filemanager.formatBytes(element.size)+' | '+ translate('FE_LAST_MODIFIED') +moment.unix(element.lastmodified).format(settings.datetimeFormat));
                         el.find('.name').attr('data-name-original',filename).attr('data-name',filename);
-                         el.find('.texto').text(filenameshort);
+                        el.find('.texto').text(filenameshort);
                         el.find('.type').text(filetype);
                         el.find('.size').text(filesize);
                         el.find('.date').text(filedate);
-                    }else{
+                    }
+                    else{
                         el.find('.image').html('<div class="content_icon"><span aria-hidden="true" class="glyphicon glyphicon-file '+ element.filetype +'" ></span></div>');
                         el.find('.image').addClass('fancybox').attr('data-url',element.previewfull).attr('rel','#preview_file').attr('title',translate('FE_FILENAME')+element.filename+' | '+ translate('FE_SIZE')+filemanager.formatBytes(element.size)+' | '+translate('FE_LAST_MODIFIED')+moment.unix(element.lastmodified).format(settings.datetimeFormat));
                         el.find('.name').attr('data-name-original',filename).attr('data-name',filename);
-                         el.find('.texto').text(filenameshort);
+                        el.find('.texto').text(filenameshort);
                         el.find('.type').text(filetype);
                         el.find('.size').text(filesize);
                         el.find('.date').text(filedate);
                     }
                     items.append(el);
                 }
-            });            
-        };
+            });
+        }
         filemanager.preview = function(item){
             $.fancybox( {
                 href : item.find('a').attr('rel'), 
@@ -292,8 +275,8 @@
                     var t ='';
                     if(a.length>0){
                         for (var i = 0; i < a.length; i++) {
-                        var t2 ='';
-                        var t3 =[];
+                            var t2 ='';
+                            var t3 =[];
                             t2 = a[i];
                             t3 = t2.split(':');
                             if(t3.length==1){
@@ -313,20 +296,19 @@
             }
             );                
         };
-         filemanager.viewRename = function(item){
+        filemanager.viewRename = function(item){
             $("#"+filemanager.config.rename_popup,filemanager).modal('show');
             $("#"+filemanager.config.rename_popup,filemanager).find('#nameold').val(item.find('.name').data('name-original'));
             $("#"+filemanager.config.rename_popup,filemanager).find('#name').val(removeExtension(item.find('.name').data('name-original')));
         };
-         filemanager.download = function(item){
+        filemanager.download = function(item){
             var name = item.find('.name').data('name-original');
             var path = $("#path",filemanager).val();
             var datos = settings.url+'?action=download&path='+ path + '&name=' + name;            
             if(settings.token!==null) datos = datos + '&' + settings.tokenName + '=' + settings.token;
             window.document.location.href = datos;
-
         };
-         filemanager.viewDelete = function(item){
+        filemanager.viewDelete = function(item){
             var name = item.find('.name').data('name-original');
             var modal = $('#'+filemanager.config.delete_popup,filemanager);
             modal.find('.modal-body .content').html('<p class="filename_delete">'+ name +'</p><input type="hidden" name="name" value="'+ name +'" />');
@@ -346,7 +328,6 @@
                     obj.filesize = $(val).find(".size").text();
                     obj.lastmodified = $(val).find(".date").text();
                     res.push(obj);
-                    
                 });
                 return res;
             }else{
@@ -369,36 +350,35 @@
                     datos = $.parseJSON(datos);
                     if(datos.status==1){
                         filemanager.loadFiles(datos.data,path);
-
                         $('.context',filemanager).contextmenu({
-                          target: '#'+filemanager.attr('id')+' #context-menu', 
-                          before: function(e,context) {
-                            this.getMenu().find("li").css('display','block');
-                            if(context.find('.image.dir').length>0){
-                                this.getMenu().find("li.view").css('display','none');
-                                this.getMenu().find("li.download").css('display','none');
+                            target: '#'+filemanager.attr('id')+' #context-menu', 
+                            before: function(e,context) {
+                                this.getMenu().find("li").css('display','block');
+                                if(context.find('.image.dir').length>0){
+                                    this.getMenu().find("li.view").css('display','none');
+                                    this.getMenu().find("li.download").css('display','none');
+                                }
+                                return true;
+                            },
+                            onItem: function(context,e) {
+                                if($(e.target).parent().is('.view')){
+                                    filemanager.preview(context);                                
+                                }
+                                if($(e.target).parent().is('.rename')){
+                                    filemanager.viewRename(context);                                
+                                }
+                                if($(e.target).parent().is('.download')){
+                                    filemanager.download(context);                                
+                                }
+                                if($(e.target).parent().is('.delete')){
+                                    filemanager.viewDelete(context);                                
+                                }
                             }
-                            return true;
-                          },
-                          onItem: function(context,e) {
-                            if($(e.target).parent().is('.view')){
-                            filemanager.preview(context);                                
-                            }
-                            if($(e.target).parent().is('.rename')){
-                            filemanager.viewRename(context);                                
-                            }
-                            if($(e.target).parent().is('.download')){
-                            filemanager.download(context);                                
-                            }
-                            if($(e.target).parent().is('.delete')){
-                            filemanager.viewDelete(context);                                
-                            }
-                          }
                         });
                         $('.menu_options',filemanager).on('show.bs.dropdown', function (e) {
-                          var context = $(this).parents('.item');
-                          $(this).find('li').css('display','block');
-                          if(context.find('.image.dir').length>0){
+                            var context = $(this).parents('.item');
+                            $(this).find('li').css('display','block');
+                            if(context.find('.image.dir').length>0){
                                 $(this).find('li.view').css('display','none');
                                 $(this).find('li.download').css('display','none');
                             }
@@ -408,16 +388,16 @@
                         $('.menu_options',filemanager).on('click', 'li > a', function(event) {
                             event.preventDefault();
                             if($(this).parent().is('.view')){
-                            filemanager.preview($(this).parents('.item'));                                
+                                filemanager.preview($(this).parents('.item'));                                
                             }
                             if($(this).parent().is('.rename')){
-                            filemanager.viewRename($(this).parents('.item'));                                
+                                filemanager.viewRename($(this).parents('.item'));                                
                             }
                             if($(this).parent().is('.download')){
-                            filemanager.download($(this).parents('.item'));                                
+                                filemanager.download($(this).parents('.item'));                                
                             }
                             if($(this).parent().is('.delete')){
-                            filemanager.viewDelete($(this).parents('.item'));                                
+                                filemanager.viewDelete($(this).parents('.item'));                                
                             }
                         });
                         // BEGIN VIEWS
@@ -444,7 +424,6 @@
                                 temp.push(ruta[i]);
                             }
                         }
-                        
                         var rutacontent = $("#ruta",filemanager);
                         rutacontent.html('<li><a href="#" rel="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span></a></li>');
                         var url ='/';
@@ -458,10 +437,8 @@
                                 el = $('<li>'+element+'</li>');
                                 rutacontent.append(el);
                             }
-                            
                         });
-                        searchFiles();
-                         
+                        filemanager.searchFiles();
                     }
                 },
                 error: function(request, textStatus, errorThrown){
@@ -482,8 +459,8 @@
                     }
                 }
             });
-        } 
-        function searchFiles(){
+        }
+        filemanager.searchFiles = function(){
             var text = $("#search",filemanager).val();
             if(text===""){
                 $("li",$this).not('.parentup').removeClass('hidden');
@@ -563,7 +540,6 @@
                 acceptedFiles: settings.ext.join(",."),
                 dictInvalidFileType: translate("BE_GETFILEALL_NOT_PERMITIDO"),
             });
-            
             myDropzone.on("addedfile", function(file) {
                 $("#error-all",filemanager).html('');
             });
@@ -584,27 +560,25 @@
                 if(settings.token!==null) datos[settings.tokenName] = settings.token;  
                 if(settings.typeFile!==null) datos.typeFile = settings.typeFile;               
                 this.options.params = datos;
-
             });
             myDropzone.on("success", function(file, responseText, e) {
                 var datos = $.parseJSON(responseText);
                 if(datos.status==1){
-                $("#reloadfiles",filemanager).val(1);       
+                    $("#reloadfiles",filemanager).val(1);       
                 }
             });
             myDropzone.on("successmultiple", function(file, responseText, e) {
                 var datos = $.parseJSON(responseText);
                 var msg = filemanager.parseMsg(datos.msg);
                 if(datos.status==0)     
-                $("#error-all",filemanager).html('<div class="alert alert-info">'+msg+'</div>');
+                    $("#error-all",filemanager).html('<div class="alert alert-info">'+msg+'</div>');
                 else
-                $("#error-all",filemanager).html('<div class="alert alert-success">'+msg+'</div>');
+                    $("#error-all",filemanager).html('<div class="alert alert-success">'+msg+'</div>');
             });
             $("#actions .start",filemanager).on('click', function(event) {
                 event.preventDefault();
                 myDropzone.enqueueFiles(myDropzone.getFilesWithStatus(Dropzone.ADDED));
             });
-            
             $("#actions .cancel",filemanager).on('click', function(event) {
                 event.preventDefault();
                 myDropzone.removeAllFiles(true);
@@ -612,21 +586,18 @@
             }); 
             // END DROPZONE
             // $("body").append(settings.getModalTemplate({modal_id:"new",header:false,footer:false}));
-            
             // BEGIN TRADUCIR
             _html = $(".panel-heading, button, span, label, h4, h3, #row_header_content .col, #context-menu a",filemanager);
             _html.text(function(index,text){
                 return translate(text);
             });
-
             _html = $("input[type='text'], button",filemanager);
             _html.attr({
-               "placeholder" : function(index,text){return translate(text);},
-               "title" : function(index,text){return translate(text);}
+                "placeholder" : function(index,text){return translate(text);},
+                "title" : function(index,text){return translate(text);}
             });        
-
             $("#upload_max",filemanager).text(function(index,text){
-               return translate(text) + settings.upload_max; 
+                return translate(text) + settings.upload_max; 
             });
             // END TRADUCIR
             // BEGIN TOKEN
@@ -636,14 +607,13 @@
             // END TOKEN
             // BEGIN SEARCH
             $("#search",filemanager).on('keyup click', function(){
-                searchFiles();                  
+                filemanager.searchFiles();                  
             });
             $("#search_clear",filemanager).on('click', function(event) {        
                 $("#search",filemanager).val('');
-                searchFiles();                  
+                filemanager.searchFiles();                  
             });            
             // END SEARCH 
-            
             // BEGIN VIEWS
             if(settings.views=='thumbs'){
                 $("#view_thumbs",filemanager).addClass('active');
@@ -680,9 +650,7 @@
                 event.preventDefault();
                 filemanager.getFolder($(this).attr('rel'));
             });
-
             $('[data-tooltip="tooltip"]',filemanager).tooltip();
-
             $("#"+filemanager.config.rename_popup,filemanager).on('show.bs.modal', function (e) {
                 $("#"+filemanager.config.rename_popup+" #name",filemanager).val('');
                 $("#"+filemanager.config.rename_popup+" .result",filemanager).html('');
@@ -690,7 +658,6 @@
                 var name = button.data('name');
                 var modal = $(this);
                 modal.find('.modal-body .content input[name="name"]').val(name);     
-
                 modal.find('.modal-body .content input[name="nameold"]').val(name);
                 modal.find('.modal-body .result').html('');
             });
@@ -729,7 +696,6 @@
                     });
                 }
             });
-            
             $("#select_delete_popup",filemanager).on('click', function(event) {
                 $("#"+filemanager.config.delete_popup+" form .result",filemanager).html('');                
                 var ic = $this.find('.item.active');
@@ -745,7 +711,6 @@
                     return false;
                 }
             });
-
             $("#"+filemanager.config.delete_popup+" form",filemanager).validate({
                 submitHandler: function(form) {
                     var path = $("#path",filemanager).val();
@@ -792,8 +757,7 @@
                         }
                     });
                 }
-            });            
-
+            });
             $('#'+filemanager.config.new_folder,filemanager).on('show.bs.modal', function (e) {
                 $("#name",filemanager).val('');
                 $("#newfolder_popup_result",filemanager).html('');
@@ -801,10 +765,10 @@
             $('#'+filemanager.config.upload_popup,filemanager).on('hide.bs.modal', function (e) {
                 $("#error-all",filemanager).html('');
                 myDropzone.removeAllFiles(true);
-              if($("#reloadfiles",filemanager).val()==1){                                       
-                $("#reloadfiles",filemanager).val(0);
-                filemanager.getFolder($("#path",filemanager).val());
-              }
+                if($("#reloadfiles",filemanager).val()==1){                                       
+                    $("#reloadfiles",filemanager).val(0);
+                    filemanager.getFolder($("#path",filemanager).val());
+                }
             });
             $("#"+filemanager.config.new_folder+" form",filemanager).validate({
                 rules:{
@@ -837,7 +801,7 @@
                             }                   
                         }
                     });
-                }
+            }
             });
             if(settings.insertButton===false) $("#select_insert",filemanager).remove();
             $("#select_insert",filemanager).on('click', function(event) {
@@ -871,7 +835,7 @@
                 if($this.find('.item.active').length>0){
                     $("#select_delete_popup",filemanager).removeClass('disabled');
                     if($this.find('.item.active').find('a.dir').length ===0 )
-                    $("#select_insert",filemanager).removeClass('disabled');
+                        $("#select_insert",filemanager).removeClass('disabled');
                 }
                 else{
                     $("#select_delete_popup",filemanager).addClass('disabled');
@@ -885,5 +849,4 @@
         };
         filemanager.init();
     };
- 
 }( jQuery ));
