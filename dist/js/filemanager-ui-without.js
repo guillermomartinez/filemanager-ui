@@ -8946,7 +8946,7 @@ LANGS.ES = {
                     } else if (textStatus === 'abort') {
                         $this.html('<div class="alert alert-info text-center">Ajax request aborted.</div>');
                     } else {
-                        alert('Uncaught Error: ' + request.responseText);
+                        console.log('Uncaught Error: ' + request.responseText);
                     }
                 }
             });
