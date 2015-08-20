@@ -1119,6 +1119,9 @@ div.table .file-row:nth-child(2n+1) {
 .menu_contextual li.view a:before{
     content: "\e105";
 }
+.menu_contextual li.move a:before{
+    content: "\e068";
+}
 .menu_contextual li.rename a:before{
     content: "\e065";
 }

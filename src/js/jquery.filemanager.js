@@ -1,5 +1,4 @@
 (function ( $ ) {
- 
     $.fn.filemanager = function( options ) {
         var defaults = {
             url: "../conector.php",
@@ -19,7 +18,7 @@
             var regex = /[?&]([^=#]+)=([^&#]*)/g, url = window.location.href, params = {},match;
             while(match = regex.exec(url)) {
                 if(match[2]!=='undefined')
-                params[match[1]] = match[2];
+                    params[match[1]] = match[2];
             }
             return (params[param] || '');
         };
@@ -59,98 +58,51 @@
             template = template + '</div></form></div></div>';
             return template;
         };
-        var filemanager = $(this);
-        filemanager.token = Math.floor((1 + Math.random()) * 0x10000);
-        filemanager.config = {
-            new_folder: "newfolder_popup_"+filemanager.token,
-            upload_popup: "upload_popup_"+filemanager.token,
-            delete_popup: "delete_popup_"+filemanager.token,
-            rename_popup: "rename_popup_"+filemanager.token,
-        };
-        var html_init = '<div class="navbar">';
-        html_init = html_init+'<div class="navbar-inner"><div class="container-fluid">';
-        html_init = html_init+'<div class="row tooolbar"><div class="col-xs-7 col-sm-5 col-md-4"><button data-target="#'+filemanager.config.upload_popup+'" data-tooltip="tooltip" data-toggle="modal" title="FE_UPLOAD" data-placement="bottom" class="btn btn-default btn-sm "><span aria-hidden="true" class="glyphicon glyphicon-upload"></span><span aria-hidden="true" class="glyphicon glyphicon-file"></span></button><button data-target="#'+filemanager.config.new_folder+'" data-tooltip="tooltip" data-toggle="modal" title="FE_CREATE_DIRECTORY" data-placement="bottom" class="btn btn-default btn-sm "><span aria-hidden="true" class="glyphicon glyphicon-plus"></span><span aria-hidden="true" class="glyphicon glyphicon-folder-open"></span></button><button id="select_delete_popup" data-tooltip="tooltip" title="FE_DELETE_SELECTED" data-placement="bottom" class="btn btn-default btn-sm disabled"><span aria-hidden="true" class="glyphicon glyphicon-duplicate"></span><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button><button id="select_insert" data-tooltip="tooltip" title="FE_INSERT_SELECTED" data-placement="bottom" class="btn btn-default btn-sm disabled"><span aria-hidden="true" class="glyphicon glyphicon-file"></span><span aria-hidden="true" class="glyphicon glyphicon-ok"></span></button></div><div class="col-xs-5 col-sm-3 col-md-2"><span>FE_VIEWS</span><button id="view_thumbs" data-tooltip="tooltip" title="FE_VIEW_MINIATURE" data-placement="bottom" class="btn btn-default btn-sm active"><span aria-hidden="true" class="glyphicon glyphicon-th"></span></button><button id="view_details" data-tooltip="tooltip" title="FE_VIEW_DETAILS" data-placement="bottom" class="btn btn-default btn-sm"><span aria-hidden="true" class="glyphicon glyphicon-align-justify"></span></button></div><div class="col-xs-12 col-sm-4 col-md-3 col_top_right"><div class="btn-group" role="group" aria-label="First group"><div class="btn-group grupo1" role="group" aria-label=""><div class="input-group search_content"><input id="search" name="search" type="text" class="form-control input-sm" placeholder="FE_SEARCH_NAME_FILES" autocomplete="off" ><span class="input-group-btn"><button class="btn btn-default input-sm" type="button" id="search_" data-tooltip="tooltip" data-placement="bottom" title="FE_SEARCH_NAME_FILES"><span aria-hidden="true" class="glyphicon glyphicon-search"></span></button></span></div></div><div class="btn-group grupo2" role="group" aria-label=""><button class="btn btn-default input-sm" type="button" id="search_clear" data-tooltip="tooltip" data-placement="bottom" title="FE_CLEAR"><span aria-hidden="true" class="glyphicon glyphicon-remove-sign"></span></button></div></div></div></div>';
-        html_init = html_init+'<div class="row"><div class="col-md-12"><ol id="ruta" class="breadcrumb"><li><a rel="/" href="#"><span aria-hidden="true" class="glyphicon glyphicon-home"></span></a></li></ol></div></div>';
-        html_init = html_init+'</div></div></div>';
-        html_init = html_init+'<div class="container-fluid">';
-        html_init = html_init+'<input type="hidden" id="path" name="path" value=""><div class="hidden"><div id="preview_file"><span aria-hidden="true" class="glyphicon glyphicon-file txt"></span></div></div>';        
-        html_init = html_init+'<div id="content_list" class="row"><div class="col-md-12" id="row_header_content"><div class="row_header"><div class="col name">FE_NOMBRE</div><div class="col type">FE_TIPO</div><div class="col size">FE_TAMANO</div><div class="col date">FE_DATE</div><div class="col actions">FE_ACTIONS</div></div></div><div class="col-md-12 list"><ul id="list" class="scroll"></ul></div></div>';
-        html_init = html_init+'<div id="context-menu"><ul class="dropdown-menu menu_contextual" role="menu"><li class="view"><a href="#">FE_VIEW</a></li><li class="rename"><a href="#">FE_RENAME</a></li><li class="download"><a href="#">FE_DOWNLOAD</a></li><li class="delete"><a href="#">FE_DELETE</a></li></ul></div>';
-        html_init = html_init+'</div>';
-        filemanager.append(html_init);
-        var $this = filemanager.find("#list");
         function substr_replace(str, replace, start, length) {
-          //  discuss at: http://phpjs.org/functions/substr_replace/          
-          if (start < 0) { 
-            start = start + str.length;
-          }
-          length = length !== undefined ? length : str.length;
-          if (length < 0) {
-            length = length + str.length - start;
-          }
-
-          return str.slice(0, start) + replace.substr(0, length) + replace.slice(length) + str.slice(start + length);
+            //  discuss at: http://phpjs.org/functions/substr_replace/          
+            if (start < 0) { 
+                start = start + str.length;
+            }
+            length = length !== undefined ? length : str.length;
+            if (length < 0) {
+                length = length + str.length - start;
+            }
+            return str.slice(0, start) + replace.substr(0, length) + replace.slice(length) + str.slice(start + length);
         }        
         function str_replace(search, replace, subject, count) {
             //  discuss at: http://phpjs.org/functions/str_replace/
-            var i = 0,
-            j = 0,
-            temp = '',
-            repl = '',
-            sl = 0,
-            fl = 0,
-            f = [].concat(search),
-            r = [].concat(replace),
-            s = subject,
-            ra = Object.prototype.toString.call(r) === '[object Array]',
-            sa = Object.prototype.toString.call(s) === '[object Array]';
+            var i = 0,j = 0,temp = '',repl = '',sl = 0,fl = 0,f = [].concat(search),r = [].concat(replace),s = subject,ra = Object.prototype.toString.call(r) === '[object Array]',sa = Object.prototype.toString.call(s) === '[object Array]';
             s = [].concat(s);
-
             if(typeof(search) === 'object' && typeof(replace) === 'string' ) {
-            temp = replace; 
-            replace = [];
-            for (i=0; i < search.length; i+=1) { 
-              replace[i] = temp; 
+                temp = replace; 
+                replace = [];
+                for (i=0; i < search.length; i+=1) { 
+                    replace[i] = temp; 
+                }
+                temp = ''; 
+                r = [].concat(replace); 
+                ra = Object.prototype.toString.call(r) === '[object Array]';
             }
-            temp = ''; 
-            r = [].concat(replace); 
-            ra = Object.prototype.toString.call(r) === '[object Array]';
-            }
-
             if (count) {
-            this.window[count] = 0;
+                this.window[count] = 0;
             }
-
             for (i = 0, sl = s.length; i < sl; i++) {
-            if (s[i] === '') {
-              continue;
-            }
-            for (j = 0, fl = f.length; j < fl; j++) {
-              temp = s[i] + '';
-              repl = ra ? (r[j] !== undefined ? r[j] : '') : r[0];
-              s[i] = (temp)
-                .split(f[j])
-                .join(repl);
-              if (count) {
-                this.window[count] += ((temp.split(f[j])).length - 1);
-              } 
-            }
-            }
-            return sa ? s : s[0];
-        }        
-        filemanager.validExtension = function (filename){
-            var r = false;
-            var ext ='';
-            var lastPosition = filename.lastIndexOf(".");
-            if (lastPosition > 0) ext = filename.substr(lastPosition+1);
-            for (var i = 0; i < settings.ext.length; i++) {
-                if(settings.ext[i] === ext){
-                    r = true;
-                    break;
+                if (s[i] === '') {
+                    continue;
+                }
+                for (j = 0, fl = f.length; j < fl; j++) {
+                    temp = s[i] + '';
+                    repl = ra ? (r[j] !== undefined ? r[j] : '') : r[0];
+                    s[i] = (temp)
+                    .split(f[j])
+                    .join(repl);
+                    if (count) {
+                        this.window[count] += ((temp.split(f[j])).length - 1);
+                    } 
                 }
             }
-            return r;            
-        }
+            return sa ? s : s[0];
+        } 
         function removeExtension(filename){
             var lastPosition = filename.lastIndexOf(".");
             if (lastPosition === -1) return filename;
@@ -169,6 +121,40 @@
                 }
             });
             if (r) return text.replace(t1,t2); 
+        }        
+        var filemanager = $(this);
+        filemanager.token = Math.floor((1 + Math.random()) * 0x10000);
+        filemanager.config = {
+            new_folder: "newfolder_popup_"+filemanager.token,
+            upload_popup: "upload_popup_"+filemanager.token,
+            delete_popup: "delete_popup_"+filemanager.token,
+            rename_popup: "rename_popup_"+filemanager.token,
+            move_popup: "move_popup_"+filemanager.token,
+        };
+        var html_init = '<div class="navbar">';
+        html_init = html_init+'<div class="navbar-inner"><div class="container-fluid">';
+        html_init = html_init+'<div class="row tooolbar"><div class="col-xs-7 col-sm-5 col-md-4"><button data-target="#'+filemanager.config.upload_popup+'" data-tooltip="tooltip" data-toggle="modal" title="FE_UPLOAD" data-placement="bottom" class="btn btn-default btn-sm "><span aria-hidden="true" class="glyphicon glyphicon-upload"></span><span aria-hidden="true" class="glyphicon glyphicon-file"></span></button><button data-target="#'+filemanager.config.new_folder+'" data-tooltip="tooltip" data-toggle="modal" title="FE_CREATE_DIRECTORY" data-placement="bottom" class="btn btn-default btn-sm "><span aria-hidden="true" class="glyphicon glyphicon-plus"></span><span aria-hidden="true" class="glyphicon glyphicon-folder-open"></span></button><button id="select_delete_popup" data-tooltip="tooltip" title="FE_DELETE_SELECTED" data-placement="bottom" class="btn btn-default btn-sm disabled"><span aria-hidden="true" class="glyphicon glyphicon-duplicate"></span><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button><button id="select_insert" data-tooltip="tooltip" title="FE_INSERT_SELECTED" data-placement="bottom" class="btn btn-default btn-sm disabled"><span aria-hidden="true" class="glyphicon glyphicon-file"></span><span aria-hidden="true" class="glyphicon glyphicon-ok"></span></button></div><div class="col-xs-5 col-sm-3 col-md-2"><span>FE_VIEWS</span><button id="view_thumbs" data-tooltip="tooltip" title="FE_VIEW_MINIATURE" data-placement="bottom" class="btn btn-default btn-sm active"><span aria-hidden="true" class="glyphicon glyphicon-th"></span></button><button id="view_details" data-tooltip="tooltip" title="FE_VIEW_DETAILS" data-placement="bottom" class="btn btn-default btn-sm"><span aria-hidden="true" class="glyphicon glyphicon-align-justify"></span></button></div><div class="col-xs-12 col-sm-4 col-md-3 col_top_right"><div class="btn-group" role="group" aria-label="First group"><div class="btn-group grupo1" role="group" aria-label=""><div class="input-group search_content"><input id="search" name="search" type="text" class="form-control input-sm" placeholder="FE_SEARCH_NAME_FILES" autocomplete="off" ><span class="input-group-btn"><button class="btn btn-default input-sm" type="button" id="search_" data-tooltip="tooltip" data-placement="bottom" title="FE_SEARCH_NAME_FILES"><span aria-hidden="true" class="glyphicon glyphicon-search"></span></button></span></div></div><div class="btn-group grupo2" role="group" aria-label=""><button class="btn btn-default input-sm" type="button" id="search_clear" data-tooltip="tooltip" data-placement="bottom" title="FE_CLEAR"><span aria-hidden="true" class="glyphicon glyphicon-remove-sign"></span></button></div></div></div></div>';
+        html_init = html_init+'<div class="row"><div class="col-md-12"><ol id="ruta" class="breadcrumb"><li><a rel="/" href="#"><span aria-hidden="true" class="glyphicon glyphicon-home"></span></a></li></ol></div></div>';
+        html_init = html_init+'</div></div></div>';
+        html_init = html_init+'<div class="container-fluid">';
+        html_init = html_init+'<input type="hidden" id="path" name="path" value=""><div class="hidden"><div id="preview_file"><span aria-hidden="true" class="glyphicon glyphicon-file txt"></span></div></div>';        
+        html_init = html_init+'<div id="content_list" class="row"><div class="col-md-12" id="row_header_content"><div class="row_header"><div class="col name">FE_NOMBRE</div><div class="col type">FE_TIPO</div><div class="col size">FE_TAMANO</div><div class="col date">FE_DATE</div><div class="col actions">FE_ACTIONS</div></div></div><div class="col-md-12 list"><ul id="list" class="scroll"></ul></div></div>';
+        html_init = html_init+'<div id="context-menu"><ul class="dropdown-menu menu_contextual" role="menu"><li class="view"><a href="#">FE_VIEW</a></li><li class="rename"><a href="#">FE_RENAME</a></li><li class="move"><a href="#">FE_MOVE</a></li><li class="download"><a href="#">FE_DOWNLOAD</a></li><li class="delete"><a href="#">FE_DELETE</a></li></ul></div>';
+        html_init = html_init+'</div>';
+        filemanager.append(html_init);
+        var $this = filemanager.find("#list");
+        filemanager.validExtension = function (filename){
+            var r = false;
+            var ext ='';
+            var lastPosition = filename.lastIndexOf(".");
+            if (lastPosition > 0) ext = filename.substr(lastPosition+1);
+            for (var i = 0; i < settings.ext.length; i++) {
+                if(settings.ext[i] === ext){
+                    r = true;
+                    break;
+                }
+            }
+            return r;            
         }
         filemanager.parseMsg = function(obj){
             if(typeof obj == 'object'){
@@ -201,7 +187,6 @@
                 return text;
             }
         }
-
         filemanager.formatBytes = function(bytes) {
             if(bytes < 1024) 
                 return bytes + " Bytes";
@@ -212,7 +197,6 @@
             else 
                 return(bytes / 1073741824).toFixed(3) + " GB";
         }
-        
         filemanager.loadFiles = function(data,path){
             var items = $this;
             items.html('');
@@ -250,33 +234,33 @@
                     if(element.isdir==true){
                         el.find('.image').html('<div class="content_icon"><span aria-hidden="true" class="glyphicon glyphicon-folder-close"></span></div>');
                         el.find('.image').addClass('dir').attr('rel',element.urlfolder);
-                        el.find('.name').attr('data-name-original',filename).attr('data-name',filename);
-                         el.find('.texto').text(filenameshort);
+                        el.find('.name').attr('data-name-original',filename).attr('data-name',filename).attr('data-isdir',element.isdir);
+                        el.find('.texto').text(filenameshort);
                         el.find('.type').text('dir');
                         el.find('.size').text('');
                         el.find('.date').text(filedate);
-
                     }else if(element.filetype==="jpg" || element.filetype==="png" || element.filetype=="jpeg" || element.filetype=="gif"){
                         el.find('.image img').attr('src',element.preview);
                         el.find('.image').addClass('fancybox').attr('data-url',element.previewfull).attr('rel',element.previewfull).attr('title',translate('FE_FILENAME') + element.filename+' | '+ translate('FE_SIZE') +' '+filemanager.formatBytes(element.size)+' | '+ translate('FE_LAST_MODIFIED') +moment.unix(element.lastmodified).format(settings.datetimeFormat));
-                        el.find('.name').attr('data-name-original',filename).attr('data-name',filename);
-                         el.find('.texto').text(filenameshort);
+                        el.find('.name').attr('data-name-original',filename).attr('data-name',filename).attr('data-isdir',element.isdir);
+                        el.find('.texto').text(filenameshort);
                         el.find('.type').text(filetype);
                         el.find('.size').text(filesize);
                         el.find('.date').text(filedate);
-                    }else{
+                    }
+                    else{
                         el.find('.image').html('<div class="content_icon"><span aria-hidden="true" class="glyphicon glyphicon-file '+ element.filetype +'" ></span></div>');
                         el.find('.image').addClass('fancybox').attr('data-url',element.previewfull).attr('rel','#preview_file').attr('title',translate('FE_FILENAME')+element.filename+' | '+ translate('FE_SIZE')+filemanager.formatBytes(element.size)+' | '+translate('FE_LAST_MODIFIED')+moment.unix(element.lastmodified).format(settings.datetimeFormat));
-                        el.find('.name').attr('data-name-original',filename).attr('data-name',filename);
-                         el.find('.texto').text(filenameshort);
+                        el.find('.name').attr('data-name-original',filename).attr('data-name',filename).attr('data-isdir',element.isdir);
+                        el.find('.texto').text(filenameshort);
                         el.find('.type').text(filetype);
                         el.find('.size').text(filesize);
                         el.find('.date').text(filedate);
                     }
                     items.append(el);
                 }
-            });            
-        };
+            });
+        }
         filemanager.preview = function(item){
             $.fancybox( {
                 href : item.find('a').attr('rel'), 
@@ -292,8 +276,8 @@
                     var t ='';
                     if(a.length>0){
                         for (var i = 0; i < a.length; i++) {
-                        var t2 ='';
-                        var t3 =[];
+                            var t2 ='';
+                            var t3 =[];
                             t2 = a[i];
                             t3 = t2.split(':');
                             if(t3.length==1){
@@ -313,20 +297,28 @@
             }
             );                
         };
-         filemanager.viewRename = function(item){
+        filemanager.viewMove = function(item){            
+            var path = $("#path",filemanager).val();
+            $("#"+filemanager.config.move_popup,filemanager).modal('show');
+            $("#"+filemanager.config.move_popup,filemanager).find('#nameold').val(item.find('.name').data('name-original'));
+            $("#"+filemanager.config.move_popup,filemanager).find('.label_namefile').text("Archivo");
+            $("#"+filemanager.config.move_popup,filemanager).find('.namefile').text(path+item.find('.name').data('name-original'));
+            // $("#"+filemanager.config.move_popup,filemanager).find('.label_name').text(item.find('.name').data('name-original'));
+            // $("#"+filemanager.config.move_popup,filemanager).find('#name').val(removeExtension(item.find('.name').data('name-original')));
+        };
+        filemanager.viewRename = function(item){
             $("#"+filemanager.config.rename_popup,filemanager).modal('show');
             $("#"+filemanager.config.rename_popup,filemanager).find('#nameold').val(item.find('.name').data('name-original'));
             $("#"+filemanager.config.rename_popup,filemanager).find('#name').val(removeExtension(item.find('.name').data('name-original')));
         };
-         filemanager.download = function(item){
+        filemanager.download = function(item){
             var name = item.find('.name').data('name-original');
             var path = $("#path",filemanager).val();
             var datos = settings.url+'?action=download&path='+ path + '&name=' + name;            
             if(settings.token!==null) datos = datos + '&' + settings.tokenName + '=' + settings.token;
             window.document.location.href = datos;
-
         };
-         filemanager.viewDelete = function(item){
+        filemanager.viewDelete = function(item){
             var name = item.find('.name').data('name-original');
             var modal = $('#'+filemanager.config.delete_popup,filemanager);
             modal.find('.modal-body .content').html('<p class="filename_delete">'+ name +'</p><input type="hidden" name="name" value="'+ name +'" />');
@@ -346,7 +338,6 @@
                     obj.filesize = $(val).find(".size").text();
                     obj.lastmodified = $(val).find(".date").text();
                     res.push(obj);
-                    
                 });
                 return res;
             }else{
@@ -369,36 +360,38 @@
                     datos = $.parseJSON(datos);
                     if(datos.status==1){
                         filemanager.loadFiles(datos.data,path);
-
                         $('.context',filemanager).contextmenu({
-                          target: '#'+filemanager.attr('id')+' #context-menu', 
-                          before: function(e,context) {
-                            this.getMenu().find("li").css('display','block');
-                            if(context.find('.image.dir').length>0){
-                                this.getMenu().find("li.view").css('display','none');
-                                this.getMenu().find("li.download").css('display','none');
+                            target: '#'+filemanager.attr('id')+' #context-menu', 
+                            before: function(e,context) {
+                                this.getMenu().find("li").css('display','block');
+                                if(context.find('.image.dir').length>0){
+                                    this.getMenu().find("li.view").css('display','none');
+                                    this.getMenu().find("li.download").css('display','none');
+                                }
+                                return true;
+                            },
+                            onItem: function(context,e) {
+                                if($(e.target).parent().is('.view')){
+                                    filemanager.preview(context);                                
+                                }
+                                if($(e.target).parent().is('.move')){
+                                    filemanager.viewMove(context);                                
+                                }
+                                if($(e.target).parent().is('.rename')){
+                                    filemanager.viewRename(context);                                
+                                }
+                                if($(e.target).parent().is('.download')){
+                                    filemanager.download(context);                                
+                                }
+                                if($(e.target).parent().is('.delete')){
+                                    filemanager.viewDelete(context);                                
+                                }
                             }
-                            return true;
-                          },
-                          onItem: function(context,e) {
-                            if($(e.target).parent().is('.view')){
-                            filemanager.preview(context);                                
-                            }
-                            if($(e.target).parent().is('.rename')){
-                            filemanager.viewRename(context);                                
-                            }
-                            if($(e.target).parent().is('.download')){
-                            filemanager.download(context);                                
-                            }
-                            if($(e.target).parent().is('.delete')){
-                            filemanager.viewDelete(context);                                
-                            }
-                          }
                         });
                         $('.menu_options',filemanager).on('show.bs.dropdown', function (e) {
-                          var context = $(this).parents('.item');
-                          $(this).find('li').css('display','block');
-                          if(context.find('.image.dir').length>0){
+                            var context = $(this).parents('.item');
+                            $(this).find('li').css('display','block');
+                            if(context.find('.image.dir').length>0){
                                 $(this).find('li.view').css('display','none');
                                 $(this).find('li.download').css('display','none');
                             }
@@ -408,16 +401,19 @@
                         $('.menu_options',filemanager).on('click', 'li > a', function(event) {
                             event.preventDefault();
                             if($(this).parent().is('.view')){
-                            filemanager.preview($(this).parents('.item'));                                
+                                filemanager.preview($(this).parents('.item'));                                
+                            }
+                            if($(this).parent().is('.move')){
+                                filemanager.viewMove($(this).parents('.item'));                                
                             }
                             if($(this).parent().is('.rename')){
-                            filemanager.viewRename($(this).parents('.item'));                                
+                                filemanager.viewRename($(this).parents('.item'));                                
                             }
                             if($(this).parent().is('.download')){
-                            filemanager.download($(this).parents('.item'));                                
+                                filemanager.download($(this).parents('.item'));                                
                             }
                             if($(this).parent().is('.delete')){
-                            filemanager.viewDelete($(this).parents('.item'));                                
+                                filemanager.viewDelete($(this).parents('.item'));                                
                             }
                         });
                         // BEGIN VIEWS
@@ -444,7 +440,6 @@
                                 temp.push(ruta[i]);
                             }
                         }
-                        
                         var rutacontent = $("#ruta",filemanager);
                         rutacontent.html('<li><a href="#" rel="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span></a></li>');
                         var url ='/';
@@ -458,10 +453,8 @@
                                 el = $('<li>'+element+'</li>');
                                 rutacontent.append(el);
                             }
-                            
                         });
-                        searchFiles();
-                         
+                        filemanager.searchFiles();
                     }
                 },
                 error: function(request, textStatus, errorThrown){
@@ -482,8 +475,8 @@
                     }
                 }
             });
-        } 
-        function searchFiles(){
+        }
+        filemanager.searchFiles = function(){
             var text = $("#search",filemanager).val();
             if(text===""){
                 $("li",$this).not('.parentup').removeClass('hidden');
@@ -538,6 +531,16 @@
                 footer:{
                     ok:translate('FE_RENAME'),
                     close:translate('FE_CLOSE')
+                } }));
+            $(filemanager).append(settings.getModalTemplate({
+                modal_id:filemanager.config.move_popup,
+                header:{
+                    title:translate('FE_MOVE')
+                },
+                body:'<div class="content"><div class="form-group"><label class="label_namefile">'+translate('FE_FILENAME')+'</label><p class="namefile"></p><label class="label_name" for="exampleInputEmail1">'+translate('FE_FOLDER')+'</label><input type="hidden" name="nameold" id="nameold"><input type="text" class="form-control" id="name" name="name" placeholder="/"></div></div><div class="result"></div>',
+                footer:{
+                    ok:translate('FE_MOVE'),
+                    close:translate('FE_CLOSE')
                 }
             }));
             // BEGIN DROPZONE
@@ -563,7 +566,6 @@
                 acceptedFiles: settings.ext.join(",."),
                 dictInvalidFileType: translate("BE_GETFILEALL_NOT_PERMITIDO"),
             });
-            
             myDropzone.on("addedfile", function(file) {
                 $("#error-all",filemanager).html('');
             });
@@ -584,27 +586,25 @@
                 if(settings.token!==null) datos[settings.tokenName] = settings.token;  
                 if(settings.typeFile!==null) datos.typeFile = settings.typeFile;               
                 this.options.params = datos;
-
             });
             myDropzone.on("success", function(file, responseText, e) {
                 var datos = $.parseJSON(responseText);
                 if(datos.status==1){
-                $("#reloadfiles",filemanager).val(1);       
+                    $("#reloadfiles",filemanager).val(1);       
                 }
             });
             myDropzone.on("successmultiple", function(file, responseText, e) {
                 var datos = $.parseJSON(responseText);
                 var msg = filemanager.parseMsg(datos.msg);
                 if(datos.status==0)     
-                $("#error-all",filemanager).html('<div class="alert alert-info">'+msg+'</div>');
+                    $("#error-all",filemanager).html('<div class="alert alert-info">'+msg+'</div>');
                 else
-                $("#error-all",filemanager).html('<div class="alert alert-success">'+msg+'</div>');
+                    $("#error-all",filemanager).html('<div class="alert alert-success">'+msg+'</div>');
             });
             $("#actions .start",filemanager).on('click', function(event) {
                 event.preventDefault();
                 myDropzone.enqueueFiles(myDropzone.getFilesWithStatus(Dropzone.ADDED));
             });
-            
             $("#actions .cancel",filemanager).on('click', function(event) {
                 event.preventDefault();
                 myDropzone.removeAllFiles(true);
@@ -612,21 +612,18 @@
             }); 
             // END DROPZONE
             // $("body").append(settings.getModalTemplate({modal_id:"new",header:false,footer:false}));
-            
             // BEGIN TRADUCIR
             _html = $(".panel-heading, button, span, label, h4, h3, #row_header_content .col, #context-menu a",filemanager);
             _html.text(function(index,text){
                 return translate(text);
             });
-
             _html = $("input[type='text'], button",filemanager);
             _html.attr({
-               "placeholder" : function(index,text){return translate(text);},
-               "title" : function(index,text){return translate(text);}
+                "placeholder" : function(index,text){return translate(text);},
+                "title" : function(index,text){return translate(text);}
             });        
-
             $("#upload_max",filemanager).text(function(index,text){
-               return translate(text) + settings.upload_max; 
+                return translate(text) + settings.upload_max; 
             });
             // END TRADUCIR
             // BEGIN TOKEN
@@ -636,14 +633,13 @@
             // END TOKEN
             // BEGIN SEARCH
             $("#search",filemanager).on('keyup click', function(){
-                searchFiles();                  
+                filemanager.searchFiles();                  
             });
             $("#search_clear",filemanager).on('click', function(event) {        
                 $("#search",filemanager).val('');
-                searchFiles();                  
+                filemanager.searchFiles();                  
             });            
             // END SEARCH 
-            
             // BEGIN VIEWS
             if(settings.views=='thumbs'){
                 $("#view_thumbs",filemanager).addClass('active');
@@ -680,8 +676,51 @@
                 event.preventDefault();
                 filemanager.getFolder($(this).attr('rel'));
             });
-
             $('[data-tooltip="tooltip"]',filemanager).tooltip();
+            $("#"+filemanager.config.move_popup,filemanager).on('show.bs.modal', function (e) {
+                $("#"+filemanager.config.move_popup+" #name",filemanager).val('');
+                $("#"+filemanager.config.move_popup+" .result",filemanager).html('');
+                var button = $(e.relatedTarget);
+                var name = button.data('name');
+                var modal = $(this);
+                modal.find('.modal-body .content input[name="name"]').val(name);     
+                modal.find('.modal-body .content input[name="nameold"]').val(name);
+                modal.find('.modal-body .result').html('');
+            });
+            $("#"+filemanager.config.move_popup+" form",filemanager).validate({
+                rules:{
+                    name:{
+                        required:true,
+                        minlength:1
+                    }
+                },
+                submitHandler: function(form) {
+                    var path = $("#path",filemanager).val();
+                    var datos = {action:"movefile",path:path};  
+                    if(settings.token!==null) datos[settings.tokenName] = settings.token;   
+                    if(settings.typeFile!==null) datos.typeFile = settings.typeFile;       
+                    datos = $.param(datos) +'&'+ $(form).serialize();
+                    $.ajax({
+                        type: "POST",
+                        url: settings.url,
+                        data :  datos,                          
+                        beforeSend: function(objeto){
+                            $("#"+filemanager.config.move_popup+" form .result",filemanager).html('<div class="progress"><div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div></div>');
+                        },
+                        success: function(datos){
+                            datos = $.parseJSON(datos);
+                            var msg = filemanager.parseMsg(datos.msg);
+                            if(datos.status==1){
+                                filemanager.getFolder(path);
+                                $("#"+filemanager.config.move_popup+" form .result",filemanager).html('<div class="alert alert-success">'+ msg +'<br>'+datos.data.namefile+'</div>');
+                                $("#"+filemanager.config.move_popup+" form input[name='nameold']",filemanager).val(datos.data.namefile);
+                            }else{                                  
+                                $("#"+filemanager.config.move_popup+" form .result",filemanager).html('<div class="alert alert-info">'+ msg +'</div>');
+                            }                               
+                        }
+                    });
+                }
+            });
 
             $("#"+filemanager.config.rename_popup,filemanager).on('show.bs.modal', function (e) {
                 $("#"+filemanager.config.rename_popup+" #name",filemanager).val('');
@@ -690,7 +729,6 @@
                 var name = button.data('name');
                 var modal = $(this);
                 modal.find('.modal-body .content input[name="name"]').val(name);     
-
                 modal.find('.modal-body .content input[name="nameold"]').val(name);
                 modal.find('.modal-body .result').html('');
             });
@@ -729,7 +767,6 @@
                     });
                 }
             });
-            
             $("#select_delete_popup",filemanager).on('click', function(event) {
                 $("#"+filemanager.config.delete_popup+" form .result",filemanager).html('');                
                 var ic = $this.find('.item.active');
@@ -745,7 +782,6 @@
                     return false;
                 }
             });
-
             $("#"+filemanager.config.delete_popup+" form",filemanager).validate({
                 submitHandler: function(form) {
                     var path = $("#path",filemanager).val();
@@ -792,8 +828,7 @@
                         }
                     });
                 }
-            });            
-
+            });
             $('#'+filemanager.config.new_folder,filemanager).on('show.bs.modal', function (e) {
                 $("#name",filemanager).val('');
                 $("#newfolder_popup_result",filemanager).html('');
@@ -801,10 +836,10 @@
             $('#'+filemanager.config.upload_popup,filemanager).on('hide.bs.modal', function (e) {
                 $("#error-all",filemanager).html('');
                 myDropzone.removeAllFiles(true);
-              if($("#reloadfiles",filemanager).val()==1){                                       
-                $("#reloadfiles",filemanager).val(0);
-                filemanager.getFolder($("#path",filemanager).val());
-              }
+                if($("#reloadfiles",filemanager).val()==1){                                       
+                    $("#reloadfiles",filemanager).val(0);
+                    filemanager.getFolder($("#path",filemanager).val());
+                }
             });
             $("#"+filemanager.config.new_folder+" form",filemanager).validate({
                 rules:{
@@ -837,7 +872,7 @@
                             }                   
                         }
                     });
-                }
+            }
             });
             if(settings.insertButton===false) $("#select_insert",filemanager).remove();
             $("#select_insert",filemanager).on('click', function(event) {
@@ -871,7 +906,7 @@
                 if($this.find('.item.active').length>0){
                     $("#select_delete_popup",filemanager).removeClass('disabled');
                     if($this.find('.item.active').find('a.dir').length ===0 )
-                    $("#select_insert",filemanager).removeClass('disabled');
+                        $("#select_insert",filemanager).removeClass('disabled');
                 }
                 else{
                     $("#select_delete_popup",filemanager).addClass('disabled');
@@ -885,5 +920,4 @@
         };
         filemanager.init();
     };
- 
 }( jQuery ));
