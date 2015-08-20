@@ -54,5 +54,7 @@ LANGS.ES = {
 	"BE_MOVE_EXISTED" : "Archivo ya existe",
 	"BE_MOVE_NOT_EXISTS" : "Archivo no existe",
 	"BE_MOVE_FILENAME_NOT_VALID" : "Nombre de archivo no valido",
-	"FE_FOLDER" : "Carpeta"
+	"FE_FOLDER" : "Carpeta",
+	"BE_MOVE_PATH_NOT_VALID" : "Ruta no valida",
+	"BE_MOVE_FOLDER_EXISTED" : "Carpeta ya existe"
 };
