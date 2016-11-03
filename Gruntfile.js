@@ -150,6 +150,10 @@ module.exports = function(grunt) {
         filter: 'isFile'
       }
     },
+    watch: {
+      files: ['src/css/*.css','src/js/*.js'],
+      tasks: ['dist']
+    }
 	});
 	
 	require('load-grunt-tasks')(grunt, { scope: 'devDependencies' });

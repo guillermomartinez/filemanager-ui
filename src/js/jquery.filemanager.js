@@ -10,9 +10,21 @@
             token: null,
             tokenName: "_token",
             typeFile: null,
-            datetimeFormat: "DD/MM/YYYY"
+            datetimeFormat: "DD/MM/YYYY",
+            tokenHeadersEnabled: false,
+            tokenHeadersName: "X-CSRF-TOKEN",
+            headers: null
         };
         var settings = $.extend({}, defaults, options );
+        var headersCustom = {};
+        if(settings.tokenHeadersEnabled){
+            headersCustom[settings.tokenHeadersName] = settings.token;
+        }
+        if (settings.headers) {
+            $.each(settings.headers, function(index, val) {
+                headersCustom[index] = val;
+            });
+        }        
         var getParameter = function( param ) {
             if(!param) param = '';
             var regex = /[?&]([^=#]+)=([^&#]*)/g, url = window.location.href, params = {},match;
@@ -350,6 +362,7 @@
             if(settings.token!==null) datos2[settings.tokenName] = settings.token;
             if(settings.typeFile!==null) datos2.typeFile = settings.typeFile;
             $.ajax({
+                headers: headersCustom,
                 type: "POST",
                 url: settings.url,
                 data :  datos2,                          
@@ -550,7 +563,8 @@
             // previewNode.remove();
             var previewTemplate = '<div class="file-row"><div><span class="preview"><img data-dz-thumbnail /></span></div><div><p class="name" data-dz-name></p><strong class="error text-info" data-dz-errormessage></strong></div><div><p class="size" data-dz-size></p><div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div></div></div><div><button data-dz-remove class="btn btn-warning cancel"><i class="glyphicon glyphicon-ban-circle"></i><span>'+translate("FE_CANCEL")+'</span></button><button data-dz-remove class="btn btn-danger delete"><i class="glyphicon glyphicon-trash"></i><span>'+translate("FE_DELETE")+'</span></button></div></div>';
             Dropzone.autoDiscover = false;
-            var myDropzone = new Dropzone("#"+ filemanager.attr("id"), { 
+            var myDropzone = new Dropzone("#"+ filemanager.attr("id"), {
+                headers: headersCustom, 
                 url: settings.url, // Set the url
                 thumbnailWidth: 80,
                 thumbnailHeight: 80,
@@ -701,6 +715,7 @@
                     if(settings.typeFile!==null) datos.typeFile = settings.typeFile;       
                     datos = $.param(datos) +'&'+ $(form).serialize();
                     $.ajax({
+                        headers: headersCustom,
                         type: "POST",
                         url: settings.url,
                         data :  datos,                          
@@ -746,6 +761,7 @@
                     if(settings.typeFile!==null) datos.typeFile = settings.typeFile;       
                     datos = $.param(datos) +'&'+ $(form).serialize();
                     $.ajax({
+                        headers: headersCustom,
                         type: "POST",
                         url: settings.url,
                         data :  datos,                          
@@ -790,6 +806,7 @@
                     if(settings.typeFile!==null) datos.typeFile = settings.typeFile;       
                     datos = $.param(datos) +'&'+ $(form).serialize();
                     $.ajax({
+                        headers: headersCustom,
                         type: "POST",
                         url: settings.url,
                         data :  datos,                          
@@ -855,6 +872,7 @@
                     if(settings.typeFile!==null) datos.typeFile = settings.typeFile;       
                     datos = $.param(datos) +'&'+ $(form).serialize();
                     $.ajax({
+                        headers: headersCustom,
                         type: "POST",
                         url: settings.url,
                         data :  datos,                          
