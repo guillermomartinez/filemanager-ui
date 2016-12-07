@@ -7,6 +7,8 @@ It is the graphical user interface File Manager, https://github.com/guillermomar
 * [Popup advanced](http://php-filemanager.rhcloud.com/examples/popup_advanced.html)
 * [Tinymce](http://php-filemanager.rhcloud.com/examples/tinymce.html)
 
+## Wiki
+[Wiki](https://github.com/guillermomartinez/filemanager-ui/wiki)
 
 ##Installation of Filemanager UI
 Create a folder of name filemanager within your public_html folder
