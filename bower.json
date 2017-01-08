@@ -11,6 +11,10 @@
     "test",
     "tests"
   ],
+  "main": [
+    "dist/js/filemanager-ui.js",
+    "dist/css/filemanager-ui.css"
+  ],
   "dependencies": {
     "bootstrap": "~3.3.2",
     "jquery-validation": "~1.13.1",
