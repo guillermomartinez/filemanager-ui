@@ -12,8 +12,8 @@
     "tests"
   ],
   "main": [
-    "dist/js/filemanager-ui.min.js",
-    "dist/css/filemanager-ui.min.css"
+    "dist/js/filemanager-ui.js",
+    "dist/css/filemanager-ui.css"
   ],
   "dependencies": {
     "bootstrap": "~3.3.2",
