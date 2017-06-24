@@ -13,12 +13,12 @@
 
 </head>
 <body>
-	<div id="filemanager1" class="filemanager fixed-top"></div>	
+	<div id="filemanager1" class="filemanager fixed-top"></div>
 	<div >
-		<div id="filemanager2" class="filemanager col-xs-12 col-sm-6"></div>	
-		<div id="filemanager3" class="filemanager col-xs-12 col-sm-6"></div>	
+		<div id="filemanager2" class="filemanager col-xs-12 col-sm-6"></div>
+		<div id="filemanager3" class="filemanager col-xs-12 col-sm-6"></div>
 	</div>
-	
+
 	<script type="text/javascript" src="../bower_components/jquery/dist/jquery.js"></script>
 	<script type="text/javascript" src="js/bootstrap.js"></script>
 	<script type="text/javascript" src="../bower_components/jquery-validation/dist/jquery.validate.js"></script>
@@ -29,12 +29,12 @@
 
 	<script type="text/javascript" src="js/languaje/us.js"></script>
 	<script type="text/javascript" src="js/languaje/es.js"></script>
-	<script type="text/javascript" src="js/jquery.filemanager.js"></script>	
+	<script type="text/javascript" src="js/jquery.filemanager.js"></script>
 
 	<script type="text/javascript">
 		$(function() {
 			$("#filemanager1").filemanager({
-				url:'http://localhost/github/filemanager/conector.php',
+				url:'http://localhost/github/filemanager-ui/examples/conector.php',
 				languaje: "ES",
 				upload_max: 5,
 				views:'thumbs',
@@ -42,7 +42,7 @@
 				token:'jashd4a5sd4sa'
 			});
 			$("#filemanager2").filemanager({
-				url:'http://localhost/github/filemanager/conector.php',
+				url:'http://localhost/github/filemanager-ui/examples/conector.php',
 				languaje: "ES",
 				upload_max: 5,
 				views:'details',
@@ -50,16 +50,16 @@
 				token:'jashd4a5sd4sa'
 			});
 			$("#filemanager3").filemanager({
-				url:'http://localhost/github/filemanager/conector.php',
+				url:'http://localhost/github/filemanager-ui/examples/conector.php',
 				languaje: "ES",
 				upload_max: 5,
 				views:'details',
 				insertButton:true,
 				token:'jashd4a5sd4sa'
 			});
-			
+
 		});
-		
+
 	</script>
 </body>
 </html>

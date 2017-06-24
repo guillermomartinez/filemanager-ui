@@ -6,11 +6,11 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Filemanager ui</title>
      <!--<script src="//tinymce.cachefly.net/4.1/tinymce.min.js"></script>-->
-     <script src="tinymce_4.1.10/tinymce.min.js"></script>
+     <script src="tinymce_4.6.4/tinymce.min.js"></script>
      <script>
      var editor_config = {
          path_absolute : '',
-          language : 'en_GB',
+          // language : 'es',
          // selector: "textarea",
          theme: "modern",
          plugins: [
@@ -34,7 +34,7 @@
          // remove_script_host : false,
          // convert_urls : true,
          // document_base_url: "http://localhost/github/filemanager/",
-         file_browser_callback : function(field_name, url, type, win) { 
+         file_browser_callback : function(field_name, url, type, win) {
                      // from http://andylangton.co.uk/blog/development/get-viewport-size-width-and-height-javascript
                      var w = window,
                      d = document,
@@ -47,7 +47,7 @@
                  // var cmsURL = 'http://localhost/otherfolder/filemanager/show?&field_name='+field_name+'&lang='+tinymce.settings.language;
                  var cmsURL = editor_config.path_absolute+'?field_name='+field_name+'&lang='+tinymce.settings.language;
 
-                 if(type == 'image') {           
+                 if(type == 'image') {
                      cmsURL = cmsURL + "&type=images";
                  }
 
@@ -58,18 +58,18 @@
                      height : y * 0.8,
                      resizable : "yes",
                      close_previous : "no"
-                 });         
+                 });
 
              }
      };
      editor_config.selector = "textarea";
-     editor_config.path_absolute = "http://localhost/github/filemanager-ui/src/index.html";
+     editor_config.path_absolute = "http://localhost/github/filemanager-ui/examples/basic.html";
      tinymce.init(editor_config);
      </script>
 </head>
 <body>
-	<div class="container">		
-     <textarea rows="20">Filemanager UI</textarea>	
+	<div class="container">
+     <textarea rows="20">Filemanager UI</textarea>
 	</div>
 
 </body>
