@@ -1,6 +1,6 @@
 # Filemanager UI
 It is the graphical user interface File Manager, https://github.com/guillermomartinez/filemanager-php It is the connector for php.
-##Examples
+## Examples
 * [Basic](http://php-filemanager.rhcloud.com/examples/basic.html)
 * [Multiple](http://php-filemanager.rhcloud.com/examples/multiple.html)
 * [Popup](http://php-filemanager.rhcloud.com/examples/popup.html)
@@ -10,7 +10,7 @@ It is the graphical user interface File Manager, https://github.com/guillermomar
 ## Wiki
 [Wiki](https://github.com/guillermomartinez/filemanager-ui/wiki)
 
-##Installation of Filemanager UI
+## Installation of Filemanager UI
 Create a folder of name filemanager within your public_html folder
 Download https://github.com/guillermomartinez/filemanager-ui/archive/master.zip
 o
@@ -50,7 +50,7 @@ Create file index.html
 </html>
 ```
 
-##Installation of Filemanager for PHP
+## Installation of Filemanager for PHP
 
 ```
 composer require guillermomartinez/filemanager-php:0.1.*
@@ -85,7 +85,7 @@ $f->run();
 ?>
 ```
 
-##Integration with laravel
+## Integration with laravel
 ```
 composer require guillermomartinez/filemanager-php:0.1.*
 ```
@@ -179,7 +179,7 @@ routes.php
 Route::controller('/filemanager','FilemanagerController');
 ```
 
-##Demo
+## Demo
 http://php-filemanager.rhcloud.com/
 
 ![demo2](https://cloud.githubusercontent.com/assets/5642429/8630887/aec46114-2731-11e5-9a7b-907127d77891.jpg)
