@@ -13,7 +13,12 @@ $extra = array(
     // url domain
     // so that the files and show well http://php-filemanager.rhcloud.com/userfiles/imagen.jpg
     // o http://php-filemanager.rhcloud.com/filemanager/userfiles/imagen.jpg
-    "url" => "http://localhost/"
+    "url" => "http://localhost/",
+    "images" => [
+        'resize'=>[
+            'large' => array(1024,768,true,true),
+        ]
+    ]
     );
 if(isset($_POST['typeFile']) && $_POST['typeFile']=='images'){
     $extra['type_file'] = 'images';
