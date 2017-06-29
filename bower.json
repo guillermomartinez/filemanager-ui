@@ -1,7 +1,13 @@
 {
   "name": "filemanager-ui",
-  "description":"It is the graphical user interface File Manager, regardless of the backend, lets you work with PHP, Python, nodejs or another.",
-  "keywords": ["filemanager", "upload", "file", "document", "management"],
+  "description": "It is the graphical user interface File Manager, regardless of the backend, lets you work with PHP, Python, nodejs or another.",
+  "keywords": [
+    "filemanager",
+    "upload",
+    "file",
+    "document",
+    "management"
+  ],
   "version": "0.1.0",
   "license": "MIT",
   "ignore": [
@@ -21,6 +27,7 @@
     "dropzone": "enyo/dropzone#~4.0.1",
     "fancybox": "fancyapps/fancybox#~2.1.5",
     "moment": "~2.9.0",
-    "bootstrap-contextmenu": "guillermomartinez/bootstrap-contextmenu#master"
+    "bootstrap-contextmenu": "guillermomartinez/bootstrap-contextmenu#master",
+    "jquery-lazy": "^1.7.5"
   }
 }

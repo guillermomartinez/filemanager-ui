@@ -38,7 +38,7 @@ module.exports = function(grunt) {
           'src/css/responsive.css'
         ],
         dest: 'dist/css/<%= pkg.name %>-without.css'
-      },      
+      },
       js_build: {
         src: [
           'bower_components/bootstrap/js/transition.js',
@@ -55,7 +55,7 @@ module.exports = function(grunt) {
           //'bower_components/bootstrap/js/affix.js',
         ],
         dest: 'src/js/bootstrap.js'
-      },      
+      },
       js: {
         src: [
           'bower_components/jquery/dist/jquery.js',
@@ -65,12 +65,13 @@ module.exports = function(grunt) {
           'bower_components/fancybox/source/jquery.fancybox.js',
           'bower_components/moment/moment.js',
           'bower_components/bootstrap-contextmenu/bootstrap-contextmenu.js',
+          'bower_components/jquery-lazy/jquery.lazy.js',
           'src/js/languaje/us.js',
           'src/js/languaje/es.js',
           'src/js/jquery.filemanager.js'
         ],
         dest: 'dist/js/<%= pkg.name %>.js'
-      },      
+      },
       js2: {
         src: [
           'bower_components/jquery-validation/dist/jquery.validate.js',
@@ -78,6 +79,7 @@ module.exports = function(grunt) {
           'bower_components/fancybox/source/jquery.fancybox.js',
           'bower_components/moment/moment.js',
           'bower_components/bootstrap-contextmenu/bootstrap-contextmenu.js',
+          'bower_components/jquery-lazy/jquery.lazy.js',
           'src/js/languaje/us.js',
           'src/js/languaje/es.js',
           'src/js/jquery.filemanager.js'
@@ -98,7 +100,7 @@ module.exports = function(grunt) {
       minifyCore2: {
         src: 'dist/css/<%= pkg.name %>-without.css',
         dest: 'dist/css/<%= pkg.name %>-without.min.css'
-      }      
+      }
     },
     uglify: {
       options: {
@@ -111,7 +113,7 @@ module.exports = function(grunt) {
       core2: {
         src: 'dist/js/<%= pkg.name %>-without.js',
         dest: 'dist/js/<%= pkg.name %>-without.min.js'
-      }       
+      }
     },
     copy: {
       fonts_build: {
@@ -155,10 +157,10 @@ module.exports = function(grunt) {
       tasks: ['dist']
     }
 	});
-	
+
 	require('load-grunt-tasks')(grunt, { scope: 'devDependencies' });
   require('time-grunt')(grunt);
-  
+
   grunt.registerTask('build', ['less', 'concat:js_build','copy:fonts_build','copy:fancybox_build']);
   grunt.registerTask('dist', ['clean','less', 'concat:css', 'concat:css2', 'concat:js', 'concat:js2', 'cssmin:minifyCore', 'cssmin:minifyCore2', 'uglify:core','uglify:core2','copy:fonts','copy:fancybox','copy:images']);
 

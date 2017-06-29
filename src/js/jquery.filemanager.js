@@ -213,7 +213,7 @@
             var items = $this;
             items.html('');
             var context_menu = $("#context-menu",filemanager).clone().html();
-            var item = '<li><div class="item context" ><div class="check"><label><input type="checkbox" name="check"></label></div><a class="image" href="#"><img src=""></a><div class="col name"><h3><span class="texto"></span></h3></div><div class="col type"></div><div class="col size"></div><div class="col date"></div><div class="col actions"><div class="btn-group menu_options" data-tooltip="tooltip" data-placement="left" title="Acciones"><button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ><span aria-hidden="true" class="glyphicon glyphicon-tasks" ></button>'+context_menu+'</div></div></div></li>';
+            var item = '<li><div class="item context" ><div class="check"><label><input type="checkbox" name="check"></label></div><a class="image" href="#"><img></a><div class="col name"><h3><span class="texto"></span></h3></div><div class="col type"></div><div class="col size"></div><div class="col date"></div><div class="col actions"><div class="btn-group menu_options" data-tooltip="tooltip" data-placement="left" title="Acciones"><button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ><span aria-hidden="true" class="glyphicon glyphicon-tasks" ></button>'+context_menu+'</div></div></div></li>';
             var el = null;
             if(path!="/" ){
                 var path2 = path.replace(/\//ig,' ').trim().split(' ');
@@ -252,7 +252,7 @@
                         el.find('.size').text('');
                         el.find('.date').text(filedate);
                     }else if(element.filetype==="jpg" || element.filetype==="png" || element.filetype=="jpeg" || element.filetype=="gif"){
-                        el.find('.image img').attr('src',element.preview+'?t='+Math.floor(Date.now() /1000));
+                        el.find('.image img').addClass('lazy').attr('data-src',element.preview+'?t='+Math.floor(Date.now() /1000));
                         el.find('.image').addClass('fancybox').attr('data-url',element.previewfull+'?t='+Math.floor(Date.now() /1000)).attr('rel',element.previewfull+'?t='+Math.floor(Date.now() /1000)).attr('title',translate('FE_FILENAME') + element.filename+' | '+ translate('FE_SIZE') +' '+filemanager.formatBytes(element.size)+' | '+ translate('FE_LAST_MODIFIED') +moment.unix(element.lastmodified).format(settings.datetimeFormat));
                         el.find('.name').attr('data-name-original',filename).attr('data-name',filename).attr('data-isdir',element.isdir);
                         el.find('.texto').text(filenameshort);
@@ -468,6 +468,7 @@
                             }
                         });
                         filemanager.searchFiles();
+                        $('.lazy').lazy({placeholder: "data:image/gif;base64,R0lGODlhEALAPQAPzl5uLr9Nrl8e7..."});
                     }
                 },
                 error: function(request, textStatus, errorThrown){

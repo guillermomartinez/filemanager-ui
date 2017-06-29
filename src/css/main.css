@@ -159,7 +159,7 @@ top: 0;
     opacity: 1;
 }
 .filemanager .list .item.active .check input{
-outline: medium none;   
+outline: medium none;
 }
 .filemanager .list .item img {
     height: 90px;
@@ -209,7 +209,7 @@ overflow: hidden;
 padding: 0;
 text-overflow: ellipsis;
 white-space: nowrap;
-line-height: 15px; 
+line-height: 15px;
 }
 .filemanager .list .scroll {
     /*max-height: 600px;*/
@@ -275,9 +275,9 @@ margin: 0 auto;
 text-align: center;
 }
 .filemanager #content_list.view_detalles .item .col {
-    
+
     padding: 0 10px;
-    text-align: left;    
+    text-align: left;
 }
 .filemanager #content_list.view_detalles .item .actions .open > .dropdown-menu {
     left: auto;
@@ -504,4 +504,9 @@ text-align: center;
 }
 .filemanager .filename_delete > span > span{
     margin-right: 5px;
+}
+img.lazy {
+    background-image: url("../images/loading.gif");
+    background-position: center center;
+    background-repeat: no-repeat;
 }

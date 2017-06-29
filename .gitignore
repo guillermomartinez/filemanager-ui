@@ -4,3 +4,4 @@ userfiles/*
 !userfiles/.htaccess
 plugin.js
 examples/log
+examples/cache
