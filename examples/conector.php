@@ -14,8 +14,11 @@ $extra = array(
     // so that the files and show well http://php-filemanager.rhcloud.com/userfiles/imagen.jpg
     // o http://php-filemanager.rhcloud.com/filemanager/userfiles/imagen.jpg
     "url" => "http://localhost/",
+    "debug" => true,
     "images" => [
         'resize'=>[
+            'medium' => array(500,500,true,null),
+            'other' => array(500,500,null,true),
             'large' => array(1024,768,true,true),
         ]
     ]

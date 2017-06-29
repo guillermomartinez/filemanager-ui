@@ -3,3 +3,4 @@ node_modules/*
 userfiles/*
 !userfiles/.htaccess
 plugin.js
+examples/log
