@@ -20410,7 +20410,7 @@ LANGS.ES = {
                             }
                         });
                         filemanager.searchFiles();
-                        $('.lazy').lazy({placeholder: "data:image/gif;base64,R0lGODlhEALAPQAPzl5uLr9Nrl8e7..."});
+                        filemanager.find('.lazy').lazy({placeholder: "data:image/gif;base64,R0lGODlhEALAPQAPzl5uLr9Nrl8e7..."});
                     }
                 },
                 error: function(request, textStatus, errorThrown){
@@ -20863,7 +20863,17 @@ LANGS.ES = {
                 }
             });
             $this.on('click',".check input", function(event) {
-                // event.preventDefault();
+                var instance = $this;
+                var checkbox = $(event.target);
+                if (event.shiftKey && instance.last) {
+                    var checkboxes = instance.find(':checkbox');
+                    var from = checkboxes.index(instance.last);
+                    var to = checkboxes.index(checkbox);
+                    var start = Math.min(from, to);
+                    var end = Math.max(from, to) + 1;
+                    checkboxes.slice(start, end).filter(':not(:disabled)').prop('checked', checkbox.prop('checked')).trigger('change');
+                }
+                instance.last = checkbox;
                 if($(this).is(':checked'))
                     $(this).parents('.item').addClass('active');
                 else
@@ -20872,8 +20882,21 @@ LANGS.ES = {
                     $("#select_delete_popup",filemanager).removeClass('disabled');
                     if($this.find('.item.active').find('a.dir').length ===0 )
                         $("#select_insert",filemanager).removeClass('disabled');
+                }else{
+                    $("#select_delete_popup",filemanager).addClass('disabled');
+                    $("#select_insert",filemanager).addClass('disabled');
                 }
-                else{
+            });
+            $this.on('change',".check input", function(event) {
+                if($(this).is(':checked'))
+                    $(this).parents('.item').addClass('active');
+                else
+                    $(this).parents('.item').removeClass('active');
+                if($this.find('.item.active').length>0){
+                    $("#select_delete_popup",filemanager).removeClass('disabled');
+                    if($this.find('.item.active').find('a.dir').length ===0 )
+                        $("#select_insert",filemanager).removeClass('disabled');
+                }else{
                     $("#select_delete_popup",filemanager).addClass('disabled');
                     $("#select_insert",filemanager).addClass('disabled');
                 }
