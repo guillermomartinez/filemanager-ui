@@ -20195,7 +20195,7 @@ LANGS.ES = {
                         el.find('.date').text(filedate);
                     }else if(element.filetype==="jpg" || element.filetype==="png" || element.filetype=="jpeg" || element.filetype=="gif"){
                         el.find('.image img').addClass('lazy').attr('data-src',element.preview+'?t='+Math.floor(Date.now() /1000));
-                        el.find('.image').addClass('fancybox').attr('data-url',element.previewfull+'?t='+Math.floor(Date.now() /1000)).attr('rel',element.previewfull+'?t='+Math.floor(Date.now() /1000)).attr('title',translate('FE_FILENAME') + element.filename+' | '+ translate('FE_SIZE') +' '+filemanager.formatBytes(element.size)+' | '+ translate('FE_LAST_MODIFIED') +moment.unix(element.lastmodified).format(settings.datetimeFormat));
+                        el.find('.image').addClass('fancybox').attr('data-url',element.previewfull).attr('rel',element.previewfull+'?t='+Math.floor(Date.now() /1000)).attr('title',translate('FE_FILENAME') + element.filename+' | '+ translate('FE_SIZE') +' '+filemanager.formatBytes(element.size)+' | '+ translate('FE_LAST_MODIFIED') +moment.unix(element.lastmodified).format(settings.datetimeFormat));
                         el.find('.name').attr('data-name-original',filename).attr('data-name',filename).attr('data-isdir',element.isdir);
                         el.find('.texto').text(filenameshort);
                         el.find('.type').text(filetype);
@@ -20846,6 +20846,10 @@ LANGS.ES = {
                 if (window.opener) {
                     window.opener.setData(items);
                     window.close();
+                }
+                if(window.parent.$('.modal-filemanager').closest('.modal').length>0){
+                    window.parent.setData(items);
+                    window.parent.closeModal();
                 }
             });
             // END ADD EVENT TO UI
