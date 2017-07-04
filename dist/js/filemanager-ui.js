@@ -20838,7 +20838,7 @@ LANGS.ES = {
             if(settings.insertButton===false) $("#select_insert",filemanager).remove();
             $("#select_insert",filemanager).on('click', function(event) {
                 var items = filemanager.insert();
-                if(window.parent.tinymce && window.parent.tinymce.activeEditor.windowManager){
+                if(window.parent.tinymce && window.parent.tinymce.activeEditor && window.parent.tinymce.activeEditor.windowManager){
                     var field_name = getParameter('field_name');
                     window.parent.document.getElementById(field_name).value = items[0].url;
                     window.parent.tinymce.activeEditor.windowManager.close();
