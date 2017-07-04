@@ -20838,18 +20838,16 @@ LANGS.ES = {
             if(settings.insertButton===false) $("#select_insert",filemanager).remove();
             $("#select_insert",filemanager).on('click', function(event) {
                 var items = filemanager.insert();
-                if(window.parent.tinymce && window.parent.tinymce.activeEditor && window.parent.tinymce.activeEditor.windowManager){
+                if(window.parent.$('.filemanager-modal').length>0 && window.parent.$('.filemanager-modal').is('.in') ){
+                    window.parent.setData(items);
+                    window.parent.closeModal();
+                }else if(window.parent.tinymce && window.parent.tinymce.activeEditor !== null && window.parent.tinymce.activeEditor.windowManager && window.parent.tinymce.activeEditor.windowManager.windows.length == 2){
                     var field_name = getParameter('field_name');
                     window.parent.document.getElementById(field_name).value = items[0].url;
                     window.parent.tinymce.activeEditor.windowManager.close();
-                }
-                if (window.opener) {
+                }else if (window.opener) {
                     window.opener.setData(items);
                     window.close();
-                }
-                if(window.parent.$('.modal-filemanager').closest('.modal').length>0){
-                    window.parent.setData(items);
-                    window.parent.closeModal();
                 }
             });
             // END ADD EVENT TO UI
