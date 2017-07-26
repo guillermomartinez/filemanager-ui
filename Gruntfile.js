@@ -67,6 +67,7 @@ module.exports = function(grunt) {
           'bower_components/bootstrap-contextmenu/bootstrap-contextmenu.js',
           'src/js/languaje/us.js',
           'src/js/languaje/es.js',
+          'src/js/languaje/zh.js',
           'src/js/jquery.filemanager.js'
         ],
         dest: 'dist/js/<%= pkg.name %>.js'
@@ -80,6 +81,7 @@ module.exports = function(grunt) {
           'bower_components/bootstrap-contextmenu/bootstrap-contextmenu.js',
           'src/js/languaje/us.js',
           'src/js/languaje/es.js',
+          'src/js/languaje/zh.js',
           'src/js/jquery.filemanager.js'
         ],
         dest: 'dist/js/<%= pkg.name %>-without.js'
