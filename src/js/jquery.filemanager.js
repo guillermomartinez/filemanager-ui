@@ -248,7 +248,8 @@
                         el.find('.image').addClass('dir').attr('rel',element.urlfolder);
                         el.find('.name').attr('data-name-original',filename).attr('data-name',filename).attr('data-isdir',element.isdir);
                         el.find('.texto').text(filenameshort);
-                        el.find('.type').text('dir');
+                        filetype = translate('FE_FILE_TYPE');
+                        el.find('.type').text(filetype === undefined ? 'dir' : filetype);
                         el.find('.size').text('');
                         el.find('.date').text(filedate);
                     }else if(element.filetype==="jpg" || element.filetype==="png" || element.filetype=="jpeg" || element.filetype=="gif"){
@@ -963,5 +964,6 @@
             // END LIST OF ITEMS
         };
         filemanager.init();
+        return filemanager;
     };
 }( jQuery ));
