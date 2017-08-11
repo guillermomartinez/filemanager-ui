@@ -9534,6 +9534,9 @@ LANGS.ZH = {
         html_init = html_init+'</div>';
         filemanager.append(html_init);
         var $this = filemanager.find("#list");
+        filemanager.getSettings = function() {
+            return settings;
+        }
         filemanager.validExtension = function (filename){
             var r = false;
             var ext ='';
@@ -9592,7 +9595,7 @@ LANGS.ZH = {
             var items = $this;
             items.html('');
             var context_menu = $("#context-menu",filemanager).clone().html();
-            var item = '<li><div class="item context" ><div class="check"><label><input type="checkbox" name="check"></label></div><a class="image" href="#"><img></a><div class="col name"><h3><span class="texto"></span></h3></div><div class="col type"></div><div class="col size"></div><div class="col date"></div><div class="col actions"><div class="btn-group menu_options" data-tooltip="tooltip" data-placement="left" title="Acciones"><button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ><span aria-hidden="true" class="glyphicon glyphicon-tasks" ></button>'+context_menu+'</div></div></div></li>';
+            var item = '<li><div class="item context" ><div class="check"><label><input type="checkbox" name="check"></label></div><a class="image" href="#"><img></a><div class="col name"><h3><span class="texto"></span></h3></div><div class="col type"></div><div class="col size"></div><div class="col date"></div><div class="col actions"><div class="btn-group menu_options" data-tooltip="tooltip" data-placement="left" title="'+translate('FE_ACTIONS')+'"><button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ><span aria-hidden="true" class="glyphicon glyphicon-tasks" ></button>'+context_menu+'</div></div></div></li>';
             var el = null;
             if(path!="/" ){
                 var path2 = path.replace(/\//ig,' ').trim().split(' ');
@@ -9622,6 +9625,9 @@ LANGS.ZH = {
                     var filetype = element.filetype;
                     var filesize = filemanager.formatBytes(element.size);
                     var filedate = moment.unix(element.lastmodified).format(settings.datetimeFormat);
+                    var id = element.id;
+                    if(id != undefined)
+                        el.find('div.check input[name=check]').attr('data-id',id);
                     if(element.isdir==true){
                         el.find('.image').html('<div class="content_icon"><span aria-hidden="true" class="glyphicon glyphicon-folder-close"></span></div>');
                         el.find('.image').addClass('dir').attr('rel',element.urlfolder);
@@ -9750,7 +9756,8 @@ LANGS.ZH = {
                     $this.html('<div id="loading"></div>');
                 },
                 success: function(datos){
-                    datos = $.parseJSON(datos);
+                    if (typeof datos === 'string')
+                        datos = $.parseJSON(datos);
                     if(datos.status==1){
                         filemanager.loadFiles(datos.data,path);
                         $('.context',filemanager).contextmenu({
@@ -9983,13 +9990,17 @@ LANGS.ZH = {
                 this.options.params = datos;
             });
             myDropzone.on("success", function(file, responseText, e) {
-                var datos = $.parseJSON(responseText);
+                var datos = responseText;
+                if (typeof datos === 'string')
+                    datos = $.parseJSON(responseText);
                 if(datos.status==1){
                     $("#reloadfiles",filemanager).val(1);
                 }
             });
             myDropzone.on("successmultiple", function(file, responseText, e) {
-                var datos = $.parseJSON(responseText);
+                var datos = responseText;
+                if (typeof datos === 'string')
+                    datos = $.parseJSON(responseText);
                 var msg = filemanager.parseMsg(datos.msg);
                 if(datos.status==0)
                     $("#error-all",filemanager).html('<div class="alert alert-info">'+msg+'</div>');
@@ -10104,7 +10115,8 @@ LANGS.ZH = {
                             $("#"+filemanager.config.move_popup+" form .result",filemanager).html('<div class="progress"><div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div></div>');
                         },
                         success: function(datos){
-                            datos = $.parseJSON(datos);
+                            if (typeof datos === 'string')
+                                datos = $.parseJSON(datos);
                             var msg = filemanager.parseMsg(datos.msg);
                             if(datos.status==1){
                                 filemanager.getFolder(path);
@@ -10150,7 +10162,8 @@ LANGS.ZH = {
                             $("#"+filemanager.config.rename_popup+" form .result",filemanager).html('<div class="progress"><div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div></div>');
                         },
                         success: function(datos){
-                            datos = $.parseJSON(datos);
+                            if (typeof datos === 'string')
+                                datos = $.parseJSON(datos);
                             var msg = filemanager.parseMsg(datos.msg);
                             if(datos.status==1){
                                 filemanager.getFolder(path);
@@ -10195,7 +10208,8 @@ LANGS.ZH = {
                             $("#"+filemanager.config.delete_popup+" form .result",filemanager).html('<div class="progress"><div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div></div>');
                         },
                         success: function(datos){
-                            datos = $.parseJSON(datos);
+                            if (typeof datos === 'string')
+                                datos = $.parseJSON(datos);
                             var msg = filemanager.parseMsg(datos.msg);
                             if(datos.status==1){
                                 $("#"+filemanager.config.delete_popup+" form .result",filemanager).html('');
@@ -10231,6 +10245,9 @@ LANGS.ZH = {
                 $("#name",filemanager).val('');
                 $("#newfolder_popup_result",filemanager).html('');
             });
+            $('#'+filemanager.config.new_folder,filemanager).on('shown.bs.modal', function (e) {
+                $("#name",filemanager).focus();
+            });
             $('#'+filemanager.config.upload_popup,filemanager).on('hide.bs.modal', function (e) {
                 $("#error-all",filemanager).html('');
                 myDropzone.removeAllFiles(true);
@@ -10261,7 +10278,8 @@ LANGS.ZH = {
                             $("#newfolder_popup_result",filemanager).html('<div class="progress"><div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div></div>');
                         },
                         success: function(datos){
-                            datos = $.parseJSON(datos);
+                            if (typeof datos === 'string')
+                                datos = $.parseJSON(datos);
                             var msg = filemanager.parseMsg(datos.msg);
                             if(datos.status==1){
                                 filemanager.getFolder(path);
