@@ -39,7 +39,7 @@ LANGS.ES = {
 	"BE_GETFILEALL_NOT_PERMITIDO" : "Archivo no permitido",
 	"BE_GETFILEALL_NOT_EXISTED" : "Archivo no existe",
 	"BE_UPLOADALL_UPLOADS" : "Subido: ",
-	"BE_UPLOADALL_NOT_UPLOADS" : "Not permitido: ",
+	"BE_UPLOADALL_NOT_UPLOADS" : "No permitido: ",
 	"BE_UPLOAD_MAX_UPLOAD" : "Máximo archivos permitidos: ",
 	"BE_DELETE_DELETED" : "Archivo borrado",
 	"BE_DELETE_NOT_EXIED" : "Archivo no existe",
