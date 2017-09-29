@@ -67,6 +67,7 @@ module.exports = function(grunt) {
           'bower_components/bootstrap-contextmenu/bootstrap-contextmenu.js',
           'bower_components/jquery-lazy/jquery.lazy.js',
           'src/js/languaje/us.js',
+          'src/js/languaje/ru.js',
           'src/js/languaje/es.js',
           'src/js/languaje/zh.js',
           'src/js/jquery.filemanager.js'
@@ -82,6 +83,7 @@ module.exports = function(grunt) {
           'bower_components/bootstrap-contextmenu/bootstrap-contextmenu.js',
           'bower_components/jquery-lazy/jquery.lazy.js',
           'src/js/languaje/us.js',
+          'src/js/languaje/ru.js',
           'src/js/languaje/es.js',
           'src/js/languaje/zh.js',
           'src/js/jquery.filemanager.js'

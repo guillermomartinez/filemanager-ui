@@ -5,3 +5,4 @@ userfiles/*
 plugin.js
 examples/log
 examples/cache
+package-lock.json
