@@ -70,6 +70,7 @@ module.exports = function(grunt) {
           'src/js/languaje/ru.js',
           'src/js/languaje/es.js',
           'src/js/languaje/zh.js',
+          'src/js/languaje/fr.js',
           'src/js/jquery.filemanager.js'
         ],
         dest: 'dist/js/<%= pkg.name %>.js'
@@ -86,6 +87,7 @@ module.exports = function(grunt) {
           'src/js/languaje/ru.js',
           'src/js/languaje/es.js',
           'src/js/languaje/zh.js',
+          'src/js/languaje/fr.js',
           'src/js/jquery.filemanager.js'
         ],
         dest: 'dist/js/<%= pkg.name %>-without.js'
