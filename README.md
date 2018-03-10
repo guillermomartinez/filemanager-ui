@@ -4,6 +4,7 @@ It is the graphical user interface File Manager, https://github.com/guillermomar
 * [Basic](https://filemanager-ui-demo.herokuapp.com/examples/basic.html)
 * [Multiple](https://filemanager-ui-demo.herokuapp.com/examples/multiple.html)
 * [Popup](https://filemanager-ui-demo.herokuapp.com/examples/popup.html)
+* [Modal](https://filemanager-ui-demo.herokuapp.com/examples/modal.html)
 * [Popup advanced](https://filemanager-ui-demo.herokuapp.com/examples/popup_advanced.html)
 * [Tinymce](https://filemanager-ui-demo.herokuapp.com/examples/tinymce.html)
 
