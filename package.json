@@ -45,7 +45,6 @@
     "grunt-sed": "~0.1.1",
     "load-grunt-tasks": "~2.0.0",
     "npm-shrinkwrap": "^200.0.0",
-    "remarkable": "~1.6.0",
     "time-grunt": "~1.0.0"
   }
 }
